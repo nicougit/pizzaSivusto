@@ -1,56 +1,89 @@
 package kayttajaDao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import login.Kayttaja;
+import bean.Kayttaja;
+import login.KayttajaLista;
+import login.Tiiviste;
+import tietokanta.Kysely;
+import tietokanta.Yhteys;
 
 public class KayttajaDAO {
-	
-	Connection yhteys = null;
 
-	public void avaaYhteys() {
-		// Säädöt - Koulun protokanta
-//		String username = "a1500955";
-//		String password = "paFAtd56t";
-//		String url = "jdbc:mysql://localhost:3306/a1500955";
-		
-		// Säädöt - mun oma servu
-		String username = "javatesti";
-		String password = "salsasana";
-		String url = "jdbc:mysql://192.168.10.35:3306/Pizzat";
+	public Kayttaja kirjaudu(String kayttajatunnus, String salasana) {
 
-		try {
-			// Ajurin lataus SQLite
-			Class.forName("com.mysql.jdbc.Driver");
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-			// Yhteyden avaus
-			yhteys = DriverManager.getConnection(url, username, password);
+		// Suolan haku
+		String suolakysely = "SELECT suola FROM Kayttajat WHERE tunnus = ?";
 
-		} catch (Exception e) {
-			// Virheet
-			System.out.println("Tietokantayhteyden avauksessa tapahtui virhe");
-			e.printStackTrace();
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(kayttajatunnus);
+		kysely.suoritaYksiKyselyParam(suolakysely, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		// Iteraattorin luonti
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		String suola = null;
+		while (iteraattori.hasNext()) {
+			HashMap kayttajaMappi = (HashMap) iteraattori.next();
+			suola = (String) kayttajaMappi.get("suola");
 		}
 
+		// Salasana tiivisteeksi
+		Tiiviste tiiviste = new Tiiviste();
+		String salasanatiiviste = null;
+		try {
+			salasanatiiviste = tiiviste.salaa(salasana, suola, 1);
+		} catch (Exception ex) {
+			System.out.println("Virhe salasanatiivisteen käsittelyssä - " + ex);
+		}
+
+		// Käyttäjän haku tietokannasta
+		String sqlkysely = "SELECT * FROM Kayttajat WHERE tunnus = ? AND salasana = ?";
+		parametrit.add(salasanatiiviste);
+
+		kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
+		tulokset = kysely.getTulokset();
+
+		iteraattori = kysely.getTulokset().iterator();
+
+		// Käyttäjäolion luonti
+		Kayttaja kayttaja = new Kayttaja();
+
+		while (iteraattori.hasNext()) {
+			HashMap kayttajaMappi = (HashMap) iteraattori.next();
+			String idString = (String) kayttajaMappi.get("id");
+			String tunnusKanta = (String) kayttajaMappi.get("tunnus");
+			int idKanta = Integer.parseInt(idString);
+
+			kayttaja.setTunnus(tunnusKanta);
+			kayttaja.setId(idKanta);
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Käyttäjän palautus
+		return kayttaja;
 	}
 
-	public void suljeYhteys() {
-		try {
-			if (yhteys != null && !yhteys.isClosed())
-				yhteys.close();
-		} catch (Exception e) {
-			System.out.println("Tietokantayhteys ei jostain syystä suostu menemään kiinni.");
-		}
-	}
-	
-	public ArrayList<Kayttaja> haeKayttajat() {
+	// Väliaikainen käyttäjätietojen haku
+	public ArrayList<KayttajaLista> haeKayttajat() {
 		// Suoritetaan haku
 
-		ArrayList<Kayttaja> lista = new ArrayList<Kayttaja>();
+		ArrayList<KayttajaLista> lista = new ArrayList<KayttajaLista>();
+
+		Yhteys yhteysolio = new Yhteys();
+		Connection yhteys = yhteysolio.getYhteys();
 
 		try {
 			String sql = "SELECT id, tunnus, etunimi, sukunimi, tyyppi FROM Kayttajat";
@@ -66,15 +99,18 @@ public class KayttajaDAO {
 				String tyyppi = tulokset.getString("tyyppi");
 
 				// Luodaan käyttäjästä olio
-				
-				Kayttaja kayttaja = new Kayttaja(id, tunnus, etunimi, sukunimi, tyyppi);
+
+				KayttajaLista kayttaja = new KayttajaLista(id, tunnus, etunimi, sukunimi, tyyppi);
 
 				lista.add(kayttaja);
 
 			}
 		} catch (Exception ex) {
-			System.out.println("Tietokantahaussa tapahtui virhe.");
+			System.out.println("Käyttäjien haussa tapahtui virhe.");
 		}
+
+		// Yhteyden sulkeminen
+		yhteysolio.suljeYhteys();
 
 		return lista;
 	}

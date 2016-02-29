@@ -1,8 +1,8 @@
 package login;
 
-public class Kayttaja {
+public class KayttajaLista {
 
-	// Väliaikaiset muuttujat testailun ajaksi, kun kovakoodattu käyttäjä
+	// Login sivulle kehitysvaiheessa tulostettava käyttäjälista
 
 	int id;
 	String tunnus;
@@ -10,12 +10,12 @@ public class Kayttaja {
 	String sukunimi;
 	String tyyppi;
 
-	public Kayttaja() {
+	public KayttajaLista() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Kayttaja(int id, String tunnus, String etunimi, String sukunimi, String tyyppi) {
+	public KayttajaLista(int id, String tunnus, String etunimi, String sukunimi, String tyyppi) {
 		super();
 		this.id = id;
 		this.tunnus = tunnus;
