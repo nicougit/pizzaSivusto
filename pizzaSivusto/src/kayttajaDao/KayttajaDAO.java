@@ -48,11 +48,13 @@ public class KayttajaDAO {
 		}
 
 		// Käyttäjän haku tietokannasta
-		String sqlkysely = "SELECT * FROM Kayttajat WHERE tunnus = ? AND salasana = ?";
+		String sqlkysely = "SELECT id, tunnus, etunimi, sukunimi, puhelin FROM Kayttajat WHERE tunnus = ? AND salasana = ?";
 		parametrit.add(salasanatiiviste);
 
 		kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
 		tulokset = kysely.getTulokset();
+		
+		// Testaillaan
 
 		iteraattori = kysely.getTulokset().iterator();
 
@@ -63,10 +65,17 @@ public class KayttajaDAO {
 			HashMap kayttajaMappi = (HashMap) iteraattori.next();
 			String idString = (String) kayttajaMappi.get("id");
 			String tunnusKanta = (String) kayttajaMappi.get("tunnus");
+			String etunimiKanta = (String) kayttajaMappi.get("etunimi");
+			String sukunimiKanta = (String) kayttajaMappi.get("sukunimi");
+			String puhelinKanta = (String) kayttajaMappi.get("puhelin");
 			int idKanta = Integer.parseInt(idString);
 
+			// Oliolle attribuutit
 			kayttaja.setTunnus(tunnusKanta);
 			kayttaja.setId(idKanta);
+			kayttaja.setEtunimi(etunimiKanta);
+			kayttaja.setSukunimi(sukunimiKanta);
+			kayttaja.setPuhelin(puhelinKanta);
 		}
 
 		// Yhteyden sulkeminen

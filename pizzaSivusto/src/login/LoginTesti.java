@@ -18,7 +18,7 @@ public class LoginTesti {
 		
 		kayttaja = kayttajadao.kirjaudu(username, password);
 		
-		kayttaja.toString();
+		System.out.println("Tietokannasta noudettu käyttäjä: " + kayttaja.toString());
 
 	}
 

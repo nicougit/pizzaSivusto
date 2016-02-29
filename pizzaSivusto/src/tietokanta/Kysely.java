@@ -43,10 +43,17 @@ public class Kysely {
 			while (resultSetti.next()) {
 				HashMap tulosrivi = hashMappiin(resultSetti);
 				tulokset.add(tulosrivi);
+				System.out.println("Tulosrivi: " + tulosrivi.toString());
 			}
 			
 		} catch (SQLException ex) {
 			System.out.println("Virhe SQL-lausekkeen suorituksessa - " + ex);
+		} finally {
+			try {
+				resultSetti.close();
+			} catch (SQLException ex) {
+				System.out.println("Virhe resultsetin sulkemisessa - " + ex);
+			}
 		}
 		
 	}
