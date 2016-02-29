@@ -1,4 +1,4 @@
-<%@page import="login.Kayttaja"%>
+<%@page import="login.KayttajaLista"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -53,7 +53,7 @@
 				<td><input type="password" name="salasana"></td>
 			</tr>
 			<tr>
-				<td><input type="submit" value="Kirjaudu sisään"></td>
+				<td><input type="submit" name="action" value="Kirjaudu"></td>
 				<td></td>
 			</tr>
 		</form>
