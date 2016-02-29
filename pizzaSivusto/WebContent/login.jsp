@@ -39,6 +39,8 @@
 	<br>
 
 	<h2>Sisäänkirjautuminen</h2>
+	
+	<c:if test="${not empty param.error }"><span style="color: red;">Virhe kirjautumisessa!</span><br></c:if>
 
 	<table>
 		<form method="post">
