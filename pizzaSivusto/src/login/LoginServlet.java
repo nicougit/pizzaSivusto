@@ -56,10 +56,13 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// Katsotaan mikä toiminto (tällä hetkellä vain Kirjaudu)
+		// Katsotaan mikä toiminto (tällä hetkellä 'Kirjaudu' ja 'Kirjaudu ulos')
 		String action = request.getParameter("action");
 		if (action != null && action.equals("Kirjaudu")) {
-			kirjaudu(request, response);
+			kirjauduSisaan(request, response);
+		}
+		else if (action != null && action.equals("Kirjaudu ulos")) {
+			kirjauduUlos(request, response);
 		}
 		else {
 			response.sendRedirect("/pizzaSivusto/login");
@@ -67,7 +70,7 @@ public class LoginServlet extends HttpServlet {
 
 	}
 	
-	public void kirjaudu(HttpServletRequest request, HttpServletResponse response)
+	public void kirjauduSisaan(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		// Haetaan parametrit
@@ -113,6 +116,24 @@ public class LoginServlet extends HttpServlet {
 			// Jos logineita ei ole määritetty, annetaan errori
 			System.out.println("Login yritys ilman useria ja/tai passua.");
 			response.sendRedirect("/pizzaSivusto/login?error=true");
+		}
+	}
+	
+	public void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession sessio = request.getSession(false);
+		
+		// Katsotaan onko käyttäjä kirjautuneena sisään
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			sessio.removeAttribute("kayttaja");
+			sessio.invalidate();
+			RequestDispatcher rd = request.getRequestDispatcher("loggedout.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			// Redirectataan login sivulle, jos käyttäjä yrittää logouttia kun ei ole kirjautunut
+			System.out.println("Käyttäjä yritti logata ulos vaikka ei ole kirjautunut, redirectataan.");
+			response.sendRedirect("/pizzaSivusto/login");
 		}
 	}
 	
