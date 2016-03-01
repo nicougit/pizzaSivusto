@@ -11,7 +11,7 @@
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		response.setDateHeader("Expires", -1);
 	} else {
-		String redirecti = "/../login";
+		String redirecti = request.getAttribute("pathi") + "/login";
 		response.sendRedirect(redirecti);
 	}
 %>
