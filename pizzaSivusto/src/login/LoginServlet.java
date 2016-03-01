@@ -38,15 +38,24 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
-		// Haetaan lista käyttäjistä kantayhteyden testausta varten
-		KayttajaDAO dao = new KayttajaDAO();
-		ArrayList<KayttajaLista> lista = dao.haeKayttajat();
+		HttpSession sessio = request.getSession(true);
 
-		request.setAttribute("kayttajat", lista);
+		// Jos käyttäjä on jo kirjautuneena, näytetään loggedin sivu, muuten
+		// login
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/loggedin.jsp");
+			rd.forward(request, response);
+		} else {
+			// Haetaan lista käyttäjistä kantayhteyden testausta varten
+			KayttajaDAO dao = new KayttajaDAO();
+			ArrayList<KayttajaLista> lista = dao.haeKayttajat();
 
-		// Request dispatcher
-		RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-		rd.forward(request, response);
+			request.setAttribute("kayttajat", lista);
+
+			// Request dispatcher
+			RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
+			rd.forward(request, response);
+		}
 	}
 
 	/**
@@ -56,23 +65,22 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// Katsotaan mikä toiminto (tällä hetkellä 'Kirjaudu' ja 'Kirjaudu ulos')
+		// Katsotaan mikä toiminto (tällä hetkellä 'Kirjaudu' ja 'Kirjaudu
+		// ulos')
 		String action = request.getParameter("action");
 		if (action != null && action.equals("Kirjaudu")) {
 			kirjauduSisaan(request, response);
-		}
-		else if (action != null && action.equals("Kirjaudu ulos")) {
+		} else if (action != null && action.equals("Kirjaudu ulos")) {
 			kirjauduUlos(request, response);
-		}
-		else {
+		} else {
 			response.sendRedirect("/pizzaSivusto/login");
 		}
 
 	}
-	
+
 	public void kirjauduSisaan(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		// Haetaan parametrit
 		String kayttajanimi = request.getParameter("kayttajanimi");
 		String salasana = request.getParameter("salasana");
@@ -91,50 +99,48 @@ public class LoginServlet extends HttpServlet {
 				System.out.println("Käyttäjätunnus annettu väärässä muodossa, redirectataan login sivulle");
 				response.sendRedirect("/pizzaSivusto/login?error=true");
 			} else {
-				
+
 				KayttajaDAO kayttajaDao = new KayttajaDAO();
 				Kayttaja kayttaja = kayttajaDao.kirjaudu(kayttajanimi, salasana);
 				System.out.println(kayttaja.toString());
 				if (kayttaja.getTunnus() != null) {
 					HttpSession sessio = request.getSession(true);
 					sessio.setAttribute("kayttaja", kayttaja);
-					
+
 					request.setAttribute("kayttaja", kayttaja);
-					
+
 					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/loggedin.jsp");
 					rd.forward(request, response);
-				}
-				else {
+				} else {
 					System.out.println("Käyttäjätunnus ja salasana ei täsmää, redirectataan login sivulle");
 					response.sendRedirect("/pizzaSivusto/login?error=true");
 				}
-							
+
 			}
 
-		}
-		else {
+		} else {
 			// Jos logineita ei ole määritetty, annetaan errori
 			System.out.println("Login yritys ilman useria ja/tai passua.");
 			response.sendRedirect("/pizzaSivusto/login?error=true");
 		}
 	}
-	
+
 	public void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession sessio = request.getSession(false);
-		
+
 		// Katsotaan onko käyttäjä kirjautuneena sisään
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 			sessio.removeAttribute("kayttaja");
 			sessio.invalidate();
 			RequestDispatcher rd = request.getRequestDispatcher("loggedout.jsp");
 			rd.forward(request, response);
-		}
-		else {
-			// Redirectataan login sivulle, jos käyttäjä yrittää logouttia kun ei ole kirjautunut
+		} else {
+			// Redirectataan login sivulle, jos käyttäjä yrittää logouttia kun
+			// ei ole kirjautunut
 			System.out.println("Käyttäjä yritti logata ulos vaikka ei ole kirjautunut, redirectataan.");
 			response.sendRedirect("/pizzaSivusto/login");
 		}
 	}
-	
+
 }
