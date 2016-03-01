@@ -11,7 +11,7 @@
 		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		response.setDateHeader("Expires", -1);
 	} else {
-		String redirecti = "/pizzaSivusto/login";
+		String redirecti = "/../login";
 		response.sendRedirect(redirecti);
 	}
 %>
@@ -41,7 +41,7 @@
 	<a href="#">Placeholder linkki hallinnointisivulle</a>
 	<br>
 	<br>
-	<form action="/pizzaSivusto/login" method="post">
+	<form action="<% out.print(request.getAttribute("pathi")); %>/login" method="post">
 	<input type="submit" name="action" value="Kirjaudu ulos">
 	</form>
 	<br>

@@ -48,7 +48,7 @@ public class Testeri {
 			System.out.println("");
 			
 			// Tulostetaan käyttäjän SQL-luontilauseke
-			String kayttajataulukko = "Kayttaja";
+			String kayttajataulukko = "Kayttajat";
 			
 			System.out.println("INSERT INTO " + kayttajataulukko + " VALUES (");
 			System.out.println("null,");

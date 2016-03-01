@@ -14,7 +14,7 @@
 
 Olet kirjautunut ulos onnistuneesti.<br><br>
 
-<a href="/pizzaSivusto/login">Takaisin login-sivulle</a>
+<a href="<% out.print(request.getAttribute("pathi")); %>/login">Takaisin login-sivulle</a>
 	
 	<br><br>
 	

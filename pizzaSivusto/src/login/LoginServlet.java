@@ -21,6 +21,9 @@ import kayttajaDao.KayttajaDAO;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	// Määritetään sivuston path linkkejä ja redirectejä varten
+	private String sivustopath = "/reptilemafia";
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -35,9 +38,12 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
+		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
+		
+		// Asetetaan sivun path
+		request.setAttribute("pathi", sivustopath);
 
 		// Jos käyttäjä on jo kirjautuneena, näytetään loggedin sivu, muuten
 		// login
@@ -63,6 +69,8 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		request.setAttribute("pathi", sivustopath);
 
 		// Katsotaan mikä toiminto (tällä hetkellä 'Kirjaudu' ja 'Kirjaudu
 		// ulos')
@@ -72,7 +80,7 @@ public class LoginServlet extends HttpServlet {
 		} else if (action != null && action.equals("Kirjaudu ulos")) {
 			kirjauduUlos(request, response);
 		} else {
-			response.sendRedirect("/pizzaSivusto/login");
+			response.sendRedirect(sivustopath + "/login");
 		}
 
 	}
