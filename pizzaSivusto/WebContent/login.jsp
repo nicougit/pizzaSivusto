@@ -40,7 +40,11 @@
 
 	<h2>Sisäänkirjautuminen</h2>
 	
-	<c:if test="${not empty param.error }"><span style="color: red;">Virhe kirjautumisessa!</span><br></c:if>
+	<%
+	if(request.getAttribute("virhe") != null) {
+		out.println("<span style=\"color: red;\">" + request.getAttribute("virhe") + "</span><br><br>");
+	}
+	%>
 
 	<table>
 		<form method="post">

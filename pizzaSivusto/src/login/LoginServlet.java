@@ -27,7 +27,6 @@ public class LoginServlet extends HttpServlet {
 	 */
 	public LoginServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -78,6 +77,7 @@ public class LoginServlet extends HttpServlet {
 
 	}
 
+	// Sisäänkirjautuminen
 	public void kirjauduSisaan(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -97,7 +97,7 @@ public class LoginServlet extends HttpServlet {
 			// Jos virheellinen email, annetaan errori
 			if (validity == false) {
 				System.out.println("Käyttäjätunnus annettu väärässä muodossa, redirectataan login sivulle");
-				response.sendRedirect("/pizzaSivusto/login?error=true");
+				virhe(request, response, "Käyttäjätunnus annettu väärässä muodossa!");
 			} else {
 
 				KayttajaDAO kayttajaDao = new KayttajaDAO();
@@ -112,8 +112,8 @@ public class LoginServlet extends HttpServlet {
 					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/loggedin.jsp");
 					rd.forward(request, response);
 				} else {
-					System.out.println("Käyttäjätunnus ja salasana ei täsmää, redirectataan login sivulle");
-					response.sendRedirect("/pizzaSivusto/login?error=true");
+					System.out.println("Virheellinen käyttäjätunnus/salasana, redirectataan login sivulle");
+					virhe(request, response, "Virheellinen käyttäjätunnus/salasana!");
 				}
 
 			}
@@ -121,10 +121,11 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			// Jos logineita ei ole määritetty, annetaan errori
 			System.out.println("Login yritys ilman useria ja/tai passua.");
-			response.sendRedirect("/pizzaSivusto/login?error=true");
+			virhe(request, response, "Käyttäjätunnusta ja/tai salasanaa ei syötetty!");
 		}
 	}
 
+	// Uloskirjautuminen
 	public void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession sessio = request.getSession(false);
@@ -138,9 +139,16 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			// Redirectataan login sivulle, jos käyttäjä yrittää logouttia kun
 			// ei ole kirjautunut
-			System.out.println("Käyttäjä yritti logata ulos vaikka ei ole kirjautunut, redirectataan.");
-			response.sendRedirect("/pizzaSivusto/login");
+			System.out.println("Käyttäjä yritti logata ulos vaikka ei ole kirjautunut");
+			virhe(request, response, "Yritit kirjautua ulos, vaikka et ole kirjautunut sisään!");
 		}
+	}
+
+	// Error-attribuutin asetus ja redirect
+	public void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
+			throws ServletException, IOException {
+		request.setAttribute("virhe", virhe);
+		doGet(request, response);
 	}
 
 }
