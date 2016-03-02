@@ -72,22 +72,23 @@
 	</form>
 
 	<h2>Pizzan lisäys</h2>
-	<form action="hallinta" method="post">
+	<form action="pizza" method="post">
 		<table style="width: 45%;">
 			<tr>
 				<td>Pizzan nimi</td>
-				<td><input type="text" name="nimi" autocomplete="off"></td>
+				<td><input type="text" name="pizzanimi" autocomplete="off"></td>
 			</tr>
 			<tr>
 				<td>Pizzan hinta</td>
-				<td><input type="number" autocomplete="off"> EUR</td>
+				<td><input type="number" name="pizzahinta" autocomplete="off"> EUR</td>
 			</tr>
 			<tr>
 				<td>Täytteet</td>
-				<td><input type="text" name="nimi" autocomplete="off" style="width: 100%;"></td>
+				<td><input type="text" name="pizzataytteet" autocomplete="off" style="width: 100%;"></td>
 			</tr>
 			<tr>
-				<td><input type="submit" name="action" value="Lisää pizza"></td>
+			<!-- Mietitään myöhemmin miten saadaan tohon ääkköset, encoding ongelma servletin puolella -->
+				<td><input type="submit" name="action" value="Lisaa pizza"></td>
 				<td style="font-size: 8pt;">Kirjoita täytteet pilkulla ja välilyönnillä toisistaan eroteltuna. Esim. Kinkku, Kebab, Ananas</td>
 			</tr>
 
@@ -136,7 +137,7 @@
 						<option value="0">Ei</option></select>
 			</tr>
 			<tr>
-			<td colspan="2"><input type="submit" name="action" value="Lisää täyte">
+			<td colspan="2"><input type="submit" name="lisaatayte" value="Lisää täyte">
 			</td>
 			</tr>
 		</table>

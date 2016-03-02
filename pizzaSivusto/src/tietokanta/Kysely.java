@@ -39,7 +39,7 @@ public class Kysely {
 			while (resultSetti.next()) {
 				HashMap tulosrivi = hashMappiin(resultSetti);
 				tulokset.add(tulosrivi);
-				System.out.println("Tulosrivi: " + tulosrivi.toString());
+			//	System.out.println("Tulosrivi: " + tulosrivi.toString());
 			}
 			
 		} catch (SQLException ex) {

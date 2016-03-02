@@ -47,8 +47,6 @@ public class HallintaDao {
 				pizza.setTaytteet(pizza.getTaytteet() + ", " + tayteKanta);
 				pizzaVarasto.put(idKanta, pizza);
 				
-				System.out.println("Pizzaan " + idKanta + " lisätty täyte: " + tayteKanta);
-				
 			} else {
 				// Olion luonti ja vienti HashMappiin
 				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta);
