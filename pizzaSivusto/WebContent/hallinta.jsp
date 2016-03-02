@@ -9,18 +9,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Castello E Fiori Hallintasivu</title>
 </head>
-<body style="width: 100%;">
+<body style="width: 90%;">
 
 	<h1>Castello E Fiori</h1>
 	
-	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus.<br>
-
+	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus.<br><br>
+	Tällä hetkellä vain listaus toimii.<br><br>
 	<h2>Pizzojen listaus</h2>
 	<form action="hallinta" method="post">
 		<table style="width: 35%;">
+		<tr>
 			<th>Pizzan nimi</th>
 			<th>Hinta</th>
 			<th></th>
+			</tr>
 			<c:forEach items="${pizzat}" var="pizza">
 				<tr>
 					<td>${pizza.nimi }</td>
@@ -29,6 +31,10 @@
 						EUR</td>
 					<td><button name="poistapizza" type="submit"
 							value="${pizza.id }">Poista</button></td>
+				</tr>
+				<tr><td colspan="3" style="font-size: 9pt; padding-bottom: 10px; border-bottom: 1px solid lightgray;">
+				${pizza.tayte1 }, ${pizza.tayte2 }, ${pizza.tayte3 }, ${pizza.tayte4 }, ${pizza.tayte5 }
+				</td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -95,17 +101,21 @@
 				</select>
 			<tr>
 				<td></td>
-				<td><input type="submit" value="Lisää!"></td>
+				<td><input type="submit" name="action" value="Lisää!"></td>
 			</tr>
 
 		</table>
+		
+		</form>
 
 		<h2>Täytteiden listaus</h2>
 		<form action="hallinta" method="post">
 			<table style="width: 35%;">
-				<th>Nimi</th>
+			<tr>
+				<th>Täyte</th>
 				<th>Saatavuus</th>
 				<th></th>
+				</tr>
 				<c:forEach items="${taytteet}" var="tayte">
 					<tr>
 						<td>${tayte.nimi }</td>
@@ -118,9 +128,8 @@
 			<br>
 		</form>
 
-		<footer
-			style="border-top: 1px solid lightgray; width: 600px; font-size: 9pt;">
+		<div style="border-top: 1px solid lightgray; width: 600px; font-size: 9pt;">
 		<br>
-		By Reptile Mafia 2016</footer>
+		By Reptile Mafia 2016</div>
 </body>
 </html>
