@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import apuluokka.Apuri;
 import bean.Kayttaja;
-import kayttajaDao.KayttajaDAO;
+import daot.KayttajaDao;
 
 /**
  * Servlet implementation class LoginServlet
@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
 			rd.forward(request, response);
 		} else {
 			// Haetaan lista käyttäjistä kantayhteyden testausta varten
-			KayttajaDAO dao = new KayttajaDAO();
+			KayttajaDao dao = new KayttajaDao();
 			ArrayList<KayttajaLista> lista = dao.haeKayttajat();
 
 			request.setAttribute("kayttajat", lista);
@@ -108,7 +108,7 @@ public class LoginServlet extends HttpServlet {
 				virhe(request, response, "Käyttäjätunnus annettu väärässä muodossa!");
 			} else {
 
-				KayttajaDAO kayttajaDao = new KayttajaDAO();
+				KayttajaDao kayttajaDao = new KayttajaDao();
 				Kayttaja kayttaja = kayttajaDao.kirjaudu(kayttajanimi, salasana);
 				System.out.println(kayttaja.toString());
 				if (kayttaja.getTunnus() != null) {

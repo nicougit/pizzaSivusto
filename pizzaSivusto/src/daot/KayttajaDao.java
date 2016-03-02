@@ -1,4 +1,4 @@
-package kayttajaDao;
+package daot;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,7 +13,7 @@ import login.Tiiviste;
 import tietokanta.Kysely;
 import tietokanta.Yhteys;
 
-public class KayttajaDAO {
+public class KayttajaDao {
 
 	public Kayttaja kirjaudu(String kayttajatunnus, String salasana) {
 

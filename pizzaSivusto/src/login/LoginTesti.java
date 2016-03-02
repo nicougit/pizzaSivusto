@@ -1,7 +1,7 @@
 package login;
 
 import bean.Kayttaja;
-import kayttajaDao.KayttajaDAO;
+import daot.KayttajaDao;
 
 public class LoginTesti {
 
@@ -11,7 +11,7 @@ public class LoginTesti {
 
 		Kayttaja kayttaja = new Kayttaja();
 
-		KayttajaDAO kayttajadao = new KayttajaDAO();
+		KayttajaDao kayttajadao = new KayttajaDao();
 
 		String username = "admin@pizza.fi";
 		String password = "salasana123";

@@ -19,8 +19,42 @@ public class Kysely {
 		tulokset = new ArrayList<HashMap>();
 		yhteys = avattuYhteys;
 	}
+	
+	// Yksinkertainen kysely, esim. kaikki pizzat tai täytteet
+	public void suoritaKysely(String sql) {
+		
+		// Tyhjennetään tulosten arraylist
+		tulokset.clear();
+		
+		ResultSet resultSetti = null;
+		
+		// Valmistellaan SQL-lause
+		try {
+			PreparedStatement lause = yhteys.prepareStatement(sql);
+			
+			// Tehdään kantahaku
+			System.out.println("Suoritettava SQL-lause: " + lause.toString());
+			resultSetti = lause.executeQuery();
+			
+			while (resultSetti.next()) {
+				HashMap tulosrivi = hashMappiin(resultSetti);
+				tulokset.add(tulosrivi);
+				System.out.println("Tulosrivi: " + tulosrivi.toString());
+			}
+			
+		} catch (SQLException ex) {
+			System.out.println("Virhe SQL-lausekkeen suorituksessa - " + ex);
+		} finally {
+			try {
+				resultSetti.close();
+			} catch (SQLException ex) {
+				System.out.println("Virhe resultsetin sulkemisessa - " + ex);
+			}
+		}
+		
+	}
 
-	// SQL-lausekkeen suorittaminen
+	// SQL-lausekkeen suorittaminen parametrilla
 	public void suoritaYksiKyselyParam(String sql, ArrayList<String> parametrit) {
 		
 		// Tyhjennetään tulosten arraylist
