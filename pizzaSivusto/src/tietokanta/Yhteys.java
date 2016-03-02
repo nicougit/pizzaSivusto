@@ -15,14 +15,14 @@ public class Yhteys {
 
 	private void avaaYhteys() {
 		// Säädöt - Koulun protokanta
-		String username = "a1500955";
-		String password = "paFAtd56t";
-		String url = "jdbc:mysql://localhost:3306/a1500955";
+		//String username = "a1500955";
+		//String password = "paFAtd56t";
+		//String url = "jdbc:mysql://localhost:3306/a1500955";
 
 		// Säädöt - mun oma servu
-		//String username = "javatesti";
-		//String password = "salsasana";
-		//String url = "jdbc:mysql://192.168.10.35:3306/Pizzat";
+		String username = "javatesti";
+		String password = "salsasana";
+		String url = "jdbc:mysql://192.168.10.35:3306/Pizzat";
 
 		try {
 			// Ajurin lataus SQLite

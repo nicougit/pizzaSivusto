@@ -101,8 +101,11 @@ public class Kysely {
 			int sarakkeita = metaData.getColumnCount();
 			
 			// Laitetaan jokaisen rivin tiedot HashMappiin
+			// Muutettu 'getColumnName' -> 'getColumnLabel' jotta voidaan käyttää kyselyssä AS-määrittelyä nimille
+			// Ei toimi muuten datan hakeminen kahdesta taulukosta joissa sama nimi, esim.
+			// Pizza ja Tayte taulukko joinattuna, joissa molemmissa 'nimi' attribuutti
 			for (int i = 1; i <= sarakkeita; i++) {
-				tulosrivi.put(metaData.getColumnName(i), resultSetti.getString(i));
+				tulosrivi.put(metaData.getColumnLabel(i), resultSetti.getString(i));
 			}
 			
 		} catch (Exception ex) {

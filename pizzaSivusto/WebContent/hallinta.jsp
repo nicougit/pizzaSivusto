@@ -17,6 +17,7 @@
 	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus. Tällä hetkellä vain listaus toimii.<br><br>
 	
 		<%
+		// Katsotaan onko käyttäjä kirjautunut sisään
 		if (session.getAttribute("kayttaja") != null) {
 			int id = ((Kayttaja) session.getAttribute("kayttaja")).getId();
 			String etunimi = ((Kayttaja) session.getAttribute("kayttaja")).getEtunimi();
@@ -24,15 +25,18 @@
 			String tunnus = ((Kayttaja) session.getAttribute("kayttaja")).getTunnus();
 
 			out.print("Olet kirjautunut sisään käyttäjänä " + tunnus + ".");
+			
+			// Varmaan ois selvempikin tapa tehdä tämä, mut toimii
+			String logoutbutton = "<form action=\"" + request.getAttribute("pathi") + "/login\" method=\"post\">\n<input type=\"submit\" name=\"action\" value=\"Kirjaudu ulos\"></form>";
+			
+			// Näytetään logout button kirjautuneille
+			out.print("<br><br>" + logoutbutton);
 		}
 		else {
-			out.print("Et ole kirjautuneena sisään!");
+			out.print("Et ole kirjautuneena sisään. Pääset kirjautumaan sisään <a href=\"" + request.getAttribute("pathi") + "/login\">täältä</a>.");
 		}
 	%>
-	<br><br>
-	<form action="<% out.print(request.getAttribute("pathi")); %>/login" method="post">
-	<input type="submit" name="action" value="Kirjaudu ulos">
-	</form>
+	<br>
 	
 	<h2>Pizzojen listaus</h2>
 	<form action="hallinta" method="post">
@@ -51,8 +55,8 @@
 					<td><button name="poistapizza" type="submit"
 							value="${pizza.id }">Poista</button></td>
 				</tr>
-				<tr><td colspan="3" style="font-size: 9pt; padding-bottom: 10px; border-bottom: 1px solid lightgray;">
-				${pizza.tayte1 }, ${pizza.tayte2 }, ${pizza.tayte3 }, ${pizza.tayte4 }, ${pizza.tayte5 }
+				<tr><td colspan="3" style="font-size: 9pt; padding-bottom: 5px; padding-left: 10px; border-bottom: 1px solid lightgray;">
+				${pizza.taytteet }
 				</td>
 				</tr>
 			</c:forEach>

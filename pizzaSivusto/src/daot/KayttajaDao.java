@@ -25,7 +25,7 @@ public class KayttajaDao {
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		// Suolan haku
-		String suolakysely = "SELECT suola FROM Kayttajat WHERE tunnus = ?";
+		String suolakysely = "SELECT suola FROM Kayttaja WHERE tunnus = ?";
 
 		ArrayList<String> parametrit = new ArrayList<String>();
 		parametrit.add(kayttajatunnus);
@@ -57,7 +57,7 @@ public class KayttajaDao {
 			}
 
 			// Käyttäjän haku tietokannasta
-			String sqlkysely = "SELECT id, tunnus, etunimi, sukunimi, puhelin FROM Kayttajat WHERE tunnus = ? AND salasana = ?";
+			String sqlkysely = "SELECT id, tunnus, etunimi, sukunimi, puhelin FROM Kayttaja WHERE tunnus = ? AND salasana = ?";
 			parametrit.add(salasanatiiviste);
 
 			kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
@@ -102,7 +102,7 @@ public class KayttajaDao {
 		Connection yhteys = yhteysolio.getYhteys();
 
 		try {
-			String sql = "SELECT id, tunnus, etunimi, sukunimi, tyyppi FROM Kayttajat";
+			String sql = "SELECT id, tunnus, etunimi, sukunimi, tyyppi FROM Kayttaja";
 			Statement haku = yhteys.createStatement();
 			ResultSet tulokset = haku.executeQuery(sql);
 

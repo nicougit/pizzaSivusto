@@ -23,7 +23,9 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	// Määritetään sivuston path linkkejä ja redirectejä varten
-	private String sivustopath = "/reptilemafia";
+	// Määritys "/reptilemafia" koulun protoservua varten
+	// Eclipsessä ajettaessa "/pizzaSivusto"
+	private String sivustopath = "/pizzaSivusto";
 
 	/**
 	 * @see HttpServlet#HttpServlet()

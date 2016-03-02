@@ -3,6 +3,7 @@ package daot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import bean.Pizza;
 import bean.Tayte;
@@ -17,9 +18,7 @@ public class HallintaDao {
 		Yhteys yhteys = new Yhteys();
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		ArrayList<Pizza> pizzat = new ArrayList<>();
-
-		String sql = "SELECT id, nimi, hinta, (SELECT nimi FROM Taytteet WHERE id = p.tayte1) AS tayte1, (SELECT nimi FROM Taytteet WHERE id = p.tayte2) AS tayte2, (SELECT nimi FROM Taytteet WHERE id = p.tayte3) AS tayte3, (SELECT nimi FROM Taytteet WHERE id = p.tayte4) AS tayte4, (SELECT nimi FROM Taytteet WHERE id = p.tayte5) AS tayte5 FROM Pizzat p";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) ORDER BY pizza_id ASC";
 
 		kysely.suoritaKysely(sql);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
@@ -27,46 +26,52 @@ public class HallintaDao {
 		// Iteraattorin luonti
 		Iterator iteraattori = kysely.getTulokset().iterator();
 
+		// Hashmap jossa pizzan id ja pizzaolio
+		// Pointtina tässä on yhdistää yhteen pizzaolioon jokainen rivi jossa sama pizza_id
+		// Kaikki täytteet menevät 'taytteet' Stringiin pilkuilla eroteltuina
+		HashMap<Integer, Pizza> pizzaVarasto = new HashMap<>();
+
 		while (iteraattori.hasNext()) {
-			HashMap kayttajaMappi = (HashMap) iteraattori.next();
-			String idString = (String) kayttajaMappi.get("id");
-			String nimikanta = (String) kayttajaMappi.get("nimi");
-			String hintaString = (String) kayttajaMappi.get("hinta");
-			String tayte1Kanta = (String) kayttajaMappi.get("tayte1");
-			String tayte2Kanta = (String) kayttajaMappi.get("tayte2");
-			String tayte3Kanta = (String) kayttajaMappi.get("tayte3");
-			String tayte4Kanta = (String) kayttajaMappi.get("tayte4");
-			String tayte5Kanta = (String) kayttajaMappi.get("tayte5");
+			HashMap pizzaMappi = (HashMap) iteraattori.next();
+			String idString = (String) pizzaMappi.get("pizza_id");
+			String nimikanta = (String) pizzaMappi.get("pizza");
+			String hintaString = (String) pizzaMappi.get("hinta");
+			String tayteKanta = (String) pizzaMappi.get("tayte");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
-
-			// Oliolle attribuutit
-			Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayte1Kanta, null, null, null, null);
-
-			if (tayte2Kanta != "NULL") {
-				pizza.setTayte2(tayte2Kanta);
-				if (tayte3Kanta != "NULL") {
-					pizza.setTayte3(tayte3Kanta);
-					if (tayte4Kanta != "NULL") {
-						pizza.setTayte4(tayte4Kanta);
-						if (tayte5Kanta != "NULL") {
-							pizza.setTayte5(tayte5Kanta);
-						}
-					}
-				}
+			
+			// Jos HashMapissa on jo pizza tällä ID:llä, lisätään siihen uusi täyte
+			// Muuten lisätään HashMappiin uusi pizza
+			if (pizzaVarasto.containsKey(idKanta)) {
+				Pizza pizza = pizzaVarasto.get(idKanta);
+				pizza.setTaytteet(pizza.getTaytteet() + ", " + tayteKanta);
+				pizzaVarasto.put(idKanta, pizza);
+				
+				System.out.println("Pizzaan " + idKanta + " lisätty täyte: " + tayteKanta);
+				
+			} else {
+				// Olion luonti ja vienti HashMappiin
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta);
+				pizzaVarasto.put(idKanta, pizza);
 			}
 
-			pizzat.add(pizza);
-
+		}
+		
+		// Luodaan ArrayList pizzoille ja siirretään HashMapin pizzat sinne
+		ArrayList<Pizza> pizzat = new ArrayList<>();
+		
+		for (Map.Entry<Integer, Pizza> entry : pizzaVarasto.entrySet()) {
+			pizzat.add(entry.getValue());
 		}
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 
+		// Pizzojen palautus
 		return pizzat;
 
 	}
-	
+
 	public ArrayList<Tayte> haeKaikkiTaytteet() {
 
 		// Yhteyden määritys
@@ -75,7 +80,7 @@ public class HallintaDao {
 
 		ArrayList<Tayte> taytteet = new ArrayList<>();
 
-		String sql = "SELECT id, nimi, saatavilla FROM Taytteet";
+		String sql = "SELECT tayte_id, nimi, saatavilla FROM Tayte";
 
 		kysely.suoritaKysely(sql);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
@@ -85,24 +90,23 @@ public class HallintaDao {
 
 		while (iteraattori.hasNext()) {
 			HashMap kayttajaMappi = (HashMap) iteraattori.next();
-			String idString = (String) kayttajaMappi.get("id");
+			String idString = (String) kayttajaMappi.get("tayte_id");
 			String nimikanta = (String) kayttajaMappi.get("nimi");
 			String saatavillaKanta = (String) kayttajaMappi.get("saatavilla");
 			int idKanta = Integer.parseInt(idString);
 
 			// Oliolle attribuutit
 			Tayte tayte = new Tayte();
-			
+
 			tayte.setId(idKanta);
 			tayte.setNimi(nimikanta);
 			if (saatavillaKanta.equals("K")) {
 				tayte.setSaatavilla(true);
-			}
-			else if (saatavillaKanta.equals("E")) {
+			} else if (saatavillaKanta.equals("E")) {
 				tayte.setSaatavilla(false);
-			}
-			else {
-				System.out.println("Täytteellä ID" + idKanta + " (" + nimikanta + ") virheellinen saatavuus: '" + saatavillaKanta + "', asetetaan false");
+			} else {
+				System.out.println("Täytteellä ID" + idKanta + " (" + nimikanta + ") virheellinen saatavuus: '"
+						+ saatavillaKanta + "', asetetaan false");
 				tayte.setSaatavilla(false);
 			}
 
