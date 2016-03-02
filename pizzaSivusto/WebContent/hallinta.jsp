@@ -17,12 +17,17 @@
 	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus. Tällä hetkellä vain listaus toimii.<br><br>
 	
 		<%
-		int id = ((Kayttaja) session.getAttribute("kayttaja")).getId();
-		String etunimi = ((Kayttaja) session.getAttribute("kayttaja")).getEtunimi();
-		String sukunimi = ((Kayttaja) session.getAttribute("kayttaja")).getSukunimi();
-		String tunnus = ((Kayttaja) session.getAttribute("kayttaja")).getTunnus();
+		if (session.getAttribute("kayttaja") != null) {
+			int id = ((Kayttaja) session.getAttribute("kayttaja")).getId();
+			String etunimi = ((Kayttaja) session.getAttribute("kayttaja")).getEtunimi();
+			String sukunimi = ((Kayttaja) session.getAttribute("kayttaja")).getSukunimi();
+			String tunnus = ((Kayttaja) session.getAttribute("kayttaja")).getTunnus();
 
-		out.print("Olet kirjautunut sisään käyttäjänä " + tunnus + ".");
+			out.print("Olet kirjautunut sisään käyttäjänä " + tunnus + ".");
+		}
+		else {
+			out.print("Et ole kirjautuneena sisään!");
+		}
 	%>
 	<br><br>
 	<form action="<% out.print(request.getAttribute("pathi")); %>/login" method="post">
