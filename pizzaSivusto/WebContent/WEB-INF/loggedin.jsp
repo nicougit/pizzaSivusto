@@ -38,7 +38,7 @@
 
 	<br>
 	<br>
-	<a href="#">Placeholder linkki hallinnointisivulle</a>
+	<a href="<% out.print(request.getAttribute("pathi")); %>/hallinta">Hallinnointisivulle</a>
 	<br>
 	<br>
 	<form action="<% out.print(request.getAttribute("pathi")); %>/login" method="post">
@@ -47,10 +47,10 @@
 	<br>
 	<br>
 
-	<footer
+	<div
 		style="border-top: 1px solid lightgray; width: 600px; font-size: 9pt;">
 	<br>
-	By Reptile Mafia 2016</footer>
+	By Reptile Mafia 2016</div>
 
 
 </body>

@@ -1,3 +1,4 @@
+<%@page import="bean.Kayttaja"%>
 <%@page import="login.KayttajaLista"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -13,8 +14,21 @@
 
 	<h1>Castello E Fiori</h1>
 	
-	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus.<br><br>
-	Tällä hetkellä vain listaus toimii.<br><br>
+	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus. Tällä hetkellä vain listaus toimii.<br><br>
+	
+		<%
+		int id = ((Kayttaja) session.getAttribute("kayttaja")).getId();
+		String etunimi = ((Kayttaja) session.getAttribute("kayttaja")).getEtunimi();
+		String sukunimi = ((Kayttaja) session.getAttribute("kayttaja")).getSukunimi();
+		String tunnus = ((Kayttaja) session.getAttribute("kayttaja")).getTunnus();
+
+		out.print("Olet kirjautunut sisään käyttäjänä " + tunnus + ".");
+	%>
+	<br><br>
+	<form action="<% out.print(request.getAttribute("pathi")); %>/login" method="post">
+	<input type="submit" name="action" value="Kirjaudu ulos">
+	</form>
+	
 	<h2>Pizzojen listaus</h2>
 	<form action="hallinta" method="post">
 		<table style="width: 35%;">
