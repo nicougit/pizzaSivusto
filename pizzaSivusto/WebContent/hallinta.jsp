@@ -13,10 +13,13 @@
 <body style="width: 90%;">
 
 	<h1>Castello E Fiori</h1>
-	
-	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja muokkaus. Tällä hetkellä vain listaus toimii.<br><br>
-	
-		<%
+
+	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja
+	muokkaus. Tällä hetkellä vain listaus toimii.
+	<br>
+	<br>
+
+	<%
 		// Katsotaan onko käyttäjä kirjautunut sisään
 		if (session.getAttribute("kayttaja") != null) {
 			int id = ((Kayttaja) session.getAttribute("kayttaja")).getId();
@@ -25,39 +28,43 @@
 			String tunnus = ((Kayttaja) session.getAttribute("kayttaja")).getTunnus();
 
 			out.print("Olet kirjautunut sisään käyttäjänä " + tunnus + ".");
-			
+
 			// Varmaan ois selvempikin tapa tehdä tämä, mut toimii
-			String logoutbutton = "<form action=\"" + request.getAttribute("pathi") + "/login\" method=\"post\">\n<input type=\"submit\" name=\"action\" value=\"Kirjaudu ulos\"></form>";
-			
+			String logoutbutton = "<form action=\"" + request.getAttribute("pathi")
+					+ "/login\" method=\"post\">\n<input type=\"submit\" name=\"action\" value=\"Kirjaudu ulos\"></form>";
+
 			// Näytetään logout button kirjautuneille
 			out.print("<br><br>" + logoutbutton);
-		}
-		else {
-			out.print("Et ole kirjautuneena sisään. Pääset kirjautumaan sisään <a href=\"" + request.getAttribute("pathi") + "/login\">täältä</a>.");
+		} else {
+			out.print("Et ole kirjautuneena sisään. Pääset kirjautumaan sisään <a href=\""
+					+ request.getAttribute("pathi") + "/login\">täältä</a>.");
 		}
 	%>
 	<br>
-	
-	<h2>Pizzojen listaus</h2>
+
+	<h2>Pizzojen hallinnointi</h2>
 	<form action="hallinta" method="post">
-		<table style="width: 35%;">
-		<tr>
-			<th>Pizzan nimi</th>
-			<th>Hinta</th>
-			<th></th>
+		<table style="width: 45%;">
+			<tr>
+				<th style="text-align: left;">Pizzan tiedot</th>
+				<th>Hinta</th>
+				<th>Toiminnot</th>
 			</tr>
 			<c:forEach items="${pizzat}" var="pizza">
 				<tr>
 					<td>${pizza.nimi }</td>
-					<td><fmt:formatNumber type="number" minFractionDigits="2"
-							maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
-						EUR</td>
-					<td><button name="poistapizza" type="submit"
-							value="${pizza.id }">Poista</button></td>
+					<td style="text-align: center;"><fmt:formatNumber
+							type="number" minFractionDigits="2" maxFractionDigits="2"
+							value="${pizza.hinta }"></fmt:formatNumber> EUR</td>
+					<td style="text-align: center;">
+						<button name="muokkaapizzaa" type="submit" value="${pizza.id }">Muokkaa</button>
+						<button name="poistapizza" type="submit" value="${pizza.id }">Poista</button>
+					</td>
 				</tr>
-				<tr><td colspan="3" style="font-size: 9pt; padding-bottom: 5px; padding-left: 10px; border-bottom: 1px solid lightgray;">
-				${pizza.taytteet }
-				</td>
+				<tr>
+					<td colspan="3"
+						style="font-size: 9pt; padding-bottom: 5px; padding-left: 10px; border-bottom: 1px solid lightgray;">
+						${pizza.taytteet }</td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -66,93 +73,80 @@
 
 	<h2>Pizzan lisäys</h2>
 	<form action="hallinta" method="post">
-		<table style="width: 35%;">
+		<table style="width: 45%;">
 			<tr>
 				<td>Pizzan nimi</td>
-				<td><input type="text" name="nimi" pattern="[^'\x22]+.{4,}"
-					title="Vähintään 4 kirjainta" autocomplete="off"></td>
+				<td><input type="text" name="nimi" autocomplete="off"></td>
 			</tr>
 			<tr>
 				<td>Pizzan hinta</td>
-				<td><input type="number" step="any" min="0" name="hinta"
-					title="Hinta kokonais- tai desimaalilukuna" class="hintaboksi"
-					autocomplete="off"> EUR</td>
+				<td><input type="number" autocomplete="off"> EUR</td>
 			</tr>
 			<tr>
-				<td>Täyte #1</td>
-				<td><select>
-						<option value="0">Ei täytettä</option>
-						<c:forEach items="${taytteet}" var="tayte">
-							<option value="${tayte.id }">${tayte.nimi }</option>
-						</c:forEach>
-				</select>
+				<td>Täytteet</td>
+				<td><input type="text" name="nimi" autocomplete="off" style="width: 100%;"></td>
+			</tr>
 			<tr>
-			<tr>
-				<td>Täyte #2</td>
-				<td><select>
-						<option value="0">Ei täytettä</option>
-						<c:forEach items="${taytteet}" var="tayte">
-							<option value="${tayte.id }">${tayte.nimi }</option>
-						</c:forEach>
-				</select>
-			<tr>
-			<tr>
-				<td>Täyte #3</td>
-				<td><select>
-						<option value="0">Ei täytettä</option>
-						<c:forEach items="${taytteet}" var="tayte">
-							<option value="${tayte.id }">${tayte.nimi }</option>
-						</c:forEach>
-				</select>
-			<tr>
-			<tr>
-				<td>Täyte #4</td>
-				<td><select>
-						<option value="0">Ei täytettä</option>
-						<c:forEach items="${taytteet}" var="tayte">
-							<option value="${tayte.id }">${tayte.nimi }</option>
-						</c:forEach>
-				</select>
-			<tr>
-			<tr>
-				<td>Täyte #5</td>
-				<td><select>
-						<option value="0">Ei täytettä</option>
-						<c:forEach items="${taytteet}" var="tayte">
-							<option value="${tayte.id }">${tayte.nimi }</option>
-						</c:forEach>
-				</select>
-			<tr>
-				<td></td>
-				<td><input type="submit" name="action" value="Lisää!"></td>
+				<td><input type="submit" name="action" value="Lisää pizza"></td>
+				<td style="font-size: 8pt;">Kirjoita täytteet pilkulla ja välilyönnillä toisistaan eroteltuna. Esim. Kinkku, Kebab, Ananas</td>
 			</tr>
 
 		</table>
-		
-		</form>
 
-		<h2>Täytteiden listaus</h2>
-		<form action="hallinta" method="post">
-			<table style="width: 35%;">
+	</form>
+
+	<h2>Täytteiden hallinnointi</h2>
+	<form action="hallinta" method="post">
+		<table style="width: 45%;">
 			<tr>
-				<th>Täyte</th>
-				<th>Saatavuus</th>
-				<th></th>
+				<th style="text-align: left;">Täyte</th>
+				<th>Saatavilla</th>
+				<th>Hallinta</th>
+			</tr>
+			<c:forEach items="${taytteet}" var="tayte">
+				<tr>
+					<td>${tayte.nimi }</td>
+					<td style="text-align: center;"><c:choose>
+							<c:when test="${tayte.saatavilla == true }">Kyllä</c:when>
+							<c:otherwise>
+								<span style="color: red;">Ei</span>
+							</c:otherwise>
+						</c:choose></td>
+					<td style="text-align: center;">
+						<button name="muokkaataytetta" type="submit" value="${tayte.id }">Muokkaa</button>
+						<button name="poistatayte" type="submit" value="${tayte.id }">Poista</button>
+					</td>
 				</tr>
-				<c:forEach items="${taytteet}" var="tayte">
-					<tr>
-						<td>${tayte.nimi }</td>
-						<td>${tayte.saatavilla }</td>
-						<td><button name="poistatayte" type="submit"
-								value="${tayte.id }">Poista</button></td>
-					</tr>
-				</c:forEach>
-			</table>
-			<br>
-		</form>
-
-		<div style="border-top: 1px solid lightgray; width: 600px; font-size: 9pt;">
+			</c:forEach>
+		</table>
 		<br>
-		By Reptile Mafia 2016</div>
+	</form>
+
+	<h2>Täytteiden lisäys</h2>
+
+	<form action="hallinta" method="post">
+		<table style="width: 45%;">
+			<tr>
+				<td>Täytteen nimi</td>
+				<td><input type="text" name="nimi" autocomplete="off"></td>
+			</tr>
+			<tr>
+				<td>Saatavilla</td>
+				<td><select><option value="1">Kyllä</option>
+						<option value="0">Ei</option></select>
+			</tr>
+			<tr>
+			<td colspan="2"><input type="submit" name="action" value="Lisää täyte">
+			</td>
+			</tr>
+		</table>
+	</form>
+	
+	<br><br>
+
+	<div
+		style="border-top: 1px solid lightgray; width: 600px; font-size: 9pt;">
+		<br>By Reptile Mafia 2016
+	</div>
 </body>
 </html>
