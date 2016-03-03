@@ -35,15 +35,17 @@
 		}
 	%>
 	<br>
-	<br>
 
 	<%
 		if (request.getAttribute("virhe") != null) {
 			out.println("<span style=\"color: red;\">" + request.getAttribute("virhe") + "</span><br><br>");
 		}
+		else if (request.getAttribute("success") != null) {
+			out.println("<span style=\"color: green;\">" + request.getAttribute("success") + "</span><br><br>");
+		}
 	%>
 
-	<a href="<%out.print(request.getAttribute("pathi"));%>/hallinta">Hallinnointisivulle</a>
+	<a href="<%out.print(request.getAttribute("pathi"));%>/hallinta">Takaisin hallinnointisivulle</a>
 
 	<br>
 	<br>

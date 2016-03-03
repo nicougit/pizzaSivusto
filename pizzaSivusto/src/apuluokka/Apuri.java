@@ -12,13 +12,17 @@ public class Apuri {
 		return matcheri.find();
 	}
 	
-	// Alla olevat ei toimi oikein. Jatketaan sit kun aivot taas toimii.
-	
 	// Regex patterni stringeille. Sallii kirjaimet, numerot ja välilyönnit.
 	public boolean validoiString(String stringi, String erikoismerkit, int maxpituus) {
 		Pattern patterni = Pattern.compile("^[\\w\\s+äö" + erikoismerkit + "]{3," + maxpituus + "}$");
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}
-
+	
+	// Lisättävien pizzojen täytteiden ID-validointia varten
+	public boolean validoiInt(String stringi) {
+		Pattern patterni = Pattern.compile("^[\\d+]{1,15}$");
+		Matcher matcheri = patterni.matcher(stringi);
+		return matcheri.find();
+	}
 }

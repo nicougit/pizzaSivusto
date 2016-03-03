@@ -15,9 +15,17 @@
 	<h1>Castello E Fiori</h1>
 
 	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja
-	muokkaus. Tällä hetkellä vain listaus toimii.
+	muokkaus. Tällä hetkellä toimii vain tuotteiden listaus ja pizzojen lisäys.
 	<br>
 	<br>
+	To do:
+	<ul>
+	<li>Pizzaa lisätessä ensin duplicate name check</li>
+	<li>Pizzojen muokkaus</li>
+	<li>Pizzojen poisto (ez)</li>
+	<li>Täytteiden lisäys ja poisto (ez)</li>
+	<li>Täytteiden muokkaus</li>
+	</ul>
 
 	<%
 		// Katsotaan onko käyttäjä kirjautunut sisään
@@ -80,7 +88,7 @@
 			</tr>
 			<tr>
 				<td>Pizzan hinta</td>
-				<td><input type="number" name="pizzahinta" autocomplete="off">
+				<td><input type="number" step="0.01" name="pizzahinta" autocomplete="off">
 					EUR</td>
 			</tr>
 				<c:forEach begin="1" end="5" varStatus="looppi">

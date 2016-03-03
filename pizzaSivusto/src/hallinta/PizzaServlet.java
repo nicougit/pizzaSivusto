@@ -1,6 +1,7 @@
 package hallinta;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -40,7 +41,7 @@ public class PizzaServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
 		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
 		response.setCharacterEncoding("UTF-8");
@@ -54,7 +55,7 @@ public class PizzaServlet extends HttpServlet {
 
 		// Daon alustus
 		HallintaDao dao = new HallintaDao();
-		
+
 		RequestDispatcher rd = request.getRequestDispatcher("pizzasivu.jsp");
 		rd.forward(request, response);
 
@@ -66,16 +67,16 @@ public class PizzaServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
 		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
 		String action = request.getParameter("action");
-		
+
 		System.out.println("Saavuttiin PizzaServlettiin. Action: " + action);
-		
+
 		if (action != null && action.equals("Lisaa pizza")) {
 			lisaaPizza(request, response);
 		} else {
@@ -88,7 +89,8 @@ public class PizzaServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Haetaan parametrit
-		// Täytteiden lisäykselle voi myöhemmin keksiä paremmin keinon, toteutetaan nyt jotenkin
+		// Täytteiden lisäykselle voi myöhemmin keksiä paremmin keinon,
+		// toteutetaan nyt jotenkin
 		String pizzanimi = request.getParameter("pizzanimi");
 		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
 		String pizzat1 = request.getParameter("pizzatayte1");
@@ -96,20 +98,19 @@ public class PizzaServlet extends HttpServlet {
 		String pizzat3 = request.getParameter("pizzatayte3");
 		String pizzat4 = request.getParameter("pizzatayte4");
 		String pizzat5 = request.getParameter("pizzatayte5");
-		
-		// Helpompaa validity checkiä varten
-		String taytepotko = pizzat1 + " " + pizzat2 + " " + pizzat3 + " " + pizzat4 + " " + pizzat5;
+
+		// Helpompi validointi ja debugaus, ei tosin hyvä tapa tehdä
+		// Mutta pizzan lisäystä varmaan muutetaan muutenkin vielä
+		String taytepotko = pizzat1 + pizzat2 + pizzat3 + pizzat4 + pizzat5;
 
 		System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
 		System.out.println("Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Taytteet: " + taytepotko);
 
-		if (pizzanimi != null && pizzahinta != null && taytepotko.length() > 5) {
+		if (pizzanimi != null && pizzahinta != null && pizzat1 != null) {
 
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
 
-			// Huom, tässä ei validoida mitään. Pitää tehdä se validointi.
-			
 			if (apuri.validoiString(pizzanimi, "", 30) != true) {
 				String virhe = "Lisättävän pizzan nimi on virheellinen!";
 				System.out.println(virhe);
@@ -118,34 +119,76 @@ public class PizzaServlet extends HttpServlet {
 
 				try {
 					double hinta = Double.parseDouble(pizzahinta);
-					
-					if (apuri.validoiString(taytepotko, "", 100) != true) {
+
+					if (apuri.validoiInt(taytepotko) != true) {
 						String virhe = "Lisättävän pizzan täytteissä oli virheitä!";
 						System.out.println(virhe);
 						virhe(request, response, virhe);
-					}
-					else {
+					} else {
 						/*
 						 * Tässä parsitaan not-null täytestringit arraylistiin
 						 * 
 						 * Pizzojen lisäys kantaa myöhemmin PizzaDaossa:
 						 * 
-						 * Ensin varmistetaan kannasta että ei duplicateja
-						 * Tätä varten kirjoitettava toiminto tietokanta.Kysely-luokkaan
+						 * Ensin varmistetaan kannasta että ei duplicateja Tätä
+						 * varten kirjoitettava toiminto
+						 * tietokanta.Kysely-luokkaan
 						 * 
 						 * Insert-lausekkeiden rakenne:
 						 * 
-						 * INSERT INTO Pizza VALUES (null, 'pizzanimi', 'hinta', null)
+						 * INSERT INTO Pizza VALUES (null, 'pizzanimi', 'hinta',
+						 * null)
 						 * 
-						 * INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM Pizza WHERE nimi = 'pizzanimi'), pizzat1)
-						 * Repeat joka täytteelle						 * 
+						 * INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM
+						 * Pizza WHERE nimi = 'pizzanimi'), pizzat1) Repeat joka
+						 * täytteelle *
 						 * 
 						 */
-						
-						
-						System.out.println("Lisättävä pizza on virheetön!");
+
+						ArrayList<String> taytteet = new ArrayList<>();
+
+						// Lisätään täytteet ArrayListiin
+						if (pizzat1 != "0") {
+							taytteet.add(pizzat1);
+						}
+						if (pizzat2 != "0") {
+							taytteet.add(pizzat2);
+						}
+						if (pizzat3 != "0") {
+							taytteet.add(pizzat3);
+						}
+						if (pizzat4 != "0") {
+							taytteet.add(pizzat4);
+						}
+						if (pizzat5 != "0") {
+							taytteet.add(pizzat5);
+						}
+
+						if (taytteet.size() > 0) {
+							// Lähetetään PizzaDaoon nimi, hinta stringinä ja
+							// täytteiden ArrayList
+							System.out.println("Lisättävä pizza on virheetön, yritetään lisätä tietokantaan");
+
+							HallintaDao dao = new HallintaDao();
+
+							// Tähän saatava inputtia, että onnistuko lisäys
+							boolean success = dao.lisaaPizza(pizzanimi, pizzahinta, taytteet);
+							if (success == true) {
+								request.setAttribute("success", "Pizza lisätty tietokantaan onnistuneesti!");
+							} else {
+								request.setAttribute("virhe",
+										"Pizzan tiedot OK, mutta tietokantaan lisäyksessä tapahtui virhe.");
+							}
+							doGet(request, response);
+
+						} else {
+							String virhe = "Ei yhtään täytettä valittuna!";
+							System.out.println(virhe);
+							virhe(request, response, virhe);
+						}
+
 					}
-					
+
 				} catch (Exception ex) {
 					String virhe = "Lisättävän pizzan hinta on virheellinen!";
 					System.out.println(virhe);

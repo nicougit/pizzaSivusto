@@ -8,6 +8,7 @@ import java.util.Map;
 import bean.Pizza;
 import bean.Tayte;
 import tietokanta.Kysely;
+import tietokanta.Paivitys;
 import tietokanta.Yhteys;
 
 public class HallintaDao {
@@ -27,7 +28,8 @@ public class HallintaDao {
 		Iterator iteraattori = kysely.getTulokset().iterator();
 
 		// Hashmap jossa pizzan id ja pizzaolio
-		// Pointtina tässä on yhdistää yhteen pizzaolioon jokainen rivi jossa sama pizza_id
+		// Pointtina tässä on yhdistää yhteen pizzaolioon jokainen rivi jossa
+		// sama pizza_id
 		// Kaikki täytteet menevät 'taytteet' Stringiin pilkuilla eroteltuina
 		HashMap<Integer, Pizza> pizzaVarasto = new HashMap<>();
 
@@ -39,14 +41,15 @@ public class HallintaDao {
 			String tayteKanta = (String) pizzaMappi.get("tayte");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
-			
-			// Jos HashMapissa on jo pizza tällä ID:llä, lisätään siihen uusi täyte
+
+			// Jos HashMapissa on jo pizza tällä ID:llä, lisätään siihen uusi
+			// täyte
 			// Muuten lisätään HashMappiin uusi pizza
 			if (pizzaVarasto.containsKey(idKanta)) {
 				Pizza pizza = pizzaVarasto.get(idKanta);
 				pizza.setTaytteet(pizza.getTaytteet() + ", " + tayteKanta);
 				pizzaVarasto.put(idKanta, pizza);
-				
+
 			} else {
 				// Olion luonti ja vienti HashMappiin
 				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta);
@@ -54,10 +57,10 @@ public class HallintaDao {
 			}
 
 		}
-		
+
 		// Luodaan ArrayList pizzoille ja siirretään HashMapin pizzat sinne
 		ArrayList<Pizza> pizzat = new ArrayList<>();
-		
+
 		for (Map.Entry<Integer, Pizza> entry : pizzaVarasto.entrySet()) {
 			pizzat.add(entry.getValue());
 		}
@@ -117,6 +120,61 @@ public class HallintaDao {
 
 		return taytteet;
 
+	}
+
+	public boolean lisaaPizza(String nimi, String hinta, ArrayList<String> taytteet) {
+		
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		
+		// Itse pizzan lisäys Pizza-taulukkoon
+		String sql = "INSERT INTO Pizza VALUES (null, ?, ?, null)";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		ArrayList<String> parametrit = new ArrayList<String>();
+		
+		parametrit.add(nimi);
+		parametrit.add(hinta);
+		
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int pizzasuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		
+		System.out.println("Pizzan lisäys kantaan palautti: " + pizzasuccess);
+		
+		/* Lisätään pizzan täytteet PizzanTayte-taulukkoon
+ 		* Ei tiedetä vasta lisätyn pizzan pizza_id:tä, koska se määräytyy tietokannan puolella
+ 		* Käytetään täytteiden lisäyksessä pizzan nimeä. Oletetaan että ei duplicateja. Pitäis tehdä checki.
+ 		* Oletetaan myös, että tayte_id:t on valideja. */
+		sql = "INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM Pizza WHERE nimi = ?), ?)";
+		parametrit.clear();
+		parametrit.add(nimi);
+		parametrit.add(taytteet.get(0));
+		
+		if (taytteet.size() > 1) {
+			for (int i = 1; i < taytteet.size(); i++) {
+				sql += ", ((SELECT pizza_id FROM Pizza WHERE nimi = ?), ?)";
+				parametrit.add(nimi);
+				parametrit.add(taytteet.get(i));
+			}
+		}
+		
+		// Palauttaa onnistuneiden määrän, pitäisi olla sama kuin täytteiden määrä
+		// Pienempi arvo = error
+		int taytesuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		
+		System.out.println("Täytteiden määrä = " + taytteet.size() + ", lisäys kantaan palautti: " + taytesuccess);
+		
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+		
+		// Palautetaan true jos kaikki onnistui, false jos kaikki ei onnistunut
+		if (pizzasuccess == 1 && taytesuccess == taytteet.size()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 
 }
