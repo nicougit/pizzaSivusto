@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import apuluokka.Apuri;
+import bean.Pizza;
 import daot.HallintaDao;
 
 /**
@@ -39,6 +40,11 @@ public class PizzaServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
@@ -60,6 +66,11 @@ public class PizzaServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 
 		String action = request.getParameter("action");
 		
@@ -76,38 +87,68 @@ public class PizzaServlet extends HttpServlet {
 	public void lisaaPizza(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// Haetaan parametrit
+		// Täytteiden lisäykselle voi myöhemmin keksiä paremmin keinon, toteutetaan nyt jotenkin
 		String pizzanimi = request.getParameter("pizzanimi");
 		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
-		String pizzataytteet = request.getParameter("pizzataytteet");
+		String pizzat1 = request.getParameter("pizzatayte1");
+		String pizzat2 = request.getParameter("pizzatayte2");
+		String pizzat3 = request.getParameter("pizzatayte3");
+		String pizzat4 = request.getParameter("pizzatayte4");
+		String pizzat5 = request.getParameter("pizzatayte5");
+		
+		// Helpompaa validity checkiä varten
+		String taytepotko = pizzat1 + " " + pizzat2 + " " + pizzat3 + " " + pizzat4 + " " + pizzat5;
 
 		System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
-		System.out.println("Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Taytteet: " + pizzataytteet);
+		System.out.println("Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Taytteet: " + taytepotko);
 
-		if (pizzanimi != null && pizzahinta != null && pizzataytteet != null) {
+		if (pizzanimi != null && pizzahinta != null && taytepotko.length() > 5) {
 
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
 
 			// Huom, tässä ei validoida mitään. Pitää tehdä se validointi.
 			
-			if (pizzanimi.length() < 4) {
+			if (apuri.validoiString(pizzanimi, "", 30) != true) {
 				String virhe = "Lisättävän pizzan nimi on virheellinen!";
+				System.out.println(virhe);
 				virhe(request, response, virhe);
 			} else {
 
 				try {
 					double hinta = Double.parseDouble(pizzahinta);
 					
-					if (pizzataytteet.length() < 4) {
+					if (apuri.validoiString(taytepotko, "", 100) != true) {
 						String virhe = "Lisättävän pizzan täytteissä oli virheitä!";
+						System.out.println(virhe);
 						virhe(request, response, virhe);
 					}
 					else {
+						/*
+						 * Tässä parsitaan not-null täytestringit arraylistiin
+						 * 
+						 * Pizzojen lisäys kantaa myöhemmin PizzaDaossa:
+						 * 
+						 * Ensin varmistetaan kannasta että ei duplicateja
+						 * Tätä varten kirjoitettava toiminto tietokanta.Kysely-luokkaan
+						 * 
+						 * Insert-lausekkeiden rakenne:
+						 * 
+						 * INSERT INTO Pizza VALUES (null, 'pizzanimi', 'hinta', null)
+						 * 
+						 * INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM Pizza WHERE nimi = 'pizzanimi'), pizzat1)
+						 * Repeat joka täytteelle						 * 
+						 * 
+						 */
+						
+						
 						System.out.println("Lisättävä pizza on virheetön!");
 					}
 					
 				} catch (Exception ex) {
 					String virhe = "Lisättävän pizzan hinta on virheellinen!";
+					System.out.println(virhe);
 					virhe(request, response, virhe);
 
 				}

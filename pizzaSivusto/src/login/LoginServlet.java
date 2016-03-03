@@ -21,7 +21,7 @@ import daot.KayttajaDao;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	// Määritetään sivuston path linkkejä ja redirectejä varten
 	// Määritys "/reptilemafia" koulun protoservua varten
 	// Eclipsessä ajettaessa "/pizzaSivusto"
@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet {
 
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
-		
+
 		// Asetetaan sivun path
 		request.setAttribute("pathi", sivustopath);
 
@@ -71,7 +71,7 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		request.setAttribute("pathi", sivustopath);
 
 		// Katsotaan mikä toiminto (tällä hetkellä 'Kirjaudu' ja 'Kirjaudu
@@ -88,7 +88,7 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	// Sisäänkirjautuminen
-	public void kirjauduSisaan(HttpServletRequest request, HttpServletResponse response)
+	protected void kirjauduSisaan(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		// Haetaan parametrit
@@ -136,7 +136,7 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	// Uloskirjautuminen
-	public void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
+	protected void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession sessio = request.getSession(false);
 
@@ -155,7 +155,7 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	// Error-attribuutin asetus ja redirect
-	public void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
+	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
 			throws ServletException, IOException {
 		request.setAttribute("virhe", virhe);
 		doGet(request, response);

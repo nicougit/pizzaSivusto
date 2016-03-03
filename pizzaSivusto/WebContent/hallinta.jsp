@@ -80,16 +80,22 @@
 			</tr>
 			<tr>
 				<td>Pizzan hinta</td>
-				<td><input type="number" name="pizzahinta" autocomplete="off"> EUR</td>
+				<td><input type="number" name="pizzahinta" autocomplete="off">
+					EUR</td>
 			</tr>
+				<c:forEach begin="1" end="5" varStatus="looppi">
+					<tr>
+						<td>Täyte #${looppi.index }</td>
+						<td><select name="pizzatayte${looppi.index }">
+								<option value="0">Ei täytettä</option>
+								<c:forEach items="${taytteet}" var="tayte">
+									<option value="${tayte.id }">${tayte.nimi }</option>
+								</c:forEach>
+						</select>
+					</tr>
+				</c:forEach>
 			<tr>
-				<td>Täytteet</td>
-				<td><input type="text" name="pizzataytteet" autocomplete="off" style="width: 100%;"></td>
-			</tr>
-			<tr>
-			<!-- Mietitään myöhemmin miten saadaan tohon ääkköset, encoding ongelma servletin puolella -->
-				<td><input type="submit" name="action" value="Lisaa pizza"></td>
-				<td style="font-size: 8pt;">Kirjoita täytteet pilkulla ja välilyönnillä toisistaan eroteltuna. Esim. Kinkku, Kebab, Ananas</td>
+				<td colspan="2"><input type="submit" name="action" value="Lisaa pizza"></td>
 			</tr>
 
 		</table>
@@ -137,13 +143,14 @@
 						<option value="0">Ei</option></select>
 			</tr>
 			<tr>
-			<td colspan="2"><input type="submit" name="lisaatayte" value="Lisää täyte">
-			</td>
+				<td colspan="2"><input type="submit" name="lisaatayte"
+					value="Lisää täyte"></td>
 			</tr>
 		</table>
 	</form>
-	
-	<br><br>
+
+	<br>
+	<br>
 
 	<div
 		style="border-top: 1px solid lightgray; width: 600px; font-size: 9pt;">

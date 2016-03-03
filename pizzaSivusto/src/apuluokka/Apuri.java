@@ -14,16 +14,9 @@ public class Apuri {
 	
 	// Alla olevat ei toimi oikein. Jatketaan sit kun aivot taas toimii.
 	
-	// Regex patterni stringeille. Sallii A-Z ja 0-9
-	public boolean validoiString(String stringi) {
-		Pattern patterni = Pattern.compile("^[A-Z0-9]$");
-		Matcher matcheri = patterni.matcher(stringi);
-		return matcheri.find();
-	}
-	
-	// Regex patterni lisättävien pizzojen täytteille. Sallii A-Z, välilyönnit ja pilkut
-	public boolean validoiTayte(String stringi) {
-		Pattern patterni = Pattern.compile("^[A-Z0-9,\\s]$");
+	// Regex patterni stringeille. Sallii kirjaimet, numerot ja välilyönnit.
+	public boolean validoiString(String stringi, String erikoismerkit, int maxpituus) {
+		Pattern patterni = Pattern.compile("^[\\w\\s+äö" + erikoismerkit + "]{3," + maxpituus + "}$");
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}
