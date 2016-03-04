@@ -15,12 +15,10 @@
 	<h1>Castello E Fiori</h1>
 
 	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja
-	muokkaus. Tällä hetkellä toimii vain tuotteiden listaus ja pizzojen
-	lisäys.
+	muokkaus. Tällä hetkellä toimii pizzojen/täytteiden listaus, sekä pizzojen poisto / palautus.
 	<br>
 	<br> To do:
 	<ul>
-		<li>Pizzojen poisto (ez)</li>
 		<li>Pizzojen muokkaus</li>
 		<li>Täytteiden lisäys ja poisto (ez)</li>
 		<li>Täytteiden muokkaus</li>
@@ -50,7 +48,7 @@
 	<br>
 
 	<h2>Pizzojen hallinnointi</h2>
-	<form action="hallinta" method="post">
+	<form action="pizza" method="post">
 		<table style="width: 45%;">
 			<tr>
 				<th style="text-align: left;">Pizzan tiedot</th>

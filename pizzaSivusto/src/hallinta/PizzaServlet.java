@@ -74,11 +74,17 @@ public class PizzaServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 
 		String action = request.getParameter("action");
+		String poistapizza = request.getParameter("poistapizza");
+		String palautapizza = request.getParameter("palautapizza");
 
 		System.out.println("Saavuttiin PizzaServlettiin. Action: " + action);
 
 		if (action != null && action.equals("Lisaa pizza")) {
 			lisaaPizza(request, response);
+		} else if (poistapizza != null) {
+			poistaPizza(request, response);
+		} else if (palautapizza != null) {
+			palautaPizza(request, response);
 		} else {
 			response.sendRedirect(sivustopath + "/hallinta");
 		}
@@ -129,7 +135,7 @@ public class PizzaServlet extends HttpServlet {
 
 						// Lisätään täytteet ArrayListiin
 						ArrayList<String> taytteet = new ArrayList<>();
-						
+
 						if (!pizzat1.equals("0")) {
 							taytteet.add(pizzat1);
 						}
@@ -177,6 +183,64 @@ public class PizzaServlet extends HttpServlet {
 				}
 
 			}
+
+		}
+
+	}
+
+	public void poistaPizza(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String poistapizza = request.getParameter("poistapizza");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(poistapizza) == false) {
+			String virhe = "Poistettavan pizzan ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään poistaa pizza ID: " + poistapizza);
+
+			HallintaDao dao = new HallintaDao();
+
+			boolean success = dao.poistaPizza(poistapizza);
+
+			if (success == true) {
+				request.setAttribute("success", "Pizzaan lisätty poistomerkintä onnistuneesti!");
+			} else {
+				request.setAttribute("virhe", "Poistomerkintä OK, mutta tietokantaan päivityksessä tapahtui virhe.");
+			}
+			doGet(request, response);
+
+		}
+
+	}
+
+	public void palautaPizza(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String palautapizza = request.getParameter("palautapizza");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(palautapizza) == false) {
+			String virhe = "Palautettavan pizzan ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään palauttaa pizza ID: " + palautapizza);
+
+			HallintaDao dao = new HallintaDao();
+
+			boolean success = dao.palautaPizza(palautapizza);
+
+			if (success == true) {
+				request.setAttribute("success", "Pizzan poistomerkintä kumottu onnistuneesti!");
+			} else {
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui virhe.");
+			}
+			doGet(request, response);
 
 		}
 

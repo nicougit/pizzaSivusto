@@ -203,5 +203,69 @@ public class HallintaDao {
 		}
 		
 	}
+	
+	public boolean poistaPizza(String id) {
+		
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		
+		// Määritellään lause ja parametrit
+		String sql = "SELECT pizza_id FROM Pizza WHERE pizza_id = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(id);
+		
+		if (kysely.montaRivia(sql, parametrit) < 1) {
+			System.out.println("Virhe! Poistettavaa pizzaa ei ole olemassa, tai tapahtui muu tietokantavirhe.");
+			return false;
+		}
+		
+		// Määritellään lause ja poistetaan pizza
+		sql = "UPDATE Pizza SET poistomerkinta = NOW() WHERE pizza_id = ?";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		
+		if (success != 1) {
+			System.out.println("Virhe! Pizzan poistomerkintää tehdessä tapahtui virhe.");
+			return false;
+		}
+		
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+		
+		return true;
+	}
+	
+public boolean palautaPizza(String id) {
+		
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		
+		// Määritellään lause ja parametrit
+		String sql = "SELECT pizza_id FROM Pizza WHERE pizza_id = ? AND poistomerkinta IS NOT NULL";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(id);
+		
+		if (kysely.montaRivia(sql, parametrit) < 1) {
+			System.out.println("Virhe! Pizzaa ei löydy, tai sillä ei ole poistomerkintää.");
+			return false;
+		}
+		
+		// Määritellään lause ja palautetaan pizza
+		sql = "UPDATE Pizza SET poistomerkinta = null WHERE pizza_id = ?";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		
+		if (success != 1) {
+			System.out.println("Virhe! Pizzaa palauttaessa tapahtui virhe.");
+			return false;
+		}
+		
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+		
+		return true;
+	}
 
 }
