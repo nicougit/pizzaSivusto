@@ -57,13 +57,13 @@
 			</tr>
 			<c:forEach items="${pizzat}" var="pizza">
 				<tr>
-					<td>${pizza.nimi }</td>
+					<td>${pizza.nimi } <a href="${pathi }/pizza?muokkaa=${pizza.id }" style="font-size: 9pt;">Muokkaa</a></td>
 					<td style="text-align: center;"><fmt:formatNumber
 							type="number" minFractionDigits="2" maxFractionDigits="2"
 							value="${pizza.hinta }"></fmt:formatNumber> EUR</td>
 					<td style="text-align: center;"><c:choose>
 							<c:when test="${pizza.poistomerkinta == null}">
-								<button name="muokkaapizzaa" type="submit" value="${pizza.id }">Muokkaa</button>
+								<!-- <button name="muokkaapizzaa" type="submit" value="${pizza.id }">Muokkaa</button> -->
 								<button name="poistapizza" type="submit" value="${pizza.id }">Poista</button>
 							</c:when>
 							<c:otherwise>

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import apuluokka.Apuri;
 import apuluokka.DeployAsetukset;
 import bean.Pizza;
+import bean.Tayte;
 import daot.HallintaDao;
 
 /**
@@ -49,14 +50,36 @@ public class PizzaServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
-		// Sessionhallintaa
-		HttpSession sessio = request.getSession(true);
-
 		// Asetetaan sivun path
 		request.setAttribute("pathi", sivustopath);
-
-		// Daon alustus
-		HallintaDao dao = new HallintaDao();
+		
+		String muokkaus = request.getParameter("muokkaa");
+		Apuri apuri = new Apuri();
+		
+		if (muokkaus != null && apuri.validoiInt(muokkaus) == true) {
+			
+			// Daon alustus
+			HallintaDao dao = new HallintaDao();
+			
+			// Tehdään pizzan muokkausta
+			System.out.println("Pizzaa '" + muokkaus + "' halutaan muokata");
+			
+			Pizza pizza = dao.haePizza(muokkaus);
+			
+			if (pizza.getNimi() != null) {
+				
+				ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
+				
+				request.setAttribute("pizza", pizza);
+				request.setAttribute("taytteet", taytteet);
+				
+			}
+			else {
+				request.setAttribute("virhe", "Muokattavaksi haluttavaa pizzaa ei ole tietokannassa.");
+			}
+			
+			
+		}
 
 		RequestDispatcher rd = request.getRequestDispatcher("pizzasivu.jsp");
 		rd.forward(request, response);
@@ -79,8 +102,6 @@ public class PizzaServlet extends HttpServlet {
 		String poistapizza = request.getParameter("poistapizza");
 		String palautapizza = request.getParameter("palautapizza");
 
-		System.out.println("Saavuttiin PizzaServlettiin. Action: " + action);
-
 		if (action != null && action.equals("Lisaa pizza")) {
 			lisaaPizza(request, response);
 		} else if (poistapizza != null) {
@@ -101,13 +122,15 @@ public class PizzaServlet extends HttpServlet {
 		// toteutetaan nyt jotenkin
 		String pizzanimi = request.getParameter("pizzanimi");
 		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
-		
 		String[] taytetaulu = request.getParameterValues("pizzatayte");
+		
+		System.out.println("Käyttäjä yrittää lisätä pizzaa, katsotaan onko vaadittavat tiedot syötetty.");
 
-		System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
-		System.out.println("Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Täytteitä " + taytetaulu.length + "kpl.");
-
-		if (pizzanimi != null && pizzahinta != null && taytetaulu.length > 0) {
+		if (pizzanimi != null && pizzahinta != null && taytetaulu != null) {
+			
+			System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
+			System.out.println(
+					"Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Täytteitä " + taytetaulu.length + "kpl.");
 
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
@@ -121,10 +144,10 @@ public class PizzaServlet extends HttpServlet {
 				try {
 					// Tehdään vaan, jotta nähdään voiko muuntaa doubleksi
 					double hinta = Double.parseDouble(pizzahinta);
-					
+
 					// Validoidaan jokainen täyte
 					boolean taytteetOk = true;
-					
+
 					for (int i = 0; i < taytetaulu.length; i++) {
 						if (apuri.validoiInt(taytetaulu[i]) == false || taytetaulu[i].equals("0")) {
 							taytteetOk = false;
@@ -170,6 +193,10 @@ public class PizzaServlet extends HttpServlet {
 
 			}
 
+		} else {
+			String virhe = "Kaikkia vaadittavia tietoja ei syötetty!";
+			System.out.println(virhe);
+			virhe(request, response, virhe);
 		}
 
 	}

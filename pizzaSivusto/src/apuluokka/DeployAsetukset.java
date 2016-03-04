@@ -2,8 +2,17 @@ package apuluokka;
 
 import java.util.ArrayList;
 
-/* Tämän luokan kautta asetusten helppo säätö kaikkiin tarkoituksiin
- * Pathin säätöä tarvitaan lähinnä 
+/* Tämän luokan kautta asetusten helppo säätö kaikkiin tarkoituksiin.
+ * Pathin säätöä tarvitaan lähinnä silloin, kun halutaan deployata projekti
+ * koulun protopalvelimelle custom nimellä, jotta löytyy esim. osoitteesta
+ * 
+ * http://proto285.haaga-helia.fi:8080/reptilemafia/
+ * 
+ * Oletuksena:
+ * 
+ * http://proto285.haaga-helia.fi:8080/pizzaSivusto/
+ * 
+ * getSqlSettings-metodissa on määritelty käytettävän tietokannan tiedot
  * 
  */
 
@@ -29,7 +38,7 @@ public class DeployAsetukset {
 
 		// Proto servun säädöt = 1
 		// Nicon oman servun säädöt = 2
-		int saadot = 1;
+		int saadot = 2;
 
 		if (saadot == 2) {
 			// Säädöt - mun oma servu
@@ -41,7 +50,7 @@ public class DeployAsetukset {
 			/*
 			 * Huom. Oletuksena tossa Nicon loginit protoservun tietokantaan
 			 * Voitte tehdä myös omaan prototietokantaan tarvittavat taulut Ja
-			 * muuttaa noi arvot. Pitää myöttää myös urlista opiskelijanumero
+			 * muuttaa noi arvot. Pitää muuttaa myös urlista opiskelijanumero.
 			 */
 			username = "a1500955";
 			password = "paFAtd56t";

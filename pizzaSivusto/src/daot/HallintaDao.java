@@ -54,7 +54,7 @@ public class HallintaDao {
 
 			} else {
 				// Olion luonti ja vienti HashMappiin
-				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta, poistoKanta);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta, poistoKanta, null);
 				pizzaVarasto.put(idKanta, pizza);
 			}
 
@@ -72,6 +72,71 @@ public class HallintaDao {
 
 		// Pizzojen palautus
 		return pizzat;
+
+	}
+	
+	public Pizza haePizza(String id) {
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, tayte_id, t.nimi AS tayte, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE pizza_id = ?";
+		ArrayList<String> parametrit = new ArrayList<>();
+		parametrit.add(id);
+		
+		Pizza pizza = new Pizza();
+		
+		if (kysely.montaRivia(sql, parametrit) < 1) {
+			System.out.println("Virhe! Muokattavaksi haluttua pizzaa ei ole tietokannassa");
+			return pizza;
+		};
+		
+		kysely.suoritaYksiKyselyParam(sql, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		// Iteraattorin luonti
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		// Hashmap jossa pizzan id ja pizzaolio
+		// Pointtina tässä on yhdistää yhteen pizzaolioon jokainen rivi jossa
+		// sama pizza_id
+		// Kaikki täytteet menevät 'taytteet' Stringiin pilkuilla eroteltuina
+		
+		int looppeja = 0;
+		ArrayList<String> taytteet = new ArrayList<>();
+
+		while (iteraattori.hasNext()) {			
+			HashMap pizzaMappi = (HashMap) iteraattori.next();
+			String idString = (String) pizzaMappi.get("pizza_id");
+			String nimikanta = (String) pizzaMappi.get("pizza");
+			String hintaString = (String) pizzaMappi.get("hinta");
+			String tayteKanta = (String) pizzaMappi.get("tayte");
+			String tayteId = (String) pizzaMappi.get("tayte_id");
+			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
+			int idKanta = Integer.parseInt(idString);
+			double hintaKanta = Double.parseDouble(hintaString);
+			
+			taytteet.add(tayteId);
+			
+			if (looppeja == 0) {
+				pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta, poistoKanta, null);
+			}
+			else {
+				pizza.setTaytteet(pizza.getTaytteet() + ", " + tayteKanta);
+			}
+			
+			looppeja++;
+
+		}
+		
+		pizza.setTayteIdt(taytteet);
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Pizzojen palautus
+		return pizza;
 
 	}
 
