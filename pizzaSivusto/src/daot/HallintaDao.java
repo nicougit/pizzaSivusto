@@ -1,5 +1,6 @@
 package daot;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,7 +20,7 @@ public class HallintaDao {
 		Yhteys yhteys = new Yhteys();
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) ORDER BY pizza_id ASC";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) ORDER BY pizza_id ASC";
 
 		kysely.suoritaKysely(sql);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
@@ -39,6 +40,7 @@ public class HallintaDao {
 			String nimikanta = (String) pizzaMappi.get("pizza");
 			String hintaString = (String) pizzaMappi.get("hinta");
 			String tayteKanta = (String) pizzaMappi.get("tayte");
+			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
 
@@ -52,7 +54,7 @@ public class HallintaDao {
 
 			} else {
 				// Olion luonti ja vienti HashMappiin
-				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta, poistoKanta);
 				pizzaVarasto.put(idKanta, pizza);
 			}
 
@@ -128,11 +130,36 @@ public class HallintaDao {
 		Yhteys yhteys = new Yhteys();
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 		
-		// Itse pizzan lisäys Pizza-taulukkoon
-		String sql = "INSERT INTO Pizza VALUES (null, ?, ?, null)";
-		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		// Katsotaan ensin, että samannimistä pizzaa ei ole, ja että kaikki täytteet ovat tietokannassa
+		String sql = "SELECT nimi FROM Pizza WHERE nimi = ?";
 		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(nimi);
 		
+		if (kysely.montaRivia(sql, parametrit) > 0) {
+			System.out.println("Virhe! Saman niminen pizza on jo tietokannassa.");
+			return false;
+		} else {
+			// Katsotaan, että kaikki täytteet ovat tietokannassa
+			sql = "SELECT tayte_id FROM Tayte WHERE tayte_id = ?";
+			parametrit.clear();
+			parametrit.add(taytteet.get(0));
+			if (taytteet.size() > 1) {
+				for (int i = 1; i < taytteet.size(); i++) {
+					sql += " OR tayte_id = ?";
+					parametrit.add(taytteet.get(i));
+				}
+			}
+			if (kysely.montaRivia(sql, parametrit) < taytteet.size()) {
+				System.out.println("Virhe! Kaikkia täytteitä ei ole tietokannassa, tai on valittu kaksi samaa täytettä.");
+				return false;
+			}
+		}
+		
+		// Itse pizzan lisäys Pizza-taulukkoon
+		sql = "INSERT INTO Pizza VALUES (null, ?, ?, null)";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		
+		parametrit.clear();
 		parametrit.add(nimi);
 		parametrit.add(hinta);
 		

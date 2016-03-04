@@ -34,7 +34,7 @@
 					+ request.getAttribute("pathi") + "/login\">täältä</a>.");
 		}
 	%>
-	<br>
+	<br><br>
 
 	<%
 		if (request.getAttribute("virhe") != null) {

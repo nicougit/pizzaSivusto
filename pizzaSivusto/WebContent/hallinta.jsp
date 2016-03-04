@@ -15,16 +15,15 @@
 	<h1>Castello E Fiori</h1>
 
 	Tällä sivuilla tehdään pizzojen sekä täytteiden lisäys, poisto ja
-	muokkaus. Tällä hetkellä toimii vain tuotteiden listaus ja pizzojen lisäys.
+	muokkaus. Tällä hetkellä toimii vain tuotteiden listaus ja pizzojen
+	lisäys.
 	<br>
-	<br>
-	To do:
+	<br> To do:
 	<ul>
-	<li>Pizzaa lisätessä ensin duplicate name check</li>
-	<li>Pizzojen muokkaus</li>
-	<li>Pizzojen poisto (ez)</li>
-	<li>Täytteiden lisäys ja poisto (ez)</li>
-	<li>Täytteiden muokkaus</li>
+		<li>Pizzojen poisto (ez)</li>
+		<li>Pizzojen muokkaus</li>
+		<li>Täytteiden lisäys ja poisto (ez)</li>
+		<li>Täytteiden muokkaus</li>
 	</ul>
 
 	<%
@@ -64,11 +63,21 @@
 					<td style="text-align: center;"><fmt:formatNumber
 							type="number" minFractionDigits="2" maxFractionDigits="2"
 							value="${pizza.hinta }"></fmt:formatNumber> EUR</td>
-					<td style="text-align: center;">
-						<button name="muokkaapizzaa" type="submit" value="${pizza.id }">Muokkaa</button>
-						<button name="poistapizza" type="submit" value="${pizza.id }">Poista</button>
-					</td>
+					<td style="text-align: center;"><c:choose>
+							<c:when test="${pizza.poistomerkinta == null}">
+								<button name="muokkaapizzaa" type="submit" value="${pizza.id }">Muokkaa</button>
+								<button name="poistapizza" type="submit" value="${pizza.id }">Poista</button>
+							</c:when>
+							<c:otherwise>
+						<button name="palautapizza" type="submit" value="${pizza.id }">Palauta</button>
+							</c:otherwise>
+						</c:choose></td>
 				</tr>
+				<c:if test="${pizza.poistomerkinta != null }">
+				<tr>
+				<td colspan="3" style="font-size: 9pt; color: red; padding-left: 10px;">Merkattu poistettavaksi ${pizza.poistomerkinta }</td>
+				</tr>
+				</c:if>
 				<tr>
 					<td colspan="3"
 						style="font-size: 9pt; padding-bottom: 5px; padding-left: 10px; border-bottom: 1px solid lightgray;">
@@ -80,6 +89,9 @@
 	</form>
 
 	<h2>Pizzan lisäys</h2>
+	Ei tue kahden saman täytteen valintaa.
+	<br>
+	<br>
 	<form action="pizza" method="post">
 		<table style="width: 45%;">
 			<tr>
@@ -88,22 +100,23 @@
 			</tr>
 			<tr>
 				<td>Pizzan hinta</td>
-				<td><input type="number" step="0.01" name="pizzahinta" autocomplete="off">
-					EUR</td>
+				<td><input type="number" step="0.01" name="pizzahinta"
+					autocomplete="off"> EUR</td>
 			</tr>
-				<c:forEach begin="1" end="5" varStatus="looppi">
-					<tr>
-						<td>Täyte #${looppi.index }</td>
-						<td><select name="pizzatayte${looppi.index }">
-								<option value="0">Ei täytettä</option>
-								<c:forEach items="${taytteet}" var="tayte">
-									<option value="${tayte.id }">${tayte.nimi }</option>
-								</c:forEach>
-						</select>
-					</tr>
-				</c:forEach>
+			<c:forEach begin="1" end="5" varStatus="looppi">
+				<tr>
+					<td>Täyte #${looppi.index }</td>
+					<td><select name="pizzatayte${looppi.index }">
+							<option value="0">Ei täytettä</option>
+							<c:forEach items="${taytteet}" var="tayte">
+								<option value="${tayte.id }">${tayte.nimi }</option>
+							</c:forEach>
+					</select>
+				</tr>
+			</c:forEach>
 			<tr>
-				<td colspan="2"><input type="submit" name="action" value="Lisaa pizza"></td>
+				<td colspan="2"><input type="submit" name="action"
+					value="Lisaa pizza"></td>
 			</tr>
 
 		</table>

@@ -6,18 +6,20 @@ public class Pizza {
 	String nimi;
 	double hinta;
 	String taytteet;
+	String poistomerkinta;
 
 	public Pizza() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Pizza(int id, String nimi, double hinta, String taytteet) {
+	public Pizza(int id, String nimi, double hinta, String taytteet, String poistomerkinta) {
 		super();
 		this.id = id;
 		this.nimi = nimi;
 		this.hinta = hinta;
 		this.taytteet = taytteet;
+		this.poistomerkinta = poistomerkinta;
 	}
 
 	public int getId() {
@@ -50,6 +52,14 @@ public class Pizza {
 
 	public void setTaytteet(String taytteet) {
 		this.taytteet = taytteet;
+	}
+
+	public String getPoistomerkinta() {
+		return poistomerkinta;
+	}
+
+	public void setPoistomerkinta(String poistomerkinta) {
+		this.poistomerkinta = poistomerkinta;
 	}
 
 }

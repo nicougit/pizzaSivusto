@@ -114,6 +114,44 @@ public class Kysely {
 		
 		return tulosrivi;
 	}
+	
+	// SQL-lausekkeen suorittaminen parametrilla
+	public int montaRivia(String sql, ArrayList<String> parametrit) {
+		
+		ResultSet resultSetti = null;
+		int riveja = 0;
+		
+		// Valmistellaan SQL-lause
+		try {
+			PreparedStatement lause = yhteys.prepareStatement(sql);
+			
+			for (int i = 0; i < parametrit.size(); i++) {
+				lause.setObject(i + 1, parametrit.get(i));
+			}
+			
+			// Tehdään kantahaku
+			System.out.println("Suoritettava SQL-lause: " + lause.toString());
+			resultSetti = lause.executeQuery();
+			
+			while (resultSetti.next()) {
+				riveja++;
+			}
+			
+		} catch (SQLException ex) {
+			System.out.println("Virhe SQL-lausekkeen suorituksessa - " + ex);
+			return -1;
+		} finally {
+			try {
+				resultSetti.close();
+			} catch (SQLException ex) {
+				System.out.println("Virhe resultsetin sulkemisessa - " + ex);
+				return -1;
+			}
+		}
+		
+		return riveja;
+		
+	}
 
 	public ArrayList getTulokset() {
 		return tulokset;

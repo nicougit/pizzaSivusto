@@ -118,6 +118,7 @@ public class PizzaServlet extends HttpServlet {
 			} else {
 
 				try {
+					// Tehdään vaan, jotta nähdään voiko muuntaa doubleksi
 					double hinta = Double.parseDouble(pizzahinta);
 
 					if (apuri.validoiInt(taytepotko) != true) {
@@ -125,53 +126,32 @@ public class PizzaServlet extends HttpServlet {
 						System.out.println(virhe);
 						virhe(request, response, virhe);
 					} else {
-						/*
-						 * Tässä parsitaan not-null täytestringit arraylistiin
-						 * 
-						 * Pizzojen lisäys kantaa myöhemmin PizzaDaossa:
-						 * 
-						 * Ensin varmistetaan kannasta että ei duplicateja Tätä
-						 * varten kirjoitettava toiminto
-						 * tietokanta.Kysely-luokkaan
-						 * 
-						 * Insert-lausekkeiden rakenne:
-						 * 
-						 * INSERT INTO Pizza VALUES (null, 'pizzanimi', 'hinta',
-						 * null)
-						 * 
-						 * INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM
-						 * Pizza WHERE nimi = 'pizzanimi'), pizzat1) Repeat joka
-						 * täytteelle *
-						 * 
-						 */
-
-						ArrayList<String> taytteet = new ArrayList<>();
 
 						// Lisätään täytteet ArrayListiin
-						if (pizzat1 != "0") {
+						ArrayList<String> taytteet = new ArrayList<>();
+						
+						if (!pizzat1.equals("0")) {
 							taytteet.add(pizzat1);
 						}
-						if (pizzat2 != "0") {
+						if (!pizzat2.equals("0")) {
 							taytteet.add(pizzat2);
 						}
-						if (pizzat3 != "0") {
+						if (!pizzat3.equals("0")) {
 							taytteet.add(pizzat3);
 						}
-						if (pizzat4 != "0") {
+						if (!pizzat4.equals("0")) {
 							taytteet.add(pizzat4);
 						}
-						if (pizzat5 != "0") {
+						if (!pizzat5.equals("0")) {
 							taytteet.add(pizzat5);
 						}
 
 						if (taytteet.size() > 0) {
-							// Lähetetään PizzaDaoon nimi, hinta stringinä ja
-							// täytteiden ArrayList
-							System.out.println("Lisättävä pizza on virheetön, yritetään lisätä tietokantaan");
+							System.out.println("Pizzan input virheetön, yritetään lisätä tietokantaan.");
 
 							HallintaDao dao = new HallintaDao();
 
-							// Tähän saatava inputtia, että onnistuko lisäys
+							// Katsotaan, onnistuuko lisäys
 							boolean success = dao.lisaaPizza(pizzanimi, pizzahinta, taytteet);
 							if (success == true) {
 								request.setAttribute("success", "Pizza lisätty tietokantaan onnistuneesti!");
