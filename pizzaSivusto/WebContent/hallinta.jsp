@@ -87,9 +87,6 @@
 	</form>
 
 	<h2>Pizzan lisäys</h2>
-	Ei tue kahden saman täytteen valintaa.
-	<br>
-	<br>
 	<form action="pizza" method="post">
 		<table style="width: 45%;">
 			<tr>
@@ -101,17 +98,20 @@
 				<td><input type="number" step="0.01" name="pizzahinta"
 					autocomplete="off"> EUR</td>
 			</tr>
-			<c:forEach begin="1" end="5" varStatus="looppi">
 				<tr>
-					<td>Täyte #${looppi.index }</td>
-					<td><select name="pizzatayte${looppi.index }">
-							<option value="0">Ei täytettä</option>
-							<c:forEach items="${taytteet}" var="tayte">
-								<option value="${tayte.id }">${tayte.nimi }</option>
+					<td colspan="2">Täytteet</td>
+					</tr>
+					<tr>
+					<td colspan="2">
+					<table style="font-size: 9pt; width: 100%;">
+					<tr>
+							<c:forEach items="${taytteet}" var="tayte" varStatus="loopCount">
+							<c:if test="${loopCount.index % 4 == 0 }"></tr><tr></c:if>
+								<td><label><input type="checkbox" name="pizzatayte" value="${tayte.id }"> ${tayte.nimi }</label></td>
 							</c:forEach>
-					</select>
+							</tr>
+							</table>
 				</tr>
-			</c:forEach>
 			<tr>
 				<td colspan="2"><input type="submit" name="action"
 					value="Lisaa pizza"></td>

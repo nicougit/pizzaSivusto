@@ -124,7 +124,7 @@ public class HallintaDao {
 
 	}
 
-	public boolean lisaaPizza(String nimi, String hinta, ArrayList<String> taytteet) {
+	public boolean lisaaPizza(String nimi, String hinta, String[] taytteet) {
 		
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
@@ -142,14 +142,14 @@ public class HallintaDao {
 			// Katsotaan, että kaikki täytteet ovat tietokannassa
 			sql = "SELECT tayte_id FROM Tayte WHERE tayte_id = ?";
 			parametrit.clear();
-			parametrit.add(taytteet.get(0));
-			if (taytteet.size() > 1) {
-				for (int i = 1; i < taytteet.size(); i++) {
+			parametrit.add(taytteet[0]);
+			if (taytteet.length > 1) {
+				for (int i = 1; i < taytteet.length; i++) {
 					sql += " OR tayte_id = ?";
-					parametrit.add(taytteet.get(i));
+					parametrit.add(taytteet[i]);
 				}
 			}
-			if (kysely.montaRivia(sql, parametrit) < taytteet.size()) {
+			if (kysely.montaRivia(sql, parametrit) < taytteet.length) {
 				System.out.println("Virhe! Kaikkia täytteitä ei ole tietokannassa, tai on valittu kaksi samaa täytettä.");
 				return false;
 			}
@@ -175,13 +175,13 @@ public class HallintaDao {
 		sql = "INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM Pizza WHERE nimi = ?), ?)";
 		parametrit.clear();
 		parametrit.add(nimi);
-		parametrit.add(taytteet.get(0));
+		parametrit.add(taytteet[0]);
 		
-		if (taytteet.size() > 1) {
-			for (int i = 1; i < taytteet.size(); i++) {
+		if (taytteet.length > 1) {
+			for (int i = 1; i < taytteet.length; i++) {
 				sql += ", ((SELECT pizza_id FROM Pizza WHERE nimi = ?), ?)";
 				parametrit.add(nimi);
-				parametrit.add(taytteet.get(i));
+				parametrit.add(taytteet[i]);
 			}
 		}
 		
@@ -189,13 +189,13 @@ public class HallintaDao {
 		// Pienempi arvo = error
 		int taytesuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
 		
-		System.out.println("Täytteiden määrä = " + taytteet.size() + ", lisäys kantaan palautti: " + taytesuccess);
+		System.out.println("Täytteiden määrä = " + taytteet.length + ", lisäys kantaan palautti: " + taytesuccess);
 		
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 		
 		// Palautetaan true jos kaikki onnistui, false jos kaikki ei onnistunut
-		if (pizzasuccess == 1 && taytesuccess == taytteet.size()) {
+		if (pizzasuccess == 1 && taytesuccess == taytteet.length) {
 			return true;
 		}
 		else {

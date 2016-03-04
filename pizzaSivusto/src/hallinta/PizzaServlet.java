@@ -101,20 +101,13 @@ public class PizzaServlet extends HttpServlet {
 		// toteutetaan nyt jotenkin
 		String pizzanimi = request.getParameter("pizzanimi");
 		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
-		String pizzat1 = request.getParameter("pizzatayte1");
-		String pizzat2 = request.getParameter("pizzatayte2");
-		String pizzat3 = request.getParameter("pizzatayte3");
-		String pizzat4 = request.getParameter("pizzatayte4");
-		String pizzat5 = request.getParameter("pizzatayte5");
-
-		// Helpompi validointi ja debugaus, ei tosin hyvä tapa tehdä
-		// Mutta pizzan lisäystä varmaan muutetaan muutenkin vielä
-		String taytepotko = pizzat1 + pizzat2 + pizzat3 + pizzat4 + pizzat5;
+		
+		String[] taytetaulu = request.getParameterValues("pizzatayte");
 
 		System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
-		System.out.println("Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Taytteet: " + taytepotko);
+		System.out.println("Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Täytteitä " + taytetaulu.length + "kpl.");
 
-		if (pizzanimi != null && pizzahinta != null && pizzat1 != null) {
+		if (pizzanimi != null && pizzahinta != null && taytetaulu.length > 0) {
 
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
@@ -128,39 +121,30 @@ public class PizzaServlet extends HttpServlet {
 				try {
 					// Tehdään vaan, jotta nähdään voiko muuntaa doubleksi
 					double hinta = Double.parseDouble(pizzahinta);
+					
+					// Validoidaan jokainen täyte
+					boolean taytteetOk = true;
+					
+					for (int i = 0; i < taytetaulu.length; i++) {
+						if (apuri.validoiInt(taytetaulu[i]) == false || taytetaulu[i].equals("0")) {
+							taytteetOk = false;
+							i = taytetaulu.length;
+						}
+					}
 
-					if (apuri.validoiInt(taytepotko) != true) {
+					if (taytteetOk != true) {
 						String virhe = "Lisättävän pizzan täytteissä oli virheitä!";
 						System.out.println(virhe);
 						virhe(request, response, virhe);
 					} else {
 
-						// Lisätään täytteet ArrayListiin
-						ArrayList<String> taytteet = new ArrayList<>();
-
-						if (!pizzat1.equals("0")) {
-							taytteet.add(pizzat1);
-						}
-						if (!pizzat2.equals("0")) {
-							taytteet.add(pizzat2);
-						}
-						if (!pizzat3.equals("0")) {
-							taytteet.add(pizzat3);
-						}
-						if (!pizzat4.equals("0")) {
-							taytteet.add(pizzat4);
-						}
-						if (!pizzat5.equals("0")) {
-							taytteet.add(pizzat5);
-						}
-
-						if (taytteet.size() > 0) {
+						if (taytetaulu.length > 0) {
 							System.out.println("Pizzan input virheetön, yritetään lisätä tietokantaan.");
 
 							HallintaDao dao = new HallintaDao();
 
 							// Katsotaan, onnistuuko lisäys
-							boolean success = dao.lisaaPizza(pizzanimi, pizzahinta, taytteet);
+							boolean success = dao.lisaaPizza(pizzanimi, pizzahinta, taytetaulu);
 							if (success == true) {
 								request.setAttribute("success", "Pizza lisätty tietokantaan onnistuneesti!");
 							} else {
