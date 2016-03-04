@@ -2,6 +2,9 @@ package tietokanta;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
+
+import apuluokka.DeployAsetukset;
 
 // Luokka tietokantayhteyden avaamiselle ja sulkemiselle
 
@@ -14,15 +17,13 @@ public class Yhteys {
 	}
 
 	private void avaaYhteys() {
-		// Säädöt - Koulun protokanta
-		//String username = "a1500955";
-		//String password = "paFAtd56t";
-		//String url = "jdbc:mysql://localhost:3306/a1500955";
-
-		// Säädöt - mun oma servu
-		String username = "javatesti";
-		String password = "salsasana";
-		String url = "jdbc:mysql://192.168.10.35:3306/Pizzat";
+		
+		// Asetusten haku
+		DeployAsetukset asetukset = new DeployAsetukset();
+		ArrayList<String> asetuslista = asetukset.getSqlSettings();
+		String username = asetuslista.get(0);
+		String password = asetuslista.get(1);
+		String url = asetuslista.get(2);
 
 		try {
 			// Ajurin lataus SQLite

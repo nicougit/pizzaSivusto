@@ -25,4 +25,5 @@ public class Apuri {
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}
+	
 }

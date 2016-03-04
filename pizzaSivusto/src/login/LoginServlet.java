@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import apuluokka.Apuri;
+import apuluokka.DeployAsetukset;
 import bean.Kayttaja;
 import daot.KayttajaDao;
 
@@ -25,7 +26,8 @@ public class LoginServlet extends HttpServlet {
 	// Määritetään sivuston path linkkejä ja redirectejä varten
 	// Määritys "/reptilemafia" koulun protoservua varten
 	// Eclipsessä ajettaessa "/pizzaSivusto"
-	private String sivustopath = "/pizzaSivusto";
+	DeployAsetukset asetukset = new DeployAsetukset();
+	String sivustopath = asetukset.getPathi();
 
 	/**
 	 * @see HttpServlet#HttpServlet()

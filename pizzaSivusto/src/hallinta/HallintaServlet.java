@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import apuluokka.DeployAsetukset;
 import bean.Pizza;
 import bean.Tayte;
 import daot.HallintaDao;
@@ -25,7 +26,8 @@ public class HallintaServlet extends HttpServlet {
 	// Määritetään sivuston path linkkejä ja redirectejä varten
 	// Määritys "/reptilemafia" koulun protoservua varten
 	// Eclipsessä ajettaessa "/pizzaSivusto"
-	private String sivustopath = "/pizzaSivusto";
+	DeployAsetukset asetukset = new DeployAsetukset();
+	private String sivustopath = asetukset.getPathi();
        
     /**
      * @see HttpServlet#HttpServlet()
