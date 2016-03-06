@@ -23,12 +23,6 @@ import daot.KayttajaDao;
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	// Määritetään sivuston path linkkejä ja redirectejä varten
-	// Määritys "/reptilemafia" koulun protoservua varten
-	// Eclipsessä ajettaessa "/pizzaSivusto"
-	DeployAsetukset asetukset = new DeployAsetukset();
-	String sivustopath = asetukset.getPathi();
-
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -43,29 +37,57 @@ public class LoginServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
 
-		// Asetetaan sivun path
-		request.setAttribute("pathi", sivustopath);
+		// Tarkastetaan parametrit
+		String logout = request.getParameter("logout");
 
-		// Jos käyttäjä on jo kirjautuneena, näytetään loggedin sivu, muuten
-		// login
-		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/loggedin.jsp");
-			rd.forward(request, response);
+		if (logout != null && logout.equals("true")) {
+			kirjauduUlos(request, response);
 		} else {
-			// Haetaan lista käyttäjistä kantayhteyden testausta varten
-			KayttajaDao dao = new KayttajaDao();
-			ArrayList<KayttajaLista> lista = dao.haeKayttajat();
 
-			request.setAttribute("kayttajat", lista);
-
-			// Request dispatcher
-			RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-			rd.forward(request, response);
+			// Jos käyttäjä on jo kirjautuneena, näytetään loggedin sivu, muuten
+			// login
+			if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+				String rdPath = "WEB-INF/loggedin.jsp";
+				naytaSivu(request, response, rdPath);
+			} else {
+				String rdPath = "WEB-INF/login.jsp";
+				naytaSivu(request, response, rdPath);
+			}
 		}
 	}
+	
+	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response, String rdPath)
+			throws ServletException, IOException {
+		
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
+		// Sessionhallintaa
+		HttpSession sessio = request.getSession(true);
+		
+		// Haetaan lista käyttäjistä kantayhteyden testausta varten
+		KayttajaDao dao = new KayttajaDao();
+		ArrayList<KayttajaLista> lista = dao.haeKayttajat();
+
+		request.setAttribute("kayttajat", lista);
+
+		// Request dispatcher
+		RequestDispatcher rd = request.getRequestDispatcher(rdPath);
+		rd.forward(request, response);
+		
+		
+	}
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -74,17 +96,18 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		request.setAttribute("pathi", sivustopath);
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 
-		// Katsotaan mikä toiminto (tällä hetkellä 'Kirjaudu' ja 'Kirjaudu
-		// ulos')
+		// Katsotaan, onko action määritetty
 		String action = request.getParameter("action");
-		if (action != null && action.equals("Kirjaudu")) {
+
+		if (action != null && action.equals("login")) {
 			kirjauduSisaan(request, response);
-		} else if (action != null && action.equals("Kirjaudu ulos")) {
-			kirjauduUlos(request, response);
 		} else {
-			response.sendRedirect(sivustopath + "/login");
+			doGet(request, response);
 		}
 
 	}
@@ -120,7 +143,7 @@ public class LoginServlet extends HttpServlet {
 					sessio.setAttribute("kayttaja", kayttaja);
 
 					request.setAttribute("kayttaja", kayttaja);
-
+					request.setAttribute("success", "Olet kirjautunut sisään onnistuneesti!");
 					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/loggedin.jsp");
 					rd.forward(request, response);
 				} else {
@@ -140,19 +163,21 @@ public class LoginServlet extends HttpServlet {
 	// Uloskirjautuminen
 	protected void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		HttpSession sessio = request.getSession(false);
 
 		// Katsotaan onko käyttäjä kirjautuneena sisään
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 			sessio.removeAttribute("kayttaja");
 			sessio.invalidate();
-			RequestDispatcher rd = request.getRequestDispatcher("loggedout.jsp");
-			rd.forward(request, response);
+			request.setAttribute("success", "Olet kirjautunut ulos onnistuneesti!");
+			
+			String rdPath = "WEB-INF/login.jsp";
+			naytaSivu(request, response, rdPath);
 		} else {
-			// Redirectataan login sivulle, jos käyttäjä yrittää logouttia kun
-			// ei ole kirjautunut
-			System.out.println("Käyttäjä yritti logata ulos vaikka ei ole kirjautunut");
-			virhe(request, response, "Yritit kirjautua ulos, vaikka et ole kirjautunut sisään!");
+			// Suoritetaan, jos käyttäjä ei ole kirjautunut sisään
+			String virhe = "Et ole kirjautunut sisään.";
+			virhe(request, response, virhe);
 		}
 	}
 
@@ -160,7 +185,9 @@ public class LoginServlet extends HttpServlet {
 	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
 			throws ServletException, IOException {
 		request.setAttribute("virhe", virhe);
-		doGet(request, response);
+		
+		String rdPath = "WEB-INF/login.jsp";
+		naytaSivu(request, response, rdPath);
 	}
 
 }

@@ -143,7 +143,7 @@
 		<div class="col s6">
 			<h2>Täytteet</h2>
 			<form action="hallinta" method="post">
-				<table class="striped">
+				<table class="bordered">
 					<thead>
 						<tr>
 							<th>#</th>

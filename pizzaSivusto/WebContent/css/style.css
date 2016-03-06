@@ -19,11 +19,6 @@ body {
 	margin-left: 20px;
 }
 
-/* Navbarissa oleva placeholder logout button */
-#username {
-	padding: 13px;
-}
-
 /* Fonttien kokoja */
 .pienifontti {
 	font-size: 9pt;

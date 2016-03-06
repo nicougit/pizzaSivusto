@@ -7,10 +7,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Castello E Fiori Kirjautuminen</title>
-<jsp:include page="WEB-INF/head-include.jsp"></jsp:include>
+<jsp:include page="head-include.jsp"></jsp:include>
 </head>
 <body>
-	<jsp:include page="WEB-INF/header.jsp"></jsp:include>
+	<jsp:include page="header.jsp"></jsp:include>
 	<h1>Castello é Fiori</h1>
 	<div class="center-align">
 		<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
@@ -51,7 +51,7 @@
 		<div class="col s5 offset-s1">
 			<h2>Kirjaudu sisään</h2>
 			<div class="row">
-				<form method="post">
+				<form method="post" action="login">
 					<div class="input-field col s12">
 						<input type="email" name="kayttajanimi" class="validate"
 							id="kayttajanimi" autocomplete="off"> <label
@@ -66,7 +66,7 @@
 			</div>
 			<div class="row">
 				<button class="btn waves-effect waves-light" type="submit"
-					name="action" value="Kirjaudu">Kirjaudu</button>
+					name="action" value="login">Kirjaudu</button>
 				</form>
 			</div>
 			<c:if test="${not empty virhe }">
@@ -77,6 +77,6 @@
 
 	</div>
 
-	<jsp:include page="WEB-INF/footer.jsp"></jsp:include>
+	<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

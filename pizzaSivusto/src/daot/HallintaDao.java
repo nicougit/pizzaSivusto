@@ -14,8 +14,8 @@ import tietokanta.Yhteys;
 
 public class HallintaDao {
 
-	// Tyyppi = 1 ja id pitää päärittää vain, jos haluaa noutaa pizzat joissa on
-	// tietty täyte
+	// Tyyppi = 1 ja id pitää määrittää vain, jos haluaa noutaa
+	// pizzat joissa on joku tietty täyte
 	// Muussa tapauksessa kelpaa mitkä tahansa arvot
 	public ArrayList<Pizza> haeKaikkiPizzat(int tyyppi, String tayteId) {
 
@@ -374,7 +374,7 @@ public class HallintaDao {
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
 		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
-		
+
 		System.out.println("Täytteen päivitys palautti " + paivitys);
 
 		if (success == 1) {

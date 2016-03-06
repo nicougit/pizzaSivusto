@@ -38,7 +38,7 @@ public class DeployAsetukset {
 
 		// Proto servun säädöt = 1
 		// Nicon oman servun säädöt = 2
-		int saadot = 1;
+		int saadot = 2;
 
 		if (saadot == 2) {
 			// Säädöt - mun oma servu

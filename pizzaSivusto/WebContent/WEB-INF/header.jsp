@@ -2,37 +2,36 @@
 <%@page import="bean.Kayttaja"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="pathi" value="/pizzaSivusto"></c:set>
 <div class="navbar-fixed">
+	<c:if test="${not empty kayttaja }">
+		<ul id="user-dropdowni" class="dropdown-content">
+			<li><a href="#!">Profiili</a></li>
+			<li><a href="#!">Tilaushistoria</a></li>
+			<li class="divider"></li>
+			<li><a href="${pathi }/login?logout=true">Kirjaudu ulos</a></li>
+		</ul>
+	</c:if>
 	<nav>
 		<div class="nav-wrapper">
-			<a href="/pizzaSivusto" class="brand-logo">Castello é Fiori</a>
+			<a href="${pathi }" class="brand-logo">Castello é Fiori</a>
 			<ul class="right hide-on-med-and-down">
 				<li><a href="#!">Pizzat</a></li>
 				<li><a href="#!">Yrityksemme</a></li>
 				<li><a href="#!">Ostoskori (0)</a>
-				<%
-					DeployAsetukset da = new DeployAsetukset();
-					da.getPathi();
-					// Katsotaan onko käyttäjä kirjautunut sisään
-					if (session.getAttribute("kayttaja") != null) {
-						int id = ((Kayttaja) session.getAttribute("kayttaja")).getId();
-						String etunimi = ((Kayttaja) session.getAttribute("kayttaja")).getEtunimi();
-						String sukunimi = ((Kayttaja) session.getAttribute("kayttaja")).getSukunimi();
-						String tunnus = ((Kayttaja) session.getAttribute("kayttaja")).getTunnus();
-						String tyyppi = ((Kayttaja) session.getAttribute("kayttaja")).getTyyppi();
-
-						if (tyyppi.equals("admin") || tyyppi.equals("staff")) {
-							out.print("<li><a href=\"" + da.getPathi() + "/hallinta\">Hallinta</a></li>");
-						}
-
-						out.print("<li id=\"username\"><form action=\"login\" method=\"post\"><button class=\"btn waves-effect waves-light\" type=\"submit\" name=\"action\" value=\"Kirjaudu ulos\">" + tunnus + " logout</button></form></li>");
-
-					} else {
-						out.print("<li><a href=\"" + da.getPathi() + "/login\">Kirjaudu sisään</a></li>");
-					}
-				%>
+				<li><a href="${pathi }/hallinta">Hallinta</a></li>
+				<c:choose>
+					<c:when test="${not empty kayttaja }">
+						 <li><a class="dropdown-button" href="#!" data-activates="user-dropdowni"> ${kayttaja.tunnus } <i class="material-icons right">arrow_drop_down</i></a></li>
+					</c:when>
+					<c:otherwise>
+						<li>
+						<li><a href="${pathi }/login">Kirjaudu sisään</a></li>
+					</c:otherwise>
+				</c:choose>
 			</ul>
 		</div>
 	</nav>
-	</div>
-	<div class="container" id="main-container">
+</div>
+<div class="container" id="main-container">
