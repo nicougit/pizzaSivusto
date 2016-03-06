@@ -1,0 +1,51 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	background: linear-gradient(#CCC, #EEE);
+	background-repeat: no-repeat;
+	background-color: #EEE;
+}
+
+#main-container {
+	background: #FFF;
+	padding: 20px;
+	min-height: 100%;
+}
+
+/* Navbarissa oleva firman nimi */
+.brand-logo {
+	margin-left: 20px;
+}
+
+/* Navbarissa oleva placeholder logout button */
+#username {
+	padding: 13px;
+}
+
+/* Fonttien kokoja */
+.pienifontti {
+	font-size: 9pt;
+}
+
+.errori {
+	color: #F00;
+}
+
+/* Hallintasivulla ID:t boldilla */
+.strong-id {
+	font-weight: bold;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+h1 {
+	font-size: 38pt;
+}
+
+h2 {
+	font-size: 30pt;
+}

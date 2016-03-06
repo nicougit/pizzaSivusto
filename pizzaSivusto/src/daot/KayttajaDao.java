@@ -57,7 +57,7 @@ public class KayttajaDao {
 			}
 
 			// Käyttäjän haku tietokannasta
-			String sqlkysely = "SELECT id, tunnus, etunimi, sukunimi, puhelin FROM Kayttaja WHERE tunnus = ? AND salasana = ?";
+			String sqlkysely = "SELECT id, tunnus, etunimi, sukunimi, puhelin, tyyppi FROM Kayttaja WHERE tunnus = ? AND salasana = ?";
 			parametrit.add(salasanatiiviste);
 
 			kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
@@ -74,6 +74,7 @@ public class KayttajaDao {
 				String etunimiKanta = (String) kayttajaMappi.get("etunimi");
 				String sukunimiKanta = (String) kayttajaMappi.get("sukunimi");
 				String puhelinKanta = (String) kayttajaMappi.get("puhelin");
+				String tyyppiKanta = (String) kayttajaMappi.get("tyyppi");
 				int idKanta = Integer.parseInt(idString);
 
 				// Oliolle attribuutit
@@ -82,6 +83,7 @@ public class KayttajaDao {
 				kayttaja.setEtunimi(etunimiKanta);
 				kayttaja.setSukunimi(sukunimiKanta);
 				kayttaja.setPuhelin(puhelinKanta);
+				kayttaja.setTyyppi(tyyppiKanta);
 			}
 
 			// Yhteyden sulkeminen

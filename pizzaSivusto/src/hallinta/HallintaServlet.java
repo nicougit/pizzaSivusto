@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import apuluokka.Apuri;
 import apuluokka.DeployAsetukset;
 import bean.Pizza;
 import bean.Tayte;
@@ -22,58 +23,500 @@ import daot.HallintaDao;
 @WebServlet(name = "hallinta", urlPatterns = { "/hallinta" })
 public class HallintaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	// Määritetään sivuston path linkkejä ja redirectejä varten
 	// Määritys "/reptilemafia" koulun protoservua varten
 	// Eclipsessä ajettaessa "/pizzaSivusto"
 	DeployAsetukset asetukset = new DeployAsetukset();
 	private String sivustopath = asetukset.getPathi();
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public HallintaServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	public HallintaServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
 		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
-		
+
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
-		
+
 		// Asetetaan sivun path
 		request.setAttribute("pathi", sivustopath);
 
+		// Tarkastetaan parametrit
+		String pizzaEdit = request.getParameter("pizza-edit");
+		String tayteEdit = request.getParameter("tayte-edit");
+		String pizzaPoista = request.getParameter("pizza-poista");
+		String pizzaPalauta = request.getParameter("pizza-palauta");
+
+		// Apuri validointiin
+		Apuri apuri = new Apuri();
+
 		// Daon alustus
 		HallintaDao dao = new HallintaDao();
-		
+
+		// RequestDispatcher
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/hallinta.jsp");
+
+		// Siirrytään pizzan muokkaukseen, jos ID on määritetty ja OK
+		if (pizzaEdit != null && apuri.validoiInt(pizzaEdit) == true) {
+
+			System.out.println("Pizzaa '" + pizzaEdit + "' halutaan muokata");
+
+			Pizza pizza = dao.haePizza(pizzaEdit);
+
+			if (pizza.getNimi() != null) {
+				ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
+				request.setAttribute("pizza", pizza);
+				request.setAttribute("taytteet", taytteet);
+
+				// Forwardataan pizzan muokkaukseen
+				rd = request.getRequestDispatcher("WEB-INF/pizza-muokkaa.jsp");
+				rd.forward(request, response);
+
+			} else {
+				String virhe = "Muokattavaksi valittua pizzaa ei ole tietokannassa.";
+				System.out.println(virhe);
+				request.setAttribute("virhe", virhe);
+			}
+
+		} else if (tayteEdit != null && apuri.validoiInt(tayteEdit) == true) {
+			
+			System.out.println("Täytettä '" + tayteEdit + "' halutaan muokata");
+
+			Tayte tayte = dao.haeTayte(tayteEdit);
+
+			if (tayte.getNimi() != null) {
+				ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(1, tayteEdit);
+				request.setAttribute("tayte", tayte);
+				request.setAttribute("pizzat", pizzat);
+				
+				// Forwardataan pizzan muokkaukseen
+				rd = request.getRequestDispatcher("WEB-INF/tayte-muokkaa.jsp");
+				rd.forward(request, response);
+
+			} else {
+				String virhe = "Muokattavaksi valittua täytettä ei ole tietokannassa.";
+				virhe(request, response, virhe);
+			}
+		} else if (pizzaPoista != null && apuri.validoiInt(pizzaPoista) == true) {
+			poistaPizza(request, response);
+		} else if (pizzaPalauta != null && apuri.validoiInt(pizzaPalauta) == true) {
+			palautaPizza(request, response);
+		} else {
+			naytaSivu(request, response);
+		}
+
+	}
+
+	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Daon alustus
+		HallintaDao dao = new HallintaDao();
+
+		// RequestDispatcher
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/hallinta.jsp");
+
 		// Pizzojen ja täytteiden haku
-		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat();
+		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(0, "");
 		ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
-		
+
 		request.setAttribute("pizzat", pizzat);
 		request.setAttribute("taytteet", taytteet);
-		
-		RequestDispatcher rd = request.getRequestDispatcher("hallinta.jsp");
+
 		rd.forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
+		String action = request.getParameter("action");
+
+		if (action != null && action.equals("lisaapizza")) {
+			lisaaPizza(request, response);
+		} else if (action != null && action.equals("paivitapizza")) {
+			paivitaPizza(request, response);
+		} 
+		else if (action != null && action.equals("lisaatayte")) {
+			lisaaTayte(request, response);
+		}
+		else if (action != null && action.equals("paivitatayte")) {
+			paivitaTayte(request, response);
+		}
+		else {
+			naytaSivu(request, response);
+		}
+
+	}
+
+	public void paivitaPizza(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Haetaan parametrit
+		String pizzaid = request.getParameter("pizzaid");
+		String pizzanimi = request.getParameter("pizzanimi");
+		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
+		String[] taytetaulu = request.getParameterValues("pizzatayte");
+
+		System.out.println("Käyttäjä yrittää muokata pizzaa, katsotaan onko vaadittavat tiedot syötetty.");
+
+		if (pizzaid != null && pizzanimi != null && pizzahinta != null && taytetaulu != null) {
+
+			System.out.println("Yritetään muokata pizzaa attribuuteilla:");
+			System.out.println("ID: " + pizzaid + " - Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Täytteitä "
+					+ taytetaulu.length + "kpl.");
+
+			// Entryjen validointia
+			Apuri apuri = new Apuri();
+
+			if (apuri.validoiString(pizzanimi, "", 30) != true) {
+				String virhe = "Muokattavan pizzan nimi on virheellinen!";
+				virhe(request, response, virhe);
+			} else {
+
+				if (apuri.validoiInt(pizzaid) == false) {
+					String virhe = "Muokattavan pizzan ID on virheellinen!";
+					virhe(request, response, virhe);
+				} else {
+					try {
+						// Tehdään vaan, jotta nähdään voiko muuntaa doubleksi
+						double hinta = Double.parseDouble(pizzahinta);
+						if (hinta < 0) {
+							String virhe = "Pizzan hinnan on oltava positiivinen!";
+							virhe(request, response, virhe);
+						} else {
+
+							// Validoidaan jokainen täyte
+							boolean taytteetOk = true;
+
+							for (int i = 0; i < taytetaulu.length; i++) {
+								if (apuri.validoiInt(taytetaulu[i]) == false || taytetaulu[i].equals("0")) {
+									taytteetOk = false;
+									i = taytetaulu.length;
+								}
+							}
+
+							if (taytteetOk != true) {
+								String virhe = "Muokattavan pizzan täytteissä oli virheitä!";
+								virhe(request, response, virhe);
+							} else {
+
+								if (taytetaulu.length > 0) {
+									System.out.println("Pizzan input virheetön, yritetään päivittää tietokantaan.");
+
+									HallintaDao dao = new HallintaDao();
+
+									// Katsotaan, onnistuuko lisäys
+									boolean success = dao.paivitaPizza(pizzaid, pizzanimi, pizzahinta, taytetaulu);
+									if (success == true) {
+										request.setAttribute("success",
+												"Pizzan tiedot päivitetty tietokantaan onnistuneesti!");
+									} else {
+										request.setAttribute("virhe",
+												"Pizzan tiedot OK, mutta tietokantaan päivityksessä tapahtui virhe.");
+									}
+									naytaSivu(request, response);
+
+								} else {
+									String virhe = "Ei yhtään täytettä valittuna!";
+									virhe(request, response, virhe);
+								}
+
+							}
+						}
+					} catch (Exception ex) {
+						String virhe = "Lisättävän pizzan hinta on virheellinen!";
+						virhe(request, response, virhe);
+
+					}
+
+				}
+
+			}
+
+		} else {
+			String virhe = "Kaikkia vaadittavia tietoja ei syötetty!";
+			virhe(request, response, virhe);
+		}
+
+	}
+
+	public void lisaaPizza(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Haetaan parametrit
+		String pizzanimi = request.getParameter("pizzanimi");
+		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
+		String[] taytetaulu = request.getParameterValues("pizzatayte");
+
+		// Asetetaan 'Pizzan Lisäys'-sivu näytettäväksi kun palataan
+
+		System.out.println("Käyttäjä yrittää lisätä pizzaa, katsotaan onko vaadittavat tiedot syötetty.");
+
+		if (pizzanimi != null && pizzahinta != null && taytetaulu != null) {
+
+			System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
+			System.out.println(
+					"Nimi: " + pizzanimi + " - Hinta: " + pizzahinta + " - Täytteitä " + taytetaulu.length + "kpl.");
+
+			// Entryjen validointia
+			Apuri apuri = new Apuri();
+
+			if (apuri.validoiString(pizzanimi, "", 30) != true) {
+				String virhe = "Lisättävän pizzan nimi on virheellinen!";
+				virhe(request, response, virhe);
+			} else {
+
+				try {
+					// Tehdään vaan, jotta nähdään voiko muuntaa doubleksi
+					double hinta = Double.parseDouble(pizzahinta);
+					if (hinta < 0) {
+						String virhe = "Pizzan hinnan on oltava positiivinen!";
+						virhe(request, response, virhe);
+					} else {
+
+						// Validoidaan jokainen täyte
+						boolean taytteetOk = true;
+
+						for (int i = 0; i < taytetaulu.length; i++) {
+							if (apuri.validoiInt(taytetaulu[i]) == false || taytetaulu[i].equals("0")) {
+								taytteetOk = false;
+								i = taytetaulu.length;
+							}
+						}
+
+						if (taytteetOk != true) {
+							String virhe = "Lisättävän pizzan täytteissä oli virheitä!";
+							virhe(request, response, virhe);
+						} else {
+
+							if (taytetaulu.length > 0) {
+								System.out.println("Pizzan input virheetön, yritetään lisätä tietokantaan.");
+
+								HallintaDao dao = new HallintaDao();
+
+								// Katsotaan, onnistuuko lisäys
+								boolean success = dao.lisaaPizza(pizzanimi, pizzahinta, taytetaulu);
+								if (success == true) {
+									request.setAttribute("success", "Pizza lisätty tietokantaan onnistuneesti!");
+								} else {
+									request.setAttribute("virhe",
+											"Pizzan tiedot OK, mutta tietokantaan lisäyksessä tapahtui virhe.");
+								}
+								naytaSivu(request, response);
+
+							} else {
+								String virhe = "Ei yhtään täytettä valittuna!";
+								virhe(request, response, virhe);
+							}
+
+						}
+					}
+				} catch (Exception ex) {
+					String virhe = "Lisättävän pizzan hinta on virheellinen!";
+					virhe(request, response, virhe);
+
+				}
+
+			}
+
+		} else {
+			String virhe = "Kaikkia vaadittavia tietoja ei syötetty!";
+			virhe(request, response, virhe);
+		}
+
+	}
+	
+	public void paivitaTayte(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String tayteId = request.getParameter("tayteid");
+		String tayteNimi = request.getParameter("taytenimi");
+		String tayteSaatavilla = request.getParameter("taytesaatavilla");
 		
-		doGet(request, response);
+		System.out.println(tayteId);
+		System.out.println(tayteNimi);
+		System.out.println(tayteSaatavilla);
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+		
+		if (tayteId != null && tayteNimi != null && tayteSaatavilla != null) {
+			if (apuri.validoiInt(tayteId) == true && apuri.validoiString(tayteNimi, "", 20) == true) {
+				if (tayteSaatavilla.equals("0")) {
+					tayteSaatavilla = "E";
+				}
+				else if (tayteSaatavilla.equals("1")) {
+					tayteSaatavilla = "K";
+				}
+				else {
+					String virhe = "Täytteen saatavuustieto on virheellinen.";
+					virhe(request, response, virhe);
+				}
+				
+				if (tayteSaatavilla.equals("K") || tayteSaatavilla.equals("E")) {
+					
+					HallintaDao dao = new HallintaDao();
+					
+					// Katsotaan, onnistuuko lisäys
+					boolean success = dao.paivitaTayte(tayteId, tayteNimi, tayteSaatavilla);
+					if (success == true) {
+						request.setAttribute("success", "Täytteen tiedot päivitetty onnistuneesti!");
+					} else {
+						request.setAttribute("virhe",
+								"Täytteiden päivittämisessä tietokantaan tapahtui virhe.");
+					}
+					naytaSivu(request, response);
+				}
+				
+			}
+			else {
+				String virhe = "Joku muokattavan täytteen arvoista on väärässä muodossa.";
+				virhe(request, response, virhe);
+			}
+		}
+		else {
+			String virhe = "Kaikkia muokattavan täytteen tietoja ei annettu.";
+			virhe(request, response, virhe);
+		}
+		
+	}
+
+	public void poistaPizza(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String poistapizza = request.getParameter("pizza-poista");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(poistapizza) == false) {
+			String virhe = "Poistettavan pizzan ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään poistaa pizza ID: " + poistapizza);
+
+			HallintaDao dao = new HallintaDao();
+
+			boolean success = dao.poistaPizza(poistapizza);
+
+			if (success == true) {
+				request.setAttribute("success", "Pizzaan lisätty poistomerkintä onnistuneesti!");
+			} else {
+				request.setAttribute("virhe", "Poistomerkintä OK, mutta tietokantaan päivityksessä tapahtui virhe.");
+			}
+
+			naytaSivu(request, response);
+
+		}
+
+	}
+
+	public void palautaPizza(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String palautapizza = request.getParameter("pizza-palauta");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(palautapizza) == false) {
+			String virhe = "Palautettavan pizzan ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään palauttaa pizza ID: " + palautapizza);
+
+			HallintaDao dao = new HallintaDao();
+
+			boolean success = dao.palautaPizza(palautapizza);
+
+			if (success == true) {
+				request.setAttribute("success", "Pizzan poistomerkintä kumottu onnistuneesti!");
+			} else {
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui virhe.");
+			}
+
+			naytaSivu(request, response);
+
+		}
+
+	}
+
+	public void lisaaTayte(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Haetaan parametrit
+		String tayteNimi = request.getParameter("taytenimi");
+		String tayteSaatavilla = request.getParameter("taytesaatavilla");
+
+		// Apuri validointiin
+		Apuri apuri = new Apuri();
+		
+		// Dao
+		HallintaDao dao = new HallintaDao();
+
+		if (tayteNimi != null && apuri.validoiString(tayteNimi, "", 20) == true && tayteSaatavilla != null) {
+			
+			if (tayteSaatavilla.equals("0")) {
+				tayteSaatavilla = "E";				
+			}
+			else if (tayteSaatavilla.equals("1")) {
+				tayteSaatavilla = "K";
+			}
+			else {
+				String virhe = "Lisättävän täytteen saatavuustiedoissa oli virheitä.";
+				virhe(request, response, virhe);
+			}
+			
+			// Kirjotin tätä yöllä kolmelta joten en tiedä mitä järkeä täs on
+			if (tayteSaatavilla.equals("E") || tayteSaatavilla.equals("K")) {
+				
+				// Katsotaan, onnistuuko lisäys
+				boolean success = dao.lisaaTayte(tayteNimi, tayteSaatavilla);
+				if (success == true) {
+					request.setAttribute("success", "Täyte lisätty tietokantaan onnistuneesti!");
+				} else {
+					request.setAttribute("virhe",
+							"Täytteen tiedot OK, mutta tietokantaan lisäyksessä tapahtui virhe.");
+				}
+				naytaSivu(request, response);
+			}
+			
+		}
+		else {
+			String virhe = "Lisättävän täytteen tiedoissa oli virheitä.";
+			virhe(request, response, virhe);
+		}
+	}
+
+	// Error-attribuutin asetus ja redirect
+	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
+			throws ServletException, IOException {
+		request.setAttribute("virhe", virhe);
+		System.out.println(virhe);
+		naytaSivu(request, response);
 	}
 
 }
