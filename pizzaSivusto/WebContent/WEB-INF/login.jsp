@@ -11,7 +11,7 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<h1>Castello é Fiori</h1>
+	<h1 class="firmanlogo">Castello é Fiori</h1>
 	<div class="center-align">
 		<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
 			aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
@@ -39,7 +39,7 @@
 						<tr>
 							<td class="strong-id">${kayttaja.id }</td>
 							<td>${kayttaja.tunnus }</td>
-							<td>${kayttaja.etunimi }${kayttaja.sukunimi }</td>
+							<td><c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out></td>
 							<td>${kayttaja.tyyppi }</td>
 						</tr>
 					</c:forEach>

@@ -38,7 +38,7 @@ h1, h2, h3 {
 }
 
 h1 {
-	font-size: 38pt;
+	font-size: 36pt;
 }
 
 h2 {
@@ -47,4 +47,16 @@ h2 {
 
 h3 {
 	font-size: 24pt;
+}
+
+.brand-logo {
+	font-family: 'Pacifico', cursive;
+	letter-spacing: 4px;
+}
+
+.firmanlogo {
+	font-size: 56pt;
+	font-family: 'Pacifico', cursive;
+	letter-spacing: 6px;
+	margin-top: 10px;
 }

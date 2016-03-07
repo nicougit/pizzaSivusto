@@ -11,30 +11,23 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<h1>
-		Tervetuloa,
-		<c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out>
-		!
-	</h1>
-	<%
-		if (request.getAttribute("virhe") != null) {
-			out.println("<span style=\"color: red;\">" + request.getAttribute("virhe") + "</span><br><br>");
-		}
-	%>
-	<div class="center-align">
-		<c:out value="${kayttaja.tunnus }, ${kayttaja.tyyppi }"></c:out>
-		<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
-			aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
-			erikoistunut pizzoihin. Panostamme laatuun, joten hankimme kaikki
-			raaka-aineemme tarkkaan harkituilta toimittajilta.</p>
+	<div id="row">
+		<div class="col s12 center-align">
+			<h1 class="firmanlogo">Castello é Fiori</h1>
+			<h2>
+				Tervetuloa takaisin,
+				<c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out>
+				!
+			</h2>
+			<div class="divider"></div>
+			<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
+				aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
+				erikoistunut pizzoihin. Panostamme laatuun, joten hankimme kaikki
+				raaka-aineemme tarkkaan harkituilta toimittajilta.</p>
 
-		<div class="divider"></div>
-		<br>Tässä voidaan näyttää käyttäjän tilaushistoriaa, joku hieno
-		kuva, tai jotain muuta jännää. <br>
-
+		</div>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>
-
 </body>
 </html>

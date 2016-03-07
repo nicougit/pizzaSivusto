@@ -192,7 +192,7 @@
 			<div class="row">
 				<form action="hallinta" method="post">
 					<div class="row">
-						<div class="col s12">
+						<div class="col s12 input-field">
 							<input type="text" name="taytenimi" id="taytenimi"
 								autocomplete="off" class="fieldi"> <label
 								for="taytenimi">Täytteen nimi</label>
