@@ -33,65 +33,67 @@
 			</c:if>
 		</div>
 	</div>
-	
-		<div class="row">
-			<div class="col s12">
-				<h2>Muokkaa pizzaa</h2>
-				<br>
-				<div class="row">
-					<form action="hallinta" method="post">
-						<div class="col s10 offset-s1">
-							<div class="row">
-								<div class="input-field col s2">
-									<input type="text" name="pizzaid" id="pizzaid"
-										value="${pizza.id }" disabled> <label for="pizzaid">Pizzan
-										ID</label>
-								</div>
-								<div class="input-field col s7">
-									<input type="hidden" name=pizzaid value="${pizza.id }">
-									<input type="text" name="pizzanimi" id="pizzanimi"
-										autocomplete="off" value="${pizza.nimi }"> <label
-										for="pizzanimi">Pizzan nimi</label>
-								</div>
-								<div class="input-field col s3">
-									<input type="number" step="0.05" name="pizzahinta" class="validate"
-										id="pizzahinta" min="0" autocomplete="off" value="${pizza.hinta }">
-									<label for="pizzahinta" data-error="Virhe">Pizzan hinta</label>
-								</div>
+
+	<div class="row">
+		<div class="col s12">
+			<h2>Muokkaa pizzaa</h2>
+			<br>
+			<div class="row">
+				<form action="hallinta" method="post">
+					<div class="col s10 offset-s1">
+						<div class="row">
+							<div class="input-field col s2">
+								<input type="text" name="pizzaid" id="pizzaid"
+									value="${pizza.id }" disabled> <label for="pizzaid">Pizzan
+									ID</label>
 							</div>
-							<div class="row">
-								<table class="taytetaulu">
-									<tr>
-										<c:forEach items="${taytteet}" var="tayte"
-											varStatus="loopCount">
-											<c:forEach items="${pizza.tayteIdt }" var="pizzantaytteet">
-												<c:if test="${pizzantaytteet == tayte.id }">
-													<c:set var="ontayte" value="1"></c:set>
-												</c:if>
-											</c:forEach>
-											<c:if test="${loopCount.index % 4 == 0 }">
-									</tr>
-									<tr>
-										</c:if>
-										<td><input type="checkbox" id="${tayte.id }"
-											name="pizzatayte" value="${tayte.id }"
-											<c:if test="${ontayte == 1 }"> checked</c:if>><label
-											for="${tayte.id }">${tayte.nimi }</label></td>
-										<c:set var="ontayte" value="0"></c:set>
+							<div class="input-field col s7">
+								<input type="hidden" name=pizzaid value="${pizza.id }">
+								<input type="text" name="pizzanimi" id="pizzanimi"
+									autocomplete="off" value="${pizza.nimi }"> <label
+									for="pizzanimi">Pizzan nimi</label>
+							</div>
+							<div class="input-field col s3">
+								<input type="number" step="0.05" name="pizzahinta"
+									class="validate" id="pizzahinta" min="0" autocomplete="off"
+									value="${pizza.hinta }"> <label for="pizzahinta"
+									data-error="Virhe">Pizzan hinta</label>
+							</div>
+						</div>
+						<div class="row" id="pizza-taytteet">
+							<table class="taytetaulu">
+								<tr>
+									<c:forEach items="${taytteet}" var="tayte"
+										varStatus="loopCount">
+										<c:forEach items="${pizza.tayteIdt }" var="pizzantaytteet">
+											<c:if test="${pizzantaytteet == tayte.id }">
+												<c:set var="ontayte" value="1"></c:set>
+											</c:if>
 										</c:forEach>
-									</tr>
-								</table>
-							</div>
-							<div class="row">
-								<a class="btn waves-effect waves-light btn-large red lighten-2"
-									href="${pathi }/hallinta">Peruuta</a>
-								<button class="btn waves-effect waves-light btn-large"
-									type="submit" name="action" value="paivitapizza">Päivitä
-									tiedot</button>
-					</form>
-				</div>
+										<c:if test="${loopCount.index % 4 == 0 }">
+								</tr>
+								<tr>
+									</c:if>
+									<td><input type="checkbox" id="${tayte.id }"
+										name="pizzatayte" value="${tayte.id }"
+										<c:if test="${ontayte == 1 }"> checked</c:if>><label
+										for="${tayte.id }">${tayte.nimi }</label></td>
+									<c:set var="ontayte" value="0"></c:set>
+									</c:forEach>
+								</tr>
+							</table>
+							<script src="js/tayte-input-limit.js"></script>
+						</div>
+						<div class="row">
+							<a class="btn waves-effect waves-light btn-large red lighten-2"
+								href="${pathi }/hallinta">Peruuta</a>
+							<button class="btn waves-effect waves-light btn-large"
+								type="submit" name="action" value="paivitapizza">Päivitä
+								tiedot</button>
+				</form>
 			</div>
 		</div>
+	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>
 

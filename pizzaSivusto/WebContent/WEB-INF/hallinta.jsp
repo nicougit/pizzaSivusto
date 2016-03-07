@@ -107,7 +107,7 @@
 									for="pizzahinta" data-error="Virhe">Pizzan hinta</label>
 							</div>
 						</div>
-						<div class="row">
+						<div class="row" id="pizza-taytteet">
 							<table>
 								<tr>
 									<c:forEach items="${taytteet}" var="tayte"
@@ -123,6 +123,7 @@
 									</c:forEach>
 								</tr>
 							</table>
+							<script src="js/tayte-input-limit.js"></script>
 						</div>
 						<div class="row">
 							<div class="col s12">
