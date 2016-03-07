@@ -37,10 +37,7 @@
 
 	<div class="row">
 		<div class="col s12">
-			<h2>Muokkaa Täytettä</h2>
-			<div class="row center-align">
-				${fn:length(pizzat) } Eri pizzaa käyttää tätä täytettä<br>
-			</div>
+			<h2>Muokkaa täytettä</h2>
 			<div class="row">
 				<form action="hallinta" method="post">
 					<div class="col s10 offset-s1">
@@ -79,7 +76,7 @@
 			</div>
 			<div class="row">
 				<div class="col s12">
-					<h2>Tätä täytettä käyttävät pizzat</h2>
+					<h3>Tätä täytettä käyttää ${fn:length(pizzat) } pizzaa</h3>
 					<table class="striped">
 						<thead>
 							<tr>

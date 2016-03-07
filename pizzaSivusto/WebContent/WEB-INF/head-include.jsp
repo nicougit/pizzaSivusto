@@ -14,13 +14,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:if test="${not empty success }">
 	<script type="text/javascript">
+	$(document).ready(function() {
 		Materialize.toast('${success}', 3000, 'teal lighten-3');
 		Materialize.toast();
+	});
 	</script>
 </c:if>
 <c:if test="${not empty virhe }">
 	<script type="text/javascript">
+	$(document).ready(function() {
 		Materialize.toast('${virhe}', 3000, 'red lighten-2');
 		Materialize.toast();
+	});
 	</script>
 </c:if>

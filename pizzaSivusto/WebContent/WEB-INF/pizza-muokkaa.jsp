@@ -61,7 +61,9 @@
 							</div>
 						</div>
 						<div class="row" id="pizza-taytteet">
-							<table class="taytetaulu">
+							<label for="pizzataulu" id="taytteet-label">Täytteet</label>
+							<table class="taytetaulu" id="pizzataulu">
+							</div>
 								<tr>
 									<c:forEach items="${taytteet}" var="tayte"
 										varStatus="loopCount">

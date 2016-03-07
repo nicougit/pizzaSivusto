@@ -33,7 +33,7 @@ body {
 	font-weight: bold;
 }
 
-h1, h2 {
+h1, h2, h3 {
 	text-align: center;
 }
 
@@ -43,4 +43,8 @@ h1 {
 
 h2 {
 	font-size: 30pt;
+}
+
+h3 {
+	font-size: 24pt;
 }

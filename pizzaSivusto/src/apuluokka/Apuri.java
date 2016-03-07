@@ -14,14 +14,49 @@ public class Apuri {
 	
 	// Regex patterni stringeille. Sallii kirjaimet, numerot ja välilyönnit.
 	public boolean validoiString(String stringi, String erikoismerkit, int maxpituus) {
-		Pattern patterni = Pattern.compile("^[\\w\\s+äö" + erikoismerkit + "]{3," + maxpituus + "}$");
+		Pattern patterni = Pattern.compile("^[\\w][\\w\\s+äö" + erikoismerkit + "]{3," + maxpituus + "}$");
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}
 	
-	// Lisättävien pizzojen täytteiden ID-validointia varten
-	public boolean validoiInt(String stringi) {
-		Pattern patterni = Pattern.compile("^[\\d+]{1,15}$");
+	// Lähinnä ID validointeja varten
+	public boolean validoiInt(String stringi, int maxpituus) {
+		try {
+			// Koitetaan vääntää intiksi ja katsotaan onko positiivinen
+			int intti = Integer.parseInt(stringi);
+			if (intti < 0) {
+				System.out.println("Apuri - Input on negatiivinen int");
+				return false;
+			}
+			
+		} catch (Exception ex) {
+			System.out.println("Apuri - Inputtia ei voitu kääntää intiksi");
+			return false;
+		}
+		Pattern patterni = Pattern.compile("^[\\d+]{1," + maxpituus + "}$");
+		Matcher matcheri = patterni.matcher(stringi);
+		return matcheri.find();
+	}
+	
+	// Lähinnä hintojen validointia varten
+	public boolean validoiDouble(String stringi, int maxpituus) {
+		try {
+			// Koitetaan vääntää doubleksi ja katsotaan onko positiivinen
+			double arvo = Double.parseDouble(stringi);
+			if (arvo < 0) {
+				System.out.println("Apuri - Input on negatiivinen double");
+				return false;
+			}
+			else if (arvo > 999) {
+				System.out.println("Apuri - Liian iso double");
+				return false;
+			}
+			
+		} catch (Exception ex) {
+			System.out.println("Apuri - Inputtia ei voitu kääntää doubleksi");
+			return false;
+		}
+		Pattern patterni = Pattern.compile("^[\\d+.]{1," + maxpituus + "}$");
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}
