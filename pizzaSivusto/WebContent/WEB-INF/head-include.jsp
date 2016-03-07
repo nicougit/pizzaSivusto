@@ -6,10 +6,12 @@
 <link type="text/css" rel="stylesheet" href="css/materialize.css"
 	media="screen,projection" />
 <link type="text/css" rel="stylesheet" href="css/style.css">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="js/materialize.js"></script>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:if test="${not empty success }">
 	<script type="text/javascript">
 		Materialize.toast('${success}', 3000, 'teal lighten-3');

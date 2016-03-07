@@ -26,7 +26,7 @@ public class DeployAsetukset {
 		// Määritetään sivuston path linkkejä ja redirectejä varten
 		// Määritys "/reptilemafia" koulun protoservua varten
 		// Eclipsessä ajettaessa "/pizzaSivusto"
-		String sivustopath = "/pizzaSivusto";
+		String sivustopath = "/reptilemafia";
 		return sivustopath;
 	}
 
@@ -38,7 +38,7 @@ public class DeployAsetukset {
 
 		// Proto servun säädöt = 1
 		// Nicon oman servun säädöt = 2
-		int saadot = 2;
+		int saadot = 1;
 
 		if (saadot == 2) {
 			// Säädöt - mun oma servu
