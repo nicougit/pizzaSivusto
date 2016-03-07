@@ -3,7 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="pathi" value="/reptilemafia"></c:set>
+<c:set var="pathi" value="/pizzaSivusto"></c:set>
 <div class="navbar-fixed">
 	<c:if test="${not empty kayttaja }">
 		<ul id="user-dropdowni" class="dropdown-content">

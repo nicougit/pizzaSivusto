@@ -26,7 +26,7 @@ public class DeployAsetukset {
 		// Määritetään sivuston path linkkejä ja redirectejä varten
 		// Määritys "/reptilemafia" koulun protoservua varten
 		// Eclipsessä ajettaessa "/pizzaSivusto"
-		String sivustopath = "/reptilemafia";
+		String sivustopath = "/pizzaSivusto";
 		return sivustopath;
 	}
 
