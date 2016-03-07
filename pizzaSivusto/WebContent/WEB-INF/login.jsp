@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -49,30 +49,30 @@
 		</div>
 
 		<div class="col s5 offset-s1">
-			<h2>Kirjaudu sisään</h2>
-			<div class="row">
-				<form method="post" action="login">
+			<form method="post" action="login">
+				<h2>Kirjaudu sisään</h2>
+				<div class="row">
 					<div class="input-field col s12">
 						<input type="email" name="kayttajanimi" class="validate"
 							id="kayttajanimi" autocomplete="off"> <label
 							for="kayttajanimi" data-error="Virheellinen tunnus">Sähköpostiosoitteesi</label>
 					</div>
-			</div>
-			<div class="row">
-				<div class="input-field col s12">
-					<input type="password" name="salasana" id="salasana"> <label
-						for="salasana">Salasana</label>
 				</div>
-			</div>
-			<div class="row">
-				<button class="btn waves-effect waves-light" type="submit"
-					name="action" value="login">Kirjaudu</button>
-				</form>
-			</div>
-			<c:if test="${not empty virhe }">
-				<div class="row errori">${virhe }<br>
+				<div class="row">
+					<div class="input-field col s12">
+						<input type="password" name="salasana" id="salasana"> <label
+							for="salasana">Salasana</label>
+					</div>
 				</div>
-			</c:if>
+				<div class="row">
+					<button class="btn waves-effect waves-light" type="submit"
+						name="action" value="login">Kirjaudu</button>
+				</div>
+				<c:if test="${not empty virhe }">
+					<div class="row errori">${virhe }<br>
+					</div>
+				</c:if>
+			</form>
 		</div>
 
 	</div>

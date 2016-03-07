@@ -3,7 +3,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,11 +36,11 @@
 	</div>
 
 	<div class="row">
-		<div class="col s12">
-			<h2>Muokkaa pizzaa</h2>
-			<br>
-			<div class="row">
-				<form action="hallinta" method="post">
+		<form action="hallinta" method="post">
+			<div class="col s12">
+				<h2>Muokkaa pizzaa</h2>
+				<br>
+				<div class="row">
 					<div class="col s10 offset-s1">
 						<div class="row">
 							<div class="input-field col s2">
@@ -61,9 +62,8 @@
 							</div>
 						</div>
 						<div class="row" id="pizza-taytteet">
-							<label for="pizzataulu" id="taytteet-label">Täytteet</label>
+							<label id="taytteet-label">Täytteet</label>
 							<table class="taytetaulu" id="pizzataulu">
-							</div>
 								<tr>
 									<c:forEach items="${taytteet}" var="tayte"
 										varStatus="loopCount">
@@ -72,7 +72,8 @@
 												<c:set var="ontayte" value="1"></c:set>
 											</c:if>
 										</c:forEach>
-										<c:if test="${loopCount.index % 4 == 0 }">
+										<c:if
+											test="${loopCount.index % 4 == 0 && loopCount.index != 0}">
 								</tr>
 								<tr>
 									</c:if>
@@ -81,6 +82,10 @@
 										<c:if test="${ontayte == 1 }"> checked</c:if>><label
 										for="${tayte.id }">${tayte.nimi }</label></td>
 									<c:set var="ontayte" value="0"></c:set>
+									<c:if
+										test="${fn:length(taytteet) == loopCount.count && fn:length(taytteet) % 4 != 0}">
+										<td colspan="${4 - fn:length(taytteet) % 4 }"></td>
+									</c:if>
 									</c:forEach>
 								</tr>
 							</table>
@@ -92,12 +97,14 @@
 							<button class="btn waves-effect waves-light btn-large"
 								type="submit" name="action" value="paivitapizza">Päivitä
 								tiedot</button>
-				</form>
+
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
+		</form>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>
-
 </body>
 </html>

@@ -4,7 +4,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -108,20 +109,22 @@
 							</div>
 						</div>
 						<div class="row" id="pizza-taytteet">
-						<label for="pizzataulu" id="taytteet-label">Täytteet</label>
+						<label id="taytteet-label">Täytteet</label>
 							<table class="pizzataulu">
 								<tr>
 									<c:forEach items="${taytteet}" var="tayte"
 										varStatus="loopCount">
-										<c:if test="${loopCount.index % 4 == 0 }">
+										<c:if test="${loopCount.index % 4 == 0 && loopCount.index != 0}">
 								</tr>
 								<tr>
 									</c:if>
 									<td><input type="checkbox" id="${tayte.id }"
-										autocomplete="off" name="pizzatayte" value="${tayte.id }"
+										 name="pizzatayte" value="${tayte.id }"
 										<c:if test="${tayte.saatavilla == false }">disabled="disabled"</c:if>><label
 										for="${tayte.id }">${tayte.nimi }</label></td>
+										<c:if test="${fn:length(taytteet) == loopCount.count && fn:length(taytteet) % 4 != 0}"><td colspan="${4 - fn:length(taytteet) % 4 }"></td></c:if>
 									</c:forEach>
+									
 								</tr>
 							</table>
 							<script src="js/tayte-input-limit.js"></script>

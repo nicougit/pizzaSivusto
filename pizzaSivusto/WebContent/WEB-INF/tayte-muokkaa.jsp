@@ -4,7 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -37,9 +37,9 @@
 
 	<div class="row">
 		<div class="col s12">
-			<h2>Muokkaa täytettä</h2>
-			<div class="row">
-				<form action="hallinta" method="post">
+			<form action="hallinta" method="post">
+				<h2>Muokkaa täytettä</h2>
+				<div class="row">
 					<div class="col s10 offset-s1">
 						<div class="row">
 							<div class="input-field col s2">
@@ -71,40 +71,42 @@
 							<button class="btn waves-effect waves-light btn-large"
 								type="submit" name="action" value="paivitatayte">Päivitä
 								tiedot</button>
-				</form>
-			</div>
-			<div class="row">
-				<div class="col s12">
-					<c:choose>
-						<c:when test="${empty pizzat }">
-							<h3>Yksikään pizza ei käytä tätä täytettä</h3>
-						</c:when>
-						<c:otherwise>
-							<c:set var="pizzasana" value="Pizzaa"></c:set>
-							<c:if test="${fn:length(pizzat) == 1 }">
-								<c:set var="pizzasana" value="Pizza"></c:set>
-							</c:if>
-							<h3>${fn:length(pizzat) } ${pizzasana } käyttää tätä täytettä</h3>
-							<table class="striped">
-								<thead>
-									<tr>
-										<th>#</th>
-										<th>Nimi</th>
-									</tr>
-								</thead>
-								<tbody>
-									<c:forEach items="${pizzat}" var="pizza">
-										<tr>
-											<td class="strong-id">${pizza.id }</td>
-											<td>${pizza.nimi }</td>
-									</c:forEach>
-								</tbody>
-							</table>
-						</c:otherwise>
-					</c:choose>
+						</div>
+					</div>
 				</div>
-
+			</form>
+		</div>
+		<div class="row">
+			<div class="col s10 offset-s1">
+				<c:choose>
+					<c:when test="${empty pizzat }">
+						<h3>Yksikään pizza ei käytä tätä täytettä</h3>
+					</c:when>
+					<c:otherwise>
+						<c:set var="pizzasana" value="Pizzaa"></c:set>
+						<c:if test="${fn:length(pizzat) == 1 }">
+							<c:set var="pizzasana" value="Pizza"></c:set>
+						</c:if>
+						<h3>${fn:length(pizzat) } ${pizzasana } käyttää tätä täytettä</h3>
+						<table class="striped">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Nimi</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${pizzat}" var="pizza">
+									<tr>
+										<td class="strong-id">${pizza.id }</td>
+										<td>${pizza.nimi }</td>
+								</c:forEach>
+							</tbody>
+						</table>
+					</c:otherwise>
+				</c:choose>
 			</div>
+
 		</div>
 	</div>
 

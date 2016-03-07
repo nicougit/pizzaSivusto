@@ -19,17 +19,22 @@
 			<ul class="right hide-on-med-and-down">
 				<li><a href="#!">Pizzat</a></li>
 				<li><a href="#!">Yrityksemme</a></li>
-				<li><a href="#!">Ostoskori (0)</a>
-				<li><a href="${pathi }/hallinta">Hallinta</a></li>
-				<c:choose>
-					<c:when test="${not empty kayttaja }">
-						 <li><a class="dropdown-button" href="#!" data-activates="user-dropdowni"> ${kayttaja.tunnus } <i class="material-icons right">arrow_drop_down</i></a></li>
-					</c:when>
-					<c:otherwise>
-						<li>
-						<li><a href="${pathi }/login">Kirjaudu sisään</a></li>
-					</c:otherwise>
-				</c:choose>
+				<li><a href="#!">Ostoskori (0)</a> <c:choose>
+						<c:when
+							test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
+							<li class="linkki"><a href="${pathi }/hallinta">Hallinta</a></li>
+						</c:when>
+					</c:choose> <c:choose>
+						<c:when test="${not empty kayttaja }">
+							<li><a class="dropdown-button" href="#!"
+								data-activates="user-dropdowni"> ${kayttaja.tunnus } <i
+									class="material-icons right">arrow_drop_down</i></a></li>
+						</c:when>
+						<c:otherwise>
+							<li>
+							<li><a href="${pathi }/login">Kirjaudu sisään</a></li>
+						</c:otherwise>
+					</c:choose>
 			</ul>
 		</div>
 	</nav>

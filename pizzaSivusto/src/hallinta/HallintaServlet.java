@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import apuluokka.Apuri;
 import apuluokka.DeployAsetukset;
+import bean.Kayttaja;
 import bean.Pizza;
 import bean.Tayte;
 import daot.HallintaDao;
@@ -50,74 +51,83 @@ public class HallintaServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
-		// Sessionhallintaa
-		HttpSession sessio = request.getSession(true);
+		// Katsotaan oikeudet
+		HttpSession sessio = request.getSession(false);
 
-		// Asetetaan sivun path
-		request.setAttribute("pathi", sivustopath);
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+			if (kayttaja.getTyyppi().equals("admin") || kayttaja.getTyyppi().equals("staff")) {
+				// Asetetaan sivun path
+				request.setAttribute("pathi", sivustopath);
 
-		// Tarkastetaan parametrit
-		String pizzaEdit = request.getParameter("pizza-edit");
-		String tayteEdit = request.getParameter("tayte-edit");
-		String pizzaPoista = request.getParameter("pizza-poista");
-		String pizzaPalauta = request.getParameter("pizza-palauta");
+				// Tarkastetaan parametrit
+				String pizzaEdit = request.getParameter("pizza-edit");
+				String tayteEdit = request.getParameter("tayte-edit");
+				String pizzaPoista = request.getParameter("pizza-poista");
+				String pizzaPalauta = request.getParameter("pizza-palauta");
 
-		// Apuri validointiin
-		Apuri apuri = new Apuri();
+				// Apuri validointiin
+				Apuri apuri = new Apuri();
 
-		// Daon alustus
-		HallintaDao dao = new HallintaDao();
+				// Daon alustus
+				HallintaDao dao = new HallintaDao();
 
-		// RequestDispatcher
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/hallinta.jsp");
+				// RequestDispatcher
+				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/hallinta.jsp");
 
-		// Siirrytään pizzan muokkaukseen, jos ID on määritetty ja OK
-		if (pizzaEdit != null && apuri.validoiInt(pizzaEdit, 11) == true) {
+				// Siirrytään pizzan muokkaukseen, jos ID on määritetty ja OK
+				if (pizzaEdit != null && apuri.validoiInt(pizzaEdit, 11) == true) {
 
-			System.out.println("Pizzaa '" + pizzaEdit + "' halutaan muokata");
+					System.out.println("Pizzaa '" + pizzaEdit + "' halutaan muokata");
 
-			Pizza pizza = dao.haePizza(pizzaEdit);
+					Pizza pizza = dao.haePizza(pizzaEdit);
 
-			if (pizza.getNimi() != null) {
-				ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
-				request.setAttribute("pizza", pizza);
-				request.setAttribute("taytteet", taytteet);
+					if (pizza.getNimi() != null) {
+						ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
+						request.setAttribute("pizza", pizza);
+						request.setAttribute("taytteet", taytteet);
 
-				// Forwardataan pizzan muokkaukseen
-				rd = request.getRequestDispatcher("WEB-INF/pizza-muokkaa.jsp");
-				rd.forward(request, response);
+						// Forwardataan pizzan muokkaukseen
+						rd = request.getRequestDispatcher("WEB-INF/pizza-muokkaa.jsp");
+						rd.forward(request, response);
 
+					} else {
+						String virhe = "Muokattavaksi valittua pizzaa ei ole tietokannassa.";
+						System.out.println(virhe);
+						request.setAttribute("virhe", virhe);
+					}
+
+				} else if (tayteEdit != null && apuri.validoiInt(tayteEdit, 11) == true) {
+
+					System.out.println("Täytettä '" + tayteEdit + "' halutaan muokata");
+
+					Tayte tayte = dao.haeTayte(tayteEdit);
+
+					if (tayte.getNimi() != null) {
+						ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(1, tayteEdit);
+						request.setAttribute("tayte", tayte);
+						request.setAttribute("pizzat", pizzat);
+
+						// Forwardataan pizzan muokkaukseen
+						rd = request.getRequestDispatcher("WEB-INF/tayte-muokkaa.jsp");
+						rd.forward(request, response);
+
+					} else {
+						String virhe = "Muokattavaksi valittua täytettä ei ole tietokannassa.";
+						virhe(request, response, virhe);
+					}
+				} else if (pizzaPoista != null && apuri.validoiInt(pizzaPoista, 11) == true) {
+					poistaPizza(request, response);
+				} else if (pizzaPalauta != null && apuri.validoiInt(pizzaPalauta, 11) == true) {
+					palautaPizza(request, response);
+				} else {
+					naytaSivu(request, response);
+				}
 			} else {
-				String virhe = "Muokattavaksi valittua pizzaa ei ole tietokannassa.";
-				System.out.println(virhe);
-				request.setAttribute("virhe", virhe);
+				paasyEvatty(request, response);
 			}
-
-		} else if (tayteEdit != null && apuri.validoiInt(tayteEdit, 11) == true) {
-
-			System.out.println("Täytettä '" + tayteEdit + "' halutaan muokata");
-
-			Tayte tayte = dao.haeTayte(tayteEdit);
-
-			if (tayte.getNimi() != null) {
-				ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(1, tayteEdit);
-				request.setAttribute("tayte", tayte);
-				request.setAttribute("pizzat", pizzat);
-
-				// Forwardataan pizzan muokkaukseen
-				rd = request.getRequestDispatcher("WEB-INF/tayte-muokkaa.jsp");
-				rd.forward(request, response);
-
-			} else {
-				String virhe = "Muokattavaksi valittua täytettä ei ole tietokannassa.";
-				virhe(request, response, virhe);
-			}
-		} else if (pizzaPoista != null && apuri.validoiInt(pizzaPoista, 11) == true) {
-			poistaPizza(request, response);
-		} else if (pizzaPalauta != null && apuri.validoiInt(pizzaPalauta, 11) == true) {
-			palautaPizza(request, response);
 		} else {
-			naytaSivu(request, response);
+			paasyEvatty(request, response);
 		}
 
 	}
@@ -137,6 +147,12 @@ public class HallintaServlet extends HttpServlet {
 		request.setAttribute("pizzat", pizzat);
 		request.setAttribute("taytteet", taytteet);
 
+		rd.forward(request, response);
+	}
+
+	protected void paasyEvatty(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/paasy-evatty.jsp");
 		rd.forward(request, response);
 	}
 
