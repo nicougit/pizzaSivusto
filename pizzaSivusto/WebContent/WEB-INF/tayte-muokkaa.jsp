@@ -45,8 +45,7 @@
 							<div class="input-field col s2">
 								<input type="text" name="tayteid" id="tayteid"
 									value="${tayte.id }" disabled> <label for="tayteid">Täytteen
-									ID</label>
-									<input type="hidden" name="tayteid" value="${tayte.id }">
+									ID</label> <input type="hidden" name="tayteid" value="${tayte.id }">
 							</div>
 							<div class="input-field col s4">
 								<input type="text" name="taytenimi" id="taytenimi"
@@ -76,22 +75,33 @@
 			</div>
 			<div class="row">
 				<div class="col s12">
-					<h3>Tätä täytettä käyttää ${fn:length(pizzat) } pizzaa</h3>
-					<table class="striped">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Nimi</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${pizzat}" var="pizza">
-								<tr>
-									<td class="strong-id">${pizza.id }</td>
-									<td>${pizza.nimi }</td>
-							</c:forEach>
-						</tbody>
-					</table>
+					<c:choose>
+						<c:when test="${empty pizzat }">
+							<h3>Yksikään pizza ei käytä tätä täytettä</h3>
+						</c:when>
+						<c:otherwise>
+							<c:set var="pizzasana" value="Pizzaa"></c:set>
+							<c:if test="${fn:length(pizzat) == 1 }">
+								<c:set var="pizzasana" value="Pizza"></c:set>
+							</c:if>
+							<h3>${fn:length(pizzat) } ${pizzasana } käyttää tätä täytettä</h3>
+							<table class="striped">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Nimi</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${pizzat}" var="pizza">
+										<tr>
+											<td class="strong-id">${pizza.id }</td>
+											<td>${pizza.nimi }</td>
+									</c:forEach>
+								</tbody>
+							</table>
+						</c:otherwise>
+					</c:choose>
 				</div>
 
 			</div>
