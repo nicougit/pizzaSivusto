@@ -2,6 +2,7 @@ package login;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -106,10 +107,76 @@ public class LoginServlet extends HttpServlet {
 
 		if (action != null && action.equals("login")) {
 			kirjauduSisaan(request, response);
-		} else {
+		} 
+		else if (action != null && action.equals("rekisteroidy")) {
+			
+		}
+		else {
 			doGet(request, response);
 		}
-
+	}
+	
+	// Käyttäjätilin luonti
+	protected void rekisteroidy(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		// Haetaan parametrit
+		String kayttajanimi = request.getParameter("kayttajatunnus");
+		String salasana = request.getParameter("salasana-rek");
+		String etunimi = request.getParameter("etunimi");
+		String sukunimi = request.getParameter("sukunimi");
+		String puhelinnro = request.getParameter("puhelinnro");
+		
+		if (kayttajanimi != null && salasana != null && etunimi != null && sukunimi != null) {
+			Apuri apuri = new Apuri();
+			
+			// Validointia
+			
+			if (apuri.validoiEmail(kayttajanimi) == false) {
+				String virhe = "Virheellinen sähköpostiosoite!";
+				virhe(request, response, virhe);
+			}
+			else {
+				if (salasana.length() < 6) {
+					String virhe = "Liian lyhyt salasana (alle 6 merkkiä)";
+					virhe(request, response, virhe);
+				}
+				else {
+					if (etunimi.length() < 2 || sukunimi.length() < 2) {
+						String virhe = "Liian lyhyt etu- tai sukunimi!)";
+						virhe(request, response, virhe);
+					}
+					else if (apuri.validoiString(etunimi, "", 50) == false || apuri.validoiString(sukunimi, "", 50) == false) {
+						String virhe = "Etu- tai sukunimessä virheellisiä merkkejä!)";
+						virhe(request, response, virhe);
+					}
+					else {
+						// Puhelinnumeron validointi tehtävä
+						
+						KayttajaDao dao = new KayttajaDao();
+						
+						HashMap<Integer, String> vastaus = dao.luoKayttaja(kayttajanimi, salasana, etunimi, sukunimi, puhelinnro);
+						
+						if (!vastaus.get(0).isEmpty()) {
+							String virhe = vastaus.get(0);
+							virhe(request, response, virhe);
+						}
+						else if (!vastaus.get(1).isEmpty()) {
+							String success = vastaus.get(1);
+							request.setAttribute("success", success);
+							naytaSivu(request, response, "WEB-INF/rekisteroity.jsp");
+						}
+						
+					}
+				}
+			}
+			
+		}
+		else {
+			String virhe = "Kaikkia vaadittavia tietoja ei syötetty!";
+			virhe(request, response, virhe);
+		}
+		
 	}
 
 	// Sisäänkirjautuminen

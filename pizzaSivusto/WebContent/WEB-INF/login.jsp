@@ -39,7 +39,8 @@
 						<tr>
 							<td class="strong-id">${kayttaja.id }</td>
 							<td>${kayttaja.tunnus }</td>
-							<td><c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out></td>
+							<td><c:out
+									value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out></td>
 							<td>${kayttaja.tyyppi }</td>
 						</tr>
 					</c:forEach>
@@ -49,30 +50,88 @@
 		</div>
 
 		<div class="col s5 offset-s1">
-			<form method="post" action="login">
-				<h2>Kirjaudu sisään</h2>
-				<div class="row">
-					<div class="input-field col s12">
-						<input type="email" name="kayttajanimi" class="validate"
-							id="kayttajanimi" autocomplete="off"> <label
-							for="kayttajanimi" data-error="Virheellinen tunnus">Sähköpostiosoitteesi</label>
-					</div>
+			<div class="row">
+				<div class="col s12">
+					<br>
+					<ul class="tabs">
+						<li class="tab col s6"><a href="#kirjaudusisaan"
+							class="active">Kirjaudu sisään</a></li>
+						<li class="tab col s6"><a href="#rekisteroidy">Rekisteröidy</a></li>
+					</ul>
 				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input type="password" name="salasana" id="salasana"> <label
-							for="salasana">Salasana</label>
+			</div>
+			<div class="row" id="kirjaudusisaan">
+				<form method="post" action="login">
+					<h2>Kirjaudu sisään</h2>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="email" name="kayttajanimi" class="validate"
+								id="kayttajanimi" autocomplete="off"> <label
+								for="kayttajanimi" data-error="Virheellinen tunnus">Sähköpostiosoite</label>
+						</div>
 					</div>
-				</div>
-				<div class="row">
-					<button class="btn waves-effect waves-light" type="submit"
-						name="action" value="login">Kirjaudu</button>
-				</div>
-				<c:if test="${not empty virhe }">
-					<div class="row errori">${virhe }<br>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="password" name="salasana" id="salasana"> <label
+								for="salasana">Salasana</label>
+						</div>
 					</div>
-				</c:if>
-			</form>
+					<div class="row">
+						<button class="btn waves-effect waves-light" type="submit"
+							name="action" value="login">Kirjaudu</button>
+					</div>
+					<c:if test="${not empty virhe }">
+						<div class="row errori">${virhe }<br>
+						</div>
+					</c:if>
+				</form>
+				<div class="row">
+					Ei käyttäjätiliä? Rekisteröidy <a href="#!">täältä</a>!
+				</div>
+			</div>
+			<div class="row" id="rekisteroidy">
+				<h2>Rekisteröidy</h2>
+				<form action="login" method="post">
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="email" id="kayttajatunnus" name="kayttajatunnus"
+								class="validate"> <label for="kayttajatunnus"
+								data-error="Virheellinen muoto">Sähköpostiosoite</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="password" id="salasana-rek" name="salasana-rek"
+								class="validate"> <label for="salasana-rek"
+								data-error="Syötä salasana">Salasana</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="text" id="etunimi" name="etunimi" class="validate">
+							<label for="etunimi" data-error="Syötä etunimi">Etunimi</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="text" id="sukunimi" name="sukunimi" class="validate">
+							<label for="sukunimi" data-error="Syötä sukunimi">Sukunimi</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="text" id="puhelinnro" name="puhelinnro"> <label
+								for="puhelinnro">Puhelinnumero</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<button class="btn waves-effect waves-light" type="submit"
+								name="action" value="rekisteroidy">Rekisteröidy</button>
+						</div>
+					</div>
+				</form>
+			</div>
 		</div>
 
 	</div>

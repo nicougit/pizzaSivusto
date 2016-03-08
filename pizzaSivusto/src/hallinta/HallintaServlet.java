@@ -218,7 +218,7 @@ public class HallintaServlet extends HttpServlet {
 						virhe(request, response, virhe);
 					} else {
 						// Täytteiden määrän ja sisällön validointi
-						if (taytetaulu.length >= 5) {
+						if (taytetaulu.length > 5) {
 							String virhe = "Yli viisi täytettä valittuna!";
 							virhe(request, response, virhe);
 						} else {
@@ -309,7 +309,7 @@ public class HallintaServlet extends HttpServlet {
 					virhe(request, response, virhe);
 				} else {
 					// Täytteiden määrän ja sisällön validointi
-					if (taytetaulu.length >= 5) {
+					if (taytetaulu.length > 5) {
 						String virhe = "Yli viisi täytettä valittuna!";
 						virhe(request, response, virhe);
 					} else {

@@ -77,9 +77,9 @@
 									</a>
 								</c:when>
 								<c:otherwise>
-									<a class="waves-effect waves-light btn teal lighten-3"
+									<a class="waves-effect waves-light btn red lighten-2"
 										href="?pizza-palauta=${pizza.id }"> <i
-										class="material-icons">restore</i>
+										class="material-icons">visibility_off</i>
 									</a>
 								</c:otherwise>
 							</c:choose></td>
