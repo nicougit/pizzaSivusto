@@ -64,10 +64,10 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 	}
-	
+
 	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response, String rdPath)
 			throws ServletException, IOException {
-		
+
 		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
 		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
 		response.setCharacterEncoding("UTF-8");
@@ -75,7 +75,7 @@ public class LoginServlet extends HttpServlet {
 
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
-		
+
 		// Haetaan lista käyttäjistä kantayhteyden testausta varten
 		KayttajaDao dao = new KayttajaDao();
 		ArrayList<KayttajaLista> lista = dao.haeKayttajat();
@@ -85,10 +85,8 @@ public class LoginServlet extends HttpServlet {
 		// Request dispatcher
 		RequestDispatcher rd = request.getRequestDispatcher(rdPath);
 		rd.forward(request, response);
-		
-		
+
 	}
-	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
@@ -107,76 +105,89 @@ public class LoginServlet extends HttpServlet {
 
 		if (action != null && action.equals("login")) {
 			kirjauduSisaan(request, response);
-		} 
-		else if (action != null && action.equals("rekisteroidy")) {
-			
-		}
-		else {
+		} else if (action != null && action.equals("rekisteroidy")) {
+			rekisteroidy(request, response);
+		} else {
 			doGet(request, response);
 		}
 	}
-	
+
 	// Käyttäjätilin luonti
 	protected void rekisteroidy(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		// Haetaan parametrit
 		String kayttajanimi = request.getParameter("kayttajatunnus");
 		String salasana = request.getParameter("salasana-rek");
+		String salasana2 = request.getParameter("salasana-rek2");
 		String etunimi = request.getParameter("etunimi");
 		String sukunimi = request.getParameter("sukunimi");
 		String puhelinnro = request.getParameter("puhelinnro");
-		
+
 		if (kayttajanimi != null && salasana != null && etunimi != null && sukunimi != null) {
 			Apuri apuri = new Apuri();
-			
+
+			System.out.println("Yritetään rekisteröidä käyttäjä:");
+			System.out.println(kayttajanimi + " - " + etunimi + " " + sukunimi + " - " + puhelinnro
+					+ " - salasanan pituus " + salasana.length() + " merkkiä");
+
 			// Validointia
-			
+
 			if (apuri.validoiEmail(kayttajanimi) == false) {
 				String virhe = "Virheellinen sähköpostiosoite!";
 				virhe(request, response, virhe);
-			}
-			else {
+			} else {
 				if (salasana.length() < 6) {
 					String virhe = "Liian lyhyt salasana (alle 6 merkkiä)";
 					virhe(request, response, virhe);
-				}
-				else {
-					if (etunimi.length() < 2 || sukunimi.length() < 2) {
+				} else if (!salasana.equals(salasana2)) {
+					String virhe = "Syötetyt salasanat eivät täsmää!";
+					virhe(request, response, virhe);
+				} else {
+					if (etunimi.length() < 3 || sukunimi.length() < 3) {
 						String virhe = "Liian lyhyt etu- tai sukunimi!)";
 						virhe(request, response, virhe);
-					}
-					else if (apuri.validoiString(etunimi, "", 50) == false || apuri.validoiString(sukunimi, "", 50) == false) {
+					} else if (apuri.validoiString(etunimi, "-", 50) == false
+							|| apuri.validoiString(sukunimi, "-", 50) == false) {
 						String virhe = "Etu- tai sukunimessä virheellisiä merkkejä!)";
 						virhe(request, response, virhe);
-					}
-					else {
-						// Puhelinnumeron validointi tehtävä
-						
+					} else {
+						if (puhelinnro != null) {
+							puhelinnro = puhelinnro.replace(" ", "");
+							puhelinnro = puhelinnro.replace("-", "");
+
+							if (apuri.validoiPuhNro(puhelinnro) == false) {
+								String virhe = "Virheellinen puhelinnumero, asetetaan null.";
+								System.out.println(virhe);
+								puhelinnro = null;
+							}
+						}
+
 						KayttajaDao dao = new KayttajaDao();
-						
-						HashMap<Integer, String> vastaus = dao.luoKayttaja(kayttajanimi, salasana, etunimi, sukunimi, puhelinnro);
-						
-						if (!vastaus.get(0).isEmpty()) {
-							String virhe = vastaus.get(0);
+
+						HashMap<String, String> vastaus = dao.luoKayttaja(kayttajanimi, salasana, etunimi, sukunimi,
+								puhelinnro);
+
+						if (vastaus.get("virhe") != null) {
+							String virhe = vastaus.get("virhe");
+							virhe(request, response, virhe);
+						} else if (vastaus.get("success") != null) {
+							String success = vastaus.get("success");
+							System.out.println("Success viesti: " + success);
+							request.setAttribute("success", success);
+							naytaSivu(request, response, "WEB-INF/login.jsp");
+						} else {
+							String virhe = "Tietokantaan viennissä tapahtui virhe!";
 							virhe(request, response, virhe);
 						}
-						else if (!vastaus.get(1).isEmpty()) {
-							String success = vastaus.get(1);
-							request.setAttribute("success", success);
-							naytaSivu(request, response, "WEB-INF/rekisteroity.jsp");
-						}
-						
 					}
+
 				}
 			}
-			
-		}
-		else {
+		} else {
 			String virhe = "Kaikkia vaadittavia tietoja ei syötetty!";
 			virhe(request, response, virhe);
 		}
-		
 	}
 
 	// Sisäänkirjautuminen
@@ -189,7 +200,7 @@ public class LoginServlet extends HttpServlet {
 
 		// Katsotaan onko parametreja olemassa
 		if (kayttajanimi != null && salasana != null) {
-			System.out.println("Kirjautumisyritys - user: " + kayttajanimi + " - pass: " + salasana);
+			System.out.println("Kirjautumisyritys - tunnus: " + kayttajanimi + " - salasanan pituus: " + salasana.length() + " merkkiä");
 
 			// Validoidaan käyttäjänimi (estetään ainakin injektiot)
 			Apuri apuri = new Apuri();
@@ -230,7 +241,7 @@ public class LoginServlet extends HttpServlet {
 	// Uloskirjautuminen
 	protected void kirjauduUlos(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		HttpSession sessio = request.getSession(false);
 
 		// Katsotaan onko käyttäjä kirjautuneena sisään
@@ -238,7 +249,7 @@ public class LoginServlet extends HttpServlet {
 			sessio.removeAttribute("kayttaja");
 			sessio.invalidate();
 			request.setAttribute("success", "Olet kirjautunut ulos onnistuneesti!");
-			
+
 			String rdPath = "WEB-INF/login.jsp";
 			naytaSivu(request, response, rdPath);
 		} else {
@@ -252,7 +263,7 @@ public class LoginServlet extends HttpServlet {
 	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
 			throws ServletException, IOException {
 		request.setAttribute("virhe", virhe);
-		
+		System.out.println(virhe);
 		String rdPath = "WEB-INF/login.jsp";
 		naytaSivu(request, response, rdPath);
 	}

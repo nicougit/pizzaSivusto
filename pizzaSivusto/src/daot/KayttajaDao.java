@@ -94,65 +94,67 @@ public class KayttajaDao {
 			return kayttaja;
 		}
 	}
-	
-	public HashMap<Integer, String> luoKayttaja(String kayttajatunnus, String salasana, String etunimi, String sukunimi, String puhelinnro) {
-	
-		HashMap<Integer, String> vastaus = new HashMap<>();
-		
+
+	public HashMap<String, String> luoKayttaja(String kayttajatunnus, String salasana, String etunimi, String sukunimi,
+			String puhelinnro) {
+
+		HashMap<String, String> vastaus = new HashMap<>();
+
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		
+
 		// Katsotaan ensin duplicatejen varalta
 		String sql = "SELECT tunnus FROM Kayttaja WHERE tunnus = ?";
 		ArrayList<String> parametrit = new ArrayList<>();
 		parametrit.add(kayttajatunnus);
-		
+
 		if (kysely.montaRivia(sql, parametrit) > 0) {
 			String virhe = "Sähköpostiosoite on jo rekisteröity!";
 			System.out.println(virhe);
-			vastaus.put(0, virhe);
+			vastaus.put("virhe", virhe);
 			return vastaus;
-		}
-		else {			
+		} else {
 			Tiiviste tiiviste = new Tiiviste();
-			
+
 			try {
 				// Suolaus ja tiivistys
-			String suola = tiiviste.generoiSuola();
-			String passutiiviste = tiiviste.salaa(kayttajatunnus, suola, 1);
-			
-			sql = "INSERT INTO Kayttaja VALUES (null, ?, ?, ?, ?, ?, ?, 'user')";
-			parametrit.add(kayttajatunnus);
-			parametrit.add(etunimi);
-			parametrit.add(sukunimi);
-			parametrit.add(puhelinnro);
-			parametrit.add(suola);
-			parametrit.add(passutiiviste);
-			
-			int regSuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
-			
-			if (regSuccess == 1) {
-				String viesti = "Käyttäjätili luotu onnistuneesti!";
-				vastaus.put(1, viesti);
-				return vastaus;
-			}
-			else {
-				String virhe = "Käyttäjätilin luomisessa tietokantaan tapahtui virhe!";
-				vastaus.put(0, virhe);
-				return vastaus;
-			}
-			
-			
+				String suola = tiiviste.generoiSuola();
+				String passutiiviste = tiiviste.salaa(salasana, suola, 1);
+
+				sql = "INSERT INTO Kayttaja VALUES (null, ?, ?, ?, null, ?, ?, 'user')";
+				parametrit.add(etunimi);
+				parametrit.add(sukunimi);
+				if (puhelinnro != null) {
+					sql = "INSERT INTO Kayttaja VALUES (null, ?, ?, ?, ?, ?, ?, 'user')";
+					parametrit.add(puhelinnro);
+				}
+				parametrit.add(suola);
+				parametrit.add(passutiiviste);
+
+				int regSuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+				System.out.println("Käyttäjätilin luonti tietokantaan palautti " + regSuccess);
+
+				if (regSuccess == 1) {
+					String success = "Käyttäjätili luotu onnistuneesti!";
+					vastaus.put("success", success);
+					return vastaus;
+				} else {
+					String virhe = "Käyttäjätilin luomisessa tietokantaan tapahtui virhe!";
+					vastaus.put("virhe", virhe);
+					return vastaus;
+				}
+
 			} catch (Exception ex) {
 				String virhe = "Tietokantayhteydessä tapahtui virhe!";
 				System.out.println(virhe);
 				System.out.println(ex);
-				vastaus.put(0, virhe);
+				vastaus.put("virhe", virhe);
 				return vastaus;
 			}
-			
+
 		}
 	}
 
@@ -166,7 +168,7 @@ public class KayttajaDao {
 		Connection yhteys = yhteysolio.getYhteys();
 
 		try {
-			String sql = "SELECT id, tunnus, etunimi, sukunimi, tyyppi FROM Kayttaja";
+			String sql = "SELECT id, tunnus, etunimi, sukunimi, tyyppi FROM Kayttaja ORDER BY id DESC LIMIT 10";
 			Statement haku = yhteys.createStatement();
 			ResultSet tulokset = haku.executeQuery(sql);
 

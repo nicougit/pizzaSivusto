@@ -2,6 +2,7 @@ package hallinta;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -244,13 +245,17 @@ public class HallintaServlet extends HttpServlet {
 									HallintaDao dao = new HallintaDao();
 
 									// Katsotaan, onnistuuko lisäys
-									boolean success = dao.paivitaPizza(pizzaid, pizzanimi, pizzahinta, taytetaulu);
-									if (success == true) {
-										request.setAttribute("success",
-												"Pizzan tiedot päivitetty tietokantaan onnistuneesti!");
+									HashMap<String, String> vastaus = dao.paivitaPizza(pizzaid, pizzanimi, pizzahinta,
+											taytetaulu);
+									if (vastaus.get("virhe") != null) {
+										String virhe = vastaus.get("virhe");
+										request.setAttribute("virhe", virhe);
+									} else if (vastaus.get("success") != null) {
+										String success = vastaus.get("success");
+										request.setAttribute("success", success);
 									} else {
 										request.setAttribute("virhe",
-												"Pizzan tiedot OK, mutta tietokantaan päivityksessä tapahtui virhe.");
+												"Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 									}
 									naytaSivu(request, response);
 
@@ -334,12 +339,15 @@ public class HallintaServlet extends HttpServlet {
 								HallintaDao dao = new HallintaDao();
 
 								// Katsotaan, onnistuuko lisäys
-								boolean success = dao.lisaaPizza(pizzanimi, pizzahinta, taytetaulu);
-								if (success == true) {
-									request.setAttribute("success", "Pizza lisätty tietokantaan onnistuneesti!");
+								HashMap<String, String> vastaus = dao.lisaaPizza(pizzanimi, pizzahinta, taytetaulu);
+								if (vastaus.get("virhe") != null) {
+									String virhe = vastaus.get("virhe");
+									request.setAttribute("virhe", virhe);
+								} else if (vastaus.get("success") != null) {
+									String success = vastaus.get("success");
+									request.setAttribute("success", success);
 								} else {
-									request.setAttribute("virhe",
-											"Pizzan tiedot OK, mutta tietokantaan lisäyksessä tapahtui virhe.");
+									request.setAttribute("virhe", "Tietokantaan viedessä tapahtui tuntematon virhe.");
 								}
 								naytaSivu(request, response);
 
@@ -390,11 +398,15 @@ public class HallintaServlet extends HttpServlet {
 					HallintaDao dao = new HallintaDao();
 
 					// Katsotaan, onnistuuko lisäys
-					boolean success = dao.paivitaTayte(tayteId, tayteNimi, tayteSaatavilla);
-					if (success == true) {
-						request.setAttribute("success", "Täytteen tiedot päivitetty onnistuneesti!");
+					HashMap<String, String> vastaus = dao.paivitaTayte(tayteId, tayteNimi, tayteSaatavilla);
+					if (vastaus.get("virhe") != null) {
+						String virhe = vastaus.get("virhe");
+						request.setAttribute("virhe", virhe);
+					} else if (vastaus.get("success") != null) {
+						String success = vastaus.get("success");
+						request.setAttribute("success", success);
 					} else {
-						request.setAttribute("virhe", "Täytteiden päivittämisessä tietokantaan tapahtui virhe.");
+						request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 					}
 					naytaSivu(request, response);
 				}
@@ -426,12 +438,15 @@ public class HallintaServlet extends HttpServlet {
 
 			HallintaDao dao = new HallintaDao();
 
-			boolean success = dao.poistaPizza(poistapizza);
-
-			if (success == true) {
-				request.setAttribute("success", "Pizzaan lisätty poistomerkintä onnistuneesti!");
+			HashMap<String, String> vastaus = dao.poistaPizza(poistapizza);
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
 			} else {
-				request.setAttribute("virhe", "Poistomerkintä OK, mutta tietokantaan päivityksessä tapahtui virhe.");
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
 
 			naytaSivu(request, response);
@@ -456,12 +471,15 @@ public class HallintaServlet extends HttpServlet {
 
 			HallintaDao dao = new HallintaDao();
 
-			boolean success = dao.palautaPizza(palautapizza);
-
-			if (success == true) {
-				request.setAttribute("success", "Pizzan poistomerkintä kumottu onnistuneesti!");
+			HashMap<String, String> vastaus = dao.palautaPizza(palautapizza);
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
 			} else {
-				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui virhe.");
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
 
 			naytaSivu(request, response);
@@ -498,12 +516,17 @@ public class HallintaServlet extends HttpServlet {
 			if (tayteSaatavilla.equals("E") || tayteSaatavilla.equals("K")) {
 
 				// Katsotaan, onnistuuko lisäys
-				boolean success = dao.lisaaTayte(tayteNimi, tayteSaatavilla);
-				if (success == true) {
-					request.setAttribute("success", "Täyte lisätty tietokantaan onnistuneesti!");
+				HashMap<String, String> vastaus = dao.lisaaTayte(tayteNimi, tayteSaatavilla);
+				if (vastaus.get("virhe") != null) {
+					String virhe = vastaus.get("virhe");
+					request.setAttribute("virhe", virhe);
+				} else if (vastaus.get("success") != null) {
+					String success = vastaus.get("success");
+					request.setAttribute("success", success);
 				} else {
-					request.setAttribute("virhe", "Täytteen tiedot OK, mutta tietokantaan lisäyksessä tapahtui virhe.");
+					request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 				}
+
 				naytaSivu(request, response);
 			}
 

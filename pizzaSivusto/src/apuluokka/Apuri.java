@@ -12,9 +12,16 @@ public class Apuri {
 		return matcheri.find();
 	}
 	
+	// Puhelinnumeron validointi
+	public boolean validoiPuhNro(String puhnro) {
+		Pattern patterni = Pattern.compile("^[\\d]{8,12}$", Pattern.CASE_INSENSITIVE);
+		Matcher matcheri = patterni.matcher(puhnro);
+		return matcheri.find();
+	}
+	
 	// Regex patterni stringeille. Sallii kirjaimet, numerot ja välilyönnit.
 	public boolean validoiString(String stringi, String erikoismerkit, int maxpituus) {
-		Pattern patterni = Pattern.compile("^[\\w][\\w\\s+äö" + erikoismerkit + "]{3," + maxpituus + "}$");
+		Pattern patterni = Pattern.compile("^[\\w][\\w\\s+äö" + erikoismerkit + "]{2," + maxpituus + "}$");
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}
@@ -62,3 +69,4 @@ public class Apuri {
 	}
 	
 }
+

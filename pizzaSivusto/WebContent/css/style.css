@@ -33,6 +33,11 @@ body {
 	font-weight: bold;
 }
 
+/* Tab nav scrolling jemmaan */
+.tabs {
+	overflow: hidden;
+}
+
 h1, h2, h3 {
 	text-align: center;
 }

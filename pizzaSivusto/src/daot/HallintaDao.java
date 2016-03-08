@@ -252,8 +252,10 @@ public class HallintaDao {
 
 	}
 
-	public boolean lisaaPizza(String nimi, String hinta, String[] taytteet) {
-
+	public HashMap<String, String> lisaaPizza(String nimi, String hinta, String[] taytteet) {
+		
+		HashMap<String, String> vastaus = new HashMap<>();
+		
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
 		Kysely kysely = new Kysely(yhteys.getYhteys());
@@ -265,8 +267,9 @@ public class HallintaDao {
 		parametrit.add(nimi);
 
 		if (kysely.montaRivia(sql, parametrit) > 0) {
-			System.out.println("Virhe! Saman niminen pizza on jo tietokannassa.");
-			return false;
+			String virhe = "Saman niminen pizza on jo tietokannassa.";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		} else {
 			// Katsotaan, että kaikki täytteet ovat tietokannassa
 			sql = "SELECT tayte_id FROM Tayte WHERE tayte_id = ?";
@@ -279,9 +282,9 @@ public class HallintaDao {
 				}
 			}
 			if (kysely.montaRivia(sql, parametrit) < taytteet.length) {
-				System.out
-						.println("Virhe! Kaikkia täytteitä ei ole tietokannassa, tai on valittu kaksi samaa täytettä.");
-				return false;
+				String virhe = "Kaikkia täytteitä ei ole tietokannassa, tai on valittu kaksi samaa täytettä.";
+				vastaus.put("virhe", virhe);
+				return vastaus;
 			}
 		}
 
@@ -330,14 +333,20 @@ public class HallintaDao {
 
 		// Palautetaan true jos kaikki onnistui, false jos kaikki ei onnistunut
 		if (pizzasuccess == 1 && taytesuccess == taytteet.length) {
-			return true;
+			String success = "Pizza lisätty tietokantaan onnistuneesti!";
+			vastaus.put("success", success);
+			return vastaus;
 		} else {
-			return false;
+			String virhe = "Tietokantaan lisätessä tapahtui virhe.";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 	}
 
-	public boolean paivitaTayte(String id, String nimi, String saatavilla) {
+	public HashMap<String, String> paivitaTayte(String id, String nimi, String saatavilla) {
+		
+		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
@@ -349,8 +358,9 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		if (kysely.montaRivia(sql, parametrit) == 0) {
-			System.out.println("Virhe! Täytettä ei löydy tietokannasta");
-			return false;
+			String virhe = "Täytettä ei löydy tietokannasta";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		// Katsotaan, että muilla täytteillä ei ole samaa nimeä
@@ -360,8 +370,9 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		if (kysely.montaRivia(sql, parametrit) > 0) {
-			System.out.println("Virhe! Saman niminen täyte on jo tietokannassa.");
-			return false;
+			String virhe = "Saman niminen täyte on jo tietokannassa";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		sql = "UPDATE Tayte SET nimi = ?, saatavilla = ? WHERE tayte_id = ?";
@@ -373,18 +384,23 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
-		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
 
 		System.out.println("Täytteen päivitys palautti " + paivitys);
 
-		if (success == 1) {
-			return true;
+		if (rivit == 1) {
+			String success = "Täytteen tiedot päivitetty!";
+			vastaus.put("success", success);
+			return vastaus;
 		} else {
-			return false;
+			String virhe = "Täytteen päivitys tietokantaan ei onnistunut";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 	}
 
-	public boolean paivitaPizza(String id, String nimi, String hinta, String[] taytteet) {
+	public HashMap<String, String> paivitaPizza(String id, String nimi, String hinta, String[] taytteet) {
+		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
@@ -396,8 +412,9 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		if (kysely.montaRivia(sql, parametrit) == 0) {
-			System.out.println("Virhe! Pizzaa ei löydy tietokannasta");
-			return false;
+			String virhe = "Valittua pizzaa ei löydy tietokannasta";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		// Katsotaan, että muilla pizzoilla ei ole samaa nimeä
@@ -407,8 +424,9 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		if (kysely.montaRivia(sql, parametrit) > 0) {
-			System.out.println("Virhe! Saman niminen pizza on jo tietokannassa.");
-			return false;
+			String virhe = "Saman niminen pizza on jo tietokannassa";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		} else {
 			// Katsotaan, että kaikki täytteet ovat tietokannassa
 			sql = "SELECT tayte_id FROM Tayte WHERE tayte_id = ?";
@@ -421,9 +439,9 @@ public class HallintaDao {
 				}
 			}
 			if (kysely.montaRivia(sql, parametrit) < taytteet.length) {
-				System.out
-						.println("Virhe! Kaikkia täytteitä ei ole tietokannassa, tai on valittu kaksi samaa täytettä.");
-				return false;
+				String virhe = "Kaikkia täytteitä ei ole tietokannassa, tai on valittu kaksi samaa täytettä";
+				vastaus.put("virhe", virhe);
+				return vastaus;
 			}
 		}
 
@@ -475,14 +493,19 @@ public class HallintaDao {
 
 		// Palautetaan true jos kaikki onnistui, false jos kaikki ei onnistunut
 		if (pizzasuccess == 1 && taytesuccess == taytteet.length) {
-			return true;
+			String success = "Pizzan tiedot päivitetty!";
+			vastaus.put("success", success);
+			return vastaus;
 		} else {
-			return false;
+			String virhe = "Tietokantaa päivittäessä tapahtui virhe!";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 	}
 
-	public boolean poistaPizza(String id) {
+	public HashMap<String, String> poistaPizza(String id) {
+		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
@@ -494,27 +517,34 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		if (kysely.montaRivia(sql, parametrit) < 1) {
-			System.out.println("Virhe! Poistettavaa pizzaa ei ole olemassa, tai tapahtui muu tietokantavirhe.");
-			return false;
+			String virhe = "Poistettavaa pizzaa ei löydy tietokannasta";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		// Määritellään lause ja poistetaan pizza
 		sql = "UPDATE Pizza SET poistomerkinta = NOW() WHERE pizza_id = ?";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
-
-		if (success != 1) {
-			System.out.println("Virhe! Pizzan poistomerkintää tehdessä tapahtui virhe.");
-			return false;
-		}
-
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 
-		return true;
+		if (rivit != 1) {
+			String virhe = "Pizzan poistomerkinnän lisääminen tietokantaan ei onnistunut";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		else {
+			String success = "Pizza merkitty poistetuksi!";
+			vastaus.put("success", success);
+			return vastaus;
+		}
+		
 	}
 
-	public boolean palautaPizza(String id) {
+	public HashMap<String, String> palautaPizza(String id) {
+		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
@@ -526,27 +556,31 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		if (kysely.montaRivia(sql, parametrit) < 1) {
-			System.out.println("Virhe! Pizzaa ei löydy, tai sillä ei ole poistomerkintää.");
-			return false;
+			String virhe = "Pizzaa ei ole, tai sillä ei ole poistomerkintää";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		// Määritellään lause ja palautetaan pizza
 		sql = "UPDATE Pizza SET poistomerkinta = null WHERE pizza_id = ?";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
 
-		if (success != 1) {
-			System.out.println("Virhe! Pizzaa palauttaessa tapahtui virhe.");
-			return false;
+		if (rivit != 1) {
+			String virhe = "Pizzan palauttaminen tietokannassa ei onnistunut";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 
-		return true;
+		vastaus.put("success", "Pizza palautettu onnistuneesti");
+		return vastaus;
 	}
 
-	public boolean lisaaTayte(String nimi, String saatavilla) {
+	public HashMap<String, String> lisaaTayte(String nimi, String saatavilla) {
+		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
@@ -559,8 +593,9 @@ public class HallintaDao {
 		parametrit.add(nimi);
 
 		if (kysely.montaRivia(sql, parametrit) > 0) {
-			System.out.println("Virhe! Saman niminen täyte on jo tietokannassa.");
-			return false;
+			String virhe = "Saman niminen täyte on jo tietokannassa!";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 		// Lisätään täyte
@@ -568,12 +603,16 @@ public class HallintaDao {
 		parametrit.add(saatavilla);
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
-		int success = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
 
-		if (success == 1) {
-			return true;
+		if (rivit == 1) {
+			String success = "Täyte lisätty tietokantaan onnistuneesti!";
+			vastaus.put("success", success);
+			return vastaus;
 		} else {
-			return false;
+			String virhe = "Täytettä lisätessä tietokantaan tapahtui virhe";
+			vastaus.put("virhe", virhe);
+			return vastaus;
 		}
 
 	}

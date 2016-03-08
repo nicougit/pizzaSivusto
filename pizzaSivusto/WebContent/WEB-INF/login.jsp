@@ -22,9 +22,8 @@
 
 	<div class="row">
 		<div class="col s6">
-			<h2>Rekisteröityneet käyttäjät</h2>
-			Näytetään kehitysvaiheessa kaikki tietokannassa olevat käyttäjät.
-			Salasanat käyttäjille on salasana123 tai salasana. <br> <br>
+			<h2>Uudet käyttäjät</h2>
+			Tässä näytetään ainakin kehitysvaiheessa uusimmat 10 rekisteröitynyttä käyttäjää. user@pizza.fi, staff@pizza.fi ja admin@pizza.fi tilien salasanat on joko salasana tai salasana123.<br><br>
 			<table class="striped">
 				<thead>
 					<tr>
@@ -37,7 +36,7 @@
 				<tbody>
 					<c:forEach items="${kayttajat}" var="kayttaja">
 						<tr>
-							<td class="strong-id">${kayttaja.id }</td>
+							<td class="strong-id">${kayttaja.id }.</td>
 							<td>${kayttaja.tunnus }</td>
 							<td><c:out
 									value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out></td>
@@ -55,7 +54,7 @@
 					<br>
 					<ul class="tabs">
 						<li class="tab col s6"><a href="#kirjaudusisaan"
-							class="active">Kirjaudu sisään</a></li>
+							class="active">Kirjaudu</a></li>
 						<li class="tab col s6"><a href="#rekisteroidy">Rekisteröidy</a></li>
 					</ul>
 				</div>
@@ -80,14 +79,7 @@
 						<button class="btn waves-effect waves-light" type="submit"
 							name="action" value="login">Kirjaudu</button>
 					</div>
-					<c:if test="${not empty virhe }">
-						<div class="row errori">${virhe }<br>
-						</div>
-					</c:if>
 				</form>
-				<div class="row">
-					Ei käyttäjätiliä? Rekisteröidy <a href="#!">täältä</a>!
-				</div>
 			</div>
 			<div class="row" id="rekisteroidy">
 				<h2>Rekisteröidy</h2>
@@ -95,33 +87,36 @@
 					<div class="row">
 						<div class="input-field col s12">
 							<input type="email" id="kayttajatunnus" name="kayttajatunnus"
-								class="validate"> <label for="kayttajatunnus"
-								data-error="Virheellinen muoto">Sähköpostiosoite</label>
+								class="validate" required title="Sähköpostiosoite"> <label for="kayttajatunnus"
+								data-error="Virhe">Sähköpostiosoite</label>
 						</div>
 					</div>
 					<div class="row">
-						<div class="input-field col s12">
+						<div class="input-field col s6">
 							<input type="password" id="salasana-rek" name="salasana-rek"
-								class="validate"> <label for="salasana-rek"
-								data-error="Syötä salasana">Salasana</label>
+								class="validate" pattern=".{6,}" required title="Salasana - vähintään 6 merkkiä"> <label for="salasana-rek"
+								data-error="Lyhyt">Salasana</label>
+						</div>
+						<div class="input-field col s6">
+							<input type="password" id="salasana-rek2" name="salasana-rek2"
+								class="validate" pattern=".{6,}" required title="Salasana uudelleen - vähintään 6 merkkiä"> <label for="salasana-rek2"
+								data-error="Lyhyt">Salasana uudelleen</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s6">
+							<input type="text" id="etunimi" name="etunimi" class="validate" pattern="[\wäöå-+]{2,}" required title="Etunimi">
+							<label for="etunimi" data-error="Virhe">Etunimi</label>
+						</div>
+						<div class="input-field col s6">
+							<input type="text" id="sukunimi" name="sukunimi" class="validate" pattern="[\wäöå-+]{2,}" required title="Sukunimi">
+							<label for="sukunimi" data-error="Virhe">Sukunimi</label>
 						</div>
 					</div>
 					<div class="row">
 						<div class="input-field col s12">
-							<input type="text" id="etunimi" name="etunimi" class="validate">
-							<label for="etunimi" data-error="Syötä etunimi">Etunimi</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<input type="text" id="sukunimi" name="sukunimi" class="validate">
-							<label for="sukunimi" data-error="Syötä sukunimi">Sukunimi</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s12">
-							<input type="text" id="puhelinnro" name="puhelinnro"> <label
-								for="puhelinnro">Puhelinnumero</label>
+							<input type="tel" id="puhelinnro" name="puhelinnro" class="validate" pattern=".{0}||[\d]{8,12}" title="Puhelinnumero - ilman välimerkkejä"> <label
+								for="puhelinnro" data-error="Virhe">Puhelinnumero</label>
 						</div>
 					</div>
 					<div class="row">
