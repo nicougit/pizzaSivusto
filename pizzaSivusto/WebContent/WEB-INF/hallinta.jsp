@@ -14,8 +14,8 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<div class="row" id="isonavi">
-		<div class="col s10 offset-s1">
+	<div class="row hide-on-small-only">
+		<div class="col s12 m12 l10 offset-l1">
 			<ul class="tabs">
 				<li class="tab col s12"><a href="#pizza-h" class="active">Pizzojen
 						hallinta</a></li>
@@ -26,19 +26,16 @@
 		</div>
 	</div>
 
-	<div class="row"id="pikkunavi">
+	<div class="row hide-on-med-and-up">
 		<div class="col s10 offset-s1">
 			<ul class="tabs">
 				<li class="tab col s12"><a href="#pizza-h" class="active">P
-						</a></li>
+				</a></li>
 				<li class="tab col s12"><a href="#pizza-l">L</a></li>
-				<li class="tab col s12"><a href="#tayte-h">T
-						</a></li>
+				<li class="tab col s12"><a href="#tayte-h">T </a></li>
 			</ul>
 		</div>
 	</div>
-
-
 
 	<div class="row" id="pizza-h">
 		<div class="col s12">
@@ -54,7 +51,7 @@
 							<tr>
 								<th>#</th>
 								<th>Pizzan tiedot</th>
-								<th>Täytteet</th>
+								<th class="hide-on-small-only">Täytteet</th>
 								<th>Hinta</th>
 								<th></th>
 							</tr>
@@ -78,7 +75,7 @@
 												pattern="yyyy-MM-dd" /> <fmt:formatDate
 												pattern="dd.MM.yyyy" value="${parsittuDate }" /></span>
 									</c:if></td>
-								<td class="pienifontti">${pizza.taytteet }</td>
+								<td class="pienifontti hide-on-small-only">${pizza.taytteet }</td>
 								<td><fmt:formatNumber type="number" minFractionDigits="2"
 										maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 									EUR</td>
@@ -103,11 +100,14 @@
 						</tbody>
 					</table>
 
-					<a class="waves-effect waves-light btn grey lighten-1"
-						onclick="window.print();" style="margin: 20px;"> <i
-						class="material-icons">insert_print</i>
-					</a>
-
+					<div class="row hide-on-small-only">
+						<div class="col s12">
+							<br> <a class="waves-effect waves-light btn"
+								onclick="window.print();"> <i class="material-icons">print</i>
+								Tulosta
+							</a>
+						</div>
+					</div>
 
 
 
@@ -127,7 +127,7 @@
 				<c:otherwise>
 					<div class="row">
 						<form action="hallinta" method="post">
-							<div class="col s10 offset-s1">
+							<div class="col s12 m12 l10 offset-l1">
 								<div class="row">
 									<div class="input-field col s9">
 										<input type="text" name="pizzanimi" id="pizzanimi"
@@ -140,7 +140,8 @@
 											for="pizzahinta" data-error="Virhe">Pizzan hinta</label>
 									</div>
 								</div>
-								<div class="row" id="pizza-taytteet">
+								<!-- Täytteiden valinta -->
+								<div class="row hide-on-small-only" id="pizza-taytteet">
 									<label id="taytteet-label">Täytteet</label>
 									<table class="pizzataulu">
 										<tr>
@@ -166,24 +167,68 @@
 									</table>
 									<script src="js/tayte-input-limit.js"></script>
 								</div>
-	<div class="row">
-		<div class="col s12">
-			<button class="btn waves-effect waves-light btn-large" type="submit"
-				name="action" value="lisaapizza">Lisää pizza</button>
+								<!-- Mobiilille täytevalikko -->
+								<div class="row">
+									<div class="input-field col s12 hide-on-med-and-up">
+										<select multiple>
+											<c:forEach items="${taytteet}" var="tayte"
+												varStatus="loopCount">
+												<option value="${tayte.id }">${tayte.nimi }</option>
+											</c:forEach>
+										</select> <label>Täytteet</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col s12">
+										<button class="btn waves-effect waves-light btn-large"
+											type="submit" name="action" value="lisaapizza">Lisää
+											pizza</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</c:otherwise>
+			</c:choose>
 		</div>
-	</div>
-	</div>
-	</form>
-	</div>
-	</c:otherwise>
-	</c:choose>
-	</div>
 	</div>
 
 
 
 	<div class="row" id="tayte-h">
-		<div class="col s12 m6">
+		<div class="col s12 m12 l5 push-l7 " id="taytel">
+			<h2>Lisää täyte</h2>
+			<div class="row">
+				<form action="hallinta" method="post">
+					<div class="row">
+						<div class="col s12 input-field">
+							<input type="text" name="taytenimi" id="taytenimi"
+								autocomplete="off" class="fieldi"> <label
+								for="taytenimi">Täytteen nimi</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s6">
+							<input name="taytesaatavilla" type="radio" id="saatavilla"
+								value="1" checked> <label for="saatavilla">Saatavilla</label>
+						</div>
+						<div class="col s6">
+							<input name="taytesaatavilla" type="radio" id="eisaatavilla"
+								value="0"> <label for="eisaatavilla">Ei
+								saatavilla</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12">
+							<button class="btn waves-effect waves-light btn-large"
+								type="submit" name="action" value="lisaatayte">Lisää
+								täyte</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="col s12 m12 l6 pull-l5">
 			<h2>Täytteet</h2>
 			<c:choose>
 				<c:when test="${empty taytteet}">
@@ -222,10 +267,9 @@
 											</c:choose></td>
 										<td><a class="waves-effect waves-light btn"
 											href="?tayte-edit=${tayte.id }"><i class="material-icons">edit</i></a>
-											<a
+											<!-- <a
 											class="btn waves-effect waves-light red lighten-2 disabled"
-											href="#!"> <i class="material-icons">delete</i>
-										</a></td>
+											href="#!"> <i class="material-icons">delete</i> --> </a></td>
 									</c:forEach>
 								</tbody>
 							</table>
@@ -233,38 +277,6 @@
 					</div>
 				</c:otherwise>
 			</c:choose>
-		</div>
-		<div class="col s12 m6 offset-s1" id="taytel">
-			<h2>Lisää täyte</h2>
-			<div class="row">
-				<form action="hallinta" method="post">
-					<div class="row">
-						<div class="col s12 input-field">
-							<input type="text" name="taytenimi" id="taytenimi"
-								autocomplete="off" class="fieldi"> <label
-								for="taytenimi">Täytteen nimi</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col s6">
-							<input name="taytesaatavilla" type="radio" id="saatavilla"
-								value="1" checked> <label for="saatavilla">Saatavilla</label>
-						</div>
-						<div class="col s6">
-							<input name="taytesaatavilla" type="radio" id="eisaatavilla"
-								value="0"> <label for="eisaatavilla">Ei
-								saatavilla</label>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col s12">
-							<button class="btn waves-effect waves-light btn-large"
-								type="submit" name="action" value="lisaatayte">Lisää
-								täyte</button>
-						</div>
-					</div>
-				</form>
-			</div>
 		</div>
 	</div>
 

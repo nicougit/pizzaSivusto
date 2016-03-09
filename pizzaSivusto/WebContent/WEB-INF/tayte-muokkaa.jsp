@@ -15,50 +15,29 @@
 	<jsp:include page="header.jsp"></jsp:include>
 
 	<div class="row">
-		<div class="col s10 offset-s1">
-
-			<c:if test="${not empty virhe }">
-				<h1>Virhe</h1>
-				<p class="flow-text center-align" style="color: red;">${virhe }<br>
-					<br> <a class="btn waves-effect waves-light btn-large"
-						href="${pathi }/hallinta">Takaisin hallintasivulle</a>
-				</p>
-			</c:if>
-
-			<c:if test="${not empty success }">
-				<h1>Onnistui</h1>
-				<p class="flow-text center-align" style="color: green;">${success }<br>
-					<br> <a class="btn waves-effect waves-light btn-large"
-						href="${pathi }/hallinta">Takaisin hallintasivulle</a>
-				</p>
-			</c:if>
-		</div>
-	</div>
-
-	<div class="row">
 		<div class="col s12">
 			<form action="hallinta" method="post">
 				<h2>Muokkaa täytettä</h2>
 				<div class="row">
-					<div class="col s10 offset-s1">
+					<div class="col s12 m12 l10 offset-l1">
 						<div class="row">
-							<div class="input-field col s2">
+							<div class="input-field col s4 m4 l2">
 								<input type="text" name="tayteid" id="tayteid"
 									value="${tayte.id }" disabled> <label for="tayteid">Täytteen
 									ID</label> <input type="hidden" name="tayteid" value="${tayte.id }">
 							</div>
-							<div class="input-field col s4">
+							<div class="input-field col s8 m8 l4">
 								<input type="text" name="taytenimi" id="taytenimi"
 									autocomplete="off" value="${tayte.nimi }"> <label
 									for="taytenimi">Täytteen nimi</label>
 							</div>
-							<div class="input-field col s2">
+							<div class="input-field col s4 m3 l3">
 								<input name="taytesaatavilla" type="radio" id="saatavilla"
 									value="1"
 									<c:if test="${tayte.saatavilla == true }"> checked</c:if>>
 								<label for="saatavilla">Saatavilla</label><br>
 							</div>
-							<div class="input-field col s3">
+							<div class="input-field col s5 m5 l3">
 								<input name="taytesaatavilla" type="radio" id="eisaatavilla"
 									value="0"
 									<c:if test="${tayte.saatavilla == false }"> checked</c:if>>
@@ -77,7 +56,7 @@
 			</form>
 		</div>
 		<div class="row">
-			<div class="col s10 offset-s1">
+			<div class="col s12 m12 l10 offset-l1">
 				<c:choose>
 					<c:when test="${empty pizzat }">
 						<h3>Yksikään pizza ei käytä tätä täytettä</h3>

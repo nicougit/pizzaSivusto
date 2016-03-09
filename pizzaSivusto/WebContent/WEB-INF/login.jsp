@@ -21,7 +21,96 @@
 	<div class="divider"></div>
 
 	<div class="row">
-		<div class="col s6">
+		<div class="col s12 m12 l5 push-l7">
+			<div class="row">
+				<div class="col s12">
+					<br>
+					<ul class="tabs">
+						<li class="tab col s6"><a href="#kirjaudusisaan"
+							class="active">Kirjaudu</a></li>
+						<li class="tab col s6"><a href="#rekisteroidy">Rekisteröidy</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="row" id="kirjaudusisaan">
+				<form method="post" action="login">
+					<h2>Kirjaudu sisään</h2>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="email" name="kayttajanimi" class="validate"
+								id="kayttajanimi" autocomplete="off"> <label
+								for="kayttajanimi" data-error="Virheellinen tunnus">Sähköpostiosoite</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="password" name="salasana" id="salasana"> <label
+								for="salasana">Salasana</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<button class="btn waves-effect waves-light" type="submit"
+								name="action" value="login">Kirjaudu</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="row" id="rekisteroidy">
+				<h2>Rekisteröidy</h2>
+				<form action="login" method="post">
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="email" id="kayttajatunnus" name="kayttajatunnus"
+								class="validate" required title="Sähköpostiosoite"> <label
+								for="kayttajatunnus" data-error="Virhe">Sähköpostiosoite</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s6">
+							<input type="password" id="salasana-rek" name="salasana-rek"
+								class="validate" pattern=".{6,}" required
+								title="Salasana - vähintään 6 merkkiä"> <label
+								for="salasana-rek" data-error="Lyhyt">Salasana</label>
+						</div>
+						<div class="input-field col s6">
+							<input type="password" id="salasana-rek2" name="salasana-rek2"
+								class="validate" pattern=".{6,}" required
+								title="Salasana uudelleen - vähintään 6 merkkiä"> <label
+								for="salasana-rek2" data-error="Lyhyt">Salasana
+								uudelleen</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s6">
+							<input type="text" id="etunimi" name="etunimi" class="validate"
+								pattern="[\wäöå-+]{2,}" required title="Etunimi"> <label
+								for="etunimi" data-error="Virhe">Etunimi</label>
+						</div>
+						<div class="input-field col s6">
+							<input type="text" id="sukunimi" name="sukunimi" class="validate"
+								pattern="[\wäöå-+]{2,}" required title="Sukunimi"> <label
+								for="sukunimi" data-error="Virhe">Sukunimi</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<input type="tel" id="puhelinnro" name="puhelinnro"
+								class="validate" pattern=".{0}||[\d]{8,12}"
+								title="Puhelinnumero - ilman välimerkkejä"> <label
+								for="puhelinnro" data-error="Virhe">Puhelinnumero</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<button class="btn waves-effect waves-light" type="submit"
+								name="action" value="rekisteroidy">Rekisteröidy</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="col s12 m12 l6 pull-l5">
 			<div class="row center-align">
 				<h2>Uudet käyttäjät</h2>
 				Tässä näytetään ainakin kehitysvaiheessa uusimmat 10
@@ -61,94 +150,7 @@
 			</c:choose>
 		</div>
 	</div>
-
-	<div class="col s5 offset-s1">
-		<div class="row">
-			<div class="col s12">
-				<br>
-				<ul class="tabs">
-					<li class="tab col s6"><a href="#kirjaudusisaan"
-						class="active">Kirjaudu</a></li>
-					<li class="tab col s6"><a href="#rekisteroidy">Rekisteröidy</a></li>
-				</ul>
-			</div>
-		</div>
-		<div class="row" id="kirjaudusisaan">
-			<form method="post" action="login">
-				<h2>Kirjaudu sisään</h2>
-				<div class="row">
-					<div class="input-field col s12">
-						<input type="email" name="kayttajanimi" class="validate"
-							id="kayttajanimi" autocomplete="off"> <label
-							for="kayttajanimi" data-error="Virheellinen tunnus">Sähköpostiosoite</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input type="password" name="salasana" id="salasana"> <label
-							for="salasana">Salasana</label>
-					</div>
-				</div>
-				<div class="row">
-					<button class="btn waves-effect waves-light" type="submit"
-						name="action" value="login">Kirjaudu</button>
-				</div>
-			</form>
-		</div>
-		<div class="row" id="rekisteroidy">
-			<h2>Rekisteröidy</h2>
-			<form action="login" method="post">
-				<div class="row">
-					<div class="input-field col s12">
-						<input type="email" id="kayttajatunnus" name="kayttajatunnus"
-							class="validate" required title="Sähköpostiosoite"> <label
-							for="kayttajatunnus" data-error="Virhe">Sähköpostiosoite</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s6">
-						<input type="password" id="salasana-rek" name="salasana-rek"
-							class="validate" pattern=".{6,}" required
-							title="Salasana - vähintään 6 merkkiä"> <label
-							for="salasana-rek" data-error="Lyhyt">Salasana</label>
-					</div>
-					<div class="input-field col s6">
-						<input type="password" id="salasana-rek2" name="salasana-rek2"
-							class="validate" pattern=".{6,}" required
-							title="Salasana uudelleen - vähintään 6 merkkiä"> <label
-							for="salasana-rek2" data-error="Lyhyt">Salasana uudelleen</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s6">
-						<input type="text" id="etunimi" name="etunimi" class="validate"
-							pattern="[\wäöå-+]{2,}" required title="Etunimi"> <label
-							for="etunimi" data-error="Virhe">Etunimi</label>
-					</div>
-					<div class="input-field col s6">
-						<input type="text" id="sukunimi" name="sukunimi" class="validate"
-							pattern="[\wäöå-+]{2,}" required title="Sukunimi"> <label
-							for="sukunimi" data-error="Virhe">Sukunimi</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input type="tel" id="puhelinnro" name="puhelinnro"
-							class="validate" pattern=".{0}||[\d]{8,12}"
-							title="Puhelinnumero - ilman välimerkkejä"> <label
-							for="puhelinnro" data-error="Virhe">Puhelinnumero</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<button class="btn waves-effect waves-light" type="submit"
-							name="action" value="rekisteroidy">Rekisteröidy</button>
-					</div>
-				</div>
-			</form>
-		</div>
 	</div>
-
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>
