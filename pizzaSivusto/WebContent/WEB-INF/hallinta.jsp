@@ -27,12 +27,13 @@
 	</div>
 
 	<div class="row hide-on-med-and-up">
-		<div class="col s10 offset-s1">
+		<div class="col s12">
 			<ul class="tabs">
-				<li class="tab col s12"><a href="#pizza-h" class="active">P
-				</a></li>
-				<li class="tab col s12"><a href="#pizza-l">L</a></li>
-				<li class="tab col s12"><a href="#tayte-h">T </a></li>
+				<li class="tab col s12"><a href="#pizza-h" class="active"><img src="img/pizza_gear.png" alt="P">
+						</a></li>
+				<li class="tab col s12"><a href="#pizza-l"><img src="img/pizza_add.png" alt="L"></a></li>
+				<li class="tab col s12"><a href="#tayte-h"><img src="img/pizza_zoom.png" alt="T">
+						</a></li>
 			</ul>
 		</div>
 	</div>
