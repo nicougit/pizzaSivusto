@@ -11,7 +11,7 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<h1 class="firmanlogo">Castello é Fiori</h1>
+	<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
 	<div class="center-align">
 		<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
 			aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
@@ -121,7 +121,7 @@
 			<c:choose>
 				<c:when test="${empty kayttajat }">
 					<div class="row center-align errori">Tietokannassa ei ole
-						käyttäjiä, tai niitä noutaessa tapahtui virhe.
+						käyttäjiä, tai niitä noutaessa tapahtui virhe.</div>
 				</c:when>
 				<c:otherwise>
 					<div class="row">
@@ -130,7 +130,6 @@
 								<tr>
 									<th>ID</th>
 									<th>Login</th>
-									<th>Nimi</th>
 									<th>Tyyppi</th>
 								</tr>
 							</thead>
@@ -139,18 +138,15 @@
 									<tr>
 										<td class="strong-id">${kayttaja.id }.</td>
 										<td>${kayttaja.tunnus }</td>
-										<td><c:out
-												value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out></td>
 										<td>${kayttaja.tyyppi }</td>
 									</tr>
 								</c:forEach>
 							</tbody>
 						</table>
+					</div>
 				</c:otherwise>
 			</c:choose>
 		</div>
-	</div>
-	</div>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>

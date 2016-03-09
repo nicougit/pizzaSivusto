@@ -61,54 +61,26 @@
 									data-error="Virhe">Pizzan hinta</label>
 							</div>
 						</div>
-						<!-- Täytevalikko -->
-						<div class="row hide-on-small-only" id="pizza-taytteet">
+						<div class="row" id="pizza-taytteet">
 							<label id="taytteet-label">Täytteet</label>
-							<table class="taytetaulu" id="pizzataulu">
-								<tr>
-									<c:forEach items="${taytteet}" var="tayte"
-										varStatus="loopCount">
-										<c:forEach items="${pizza.tayteIdt }" var="pizzantaytteet">
-											<c:if test="${pizzantaytteet == tayte.id }">
-												<c:set var="ontayte" value="1"></c:set>
-											</c:if>
-										</c:forEach>
-										<c:if
-											test="${loopCount.index % 4 == 0 && loopCount.index != 0}">
-								</tr>
-								<tr>
-									</c:if>
-									<td><input type="checkbox" id="${tayte.id }"
-										name="pizzatayte" value="${tayte.id }"
-										<c:if test="${ontayte == 1 }"> checked</c:if>><label
-										for="${tayte.id }">${tayte.nimi }</label></td>
+							<br><br>
+							<div class="row">
+								<c:forEach items="${taytteet}" var="tayte" varStatus="loopCount">
+									<c:forEach items="${pizza.tayteIdt }" var="pizzantaytteet">
+										<c:if test="${pizzantaytteet == tayte.id }">
+											<c:set var="ontayte" value="1"></c:set>
+										</c:if>
+									</c:forEach>
+									<div class="col s6 m4 l3 taytediv">
+										<input type="checkbox" id="${tayte.id }" name="pizzatayte"
+											value="${tayte.id }"
+											<c:if test="${ontayte == 1 }"> checked</c:if>><label
+											for="${tayte.id }">${tayte.nimi }</label>
+									</div>
 									<c:set var="ontayte" value="0"></c:set>
-									<c:if
-										test="${fn:length(taytteet) == loopCount.count && fn:length(taytteet) % 4 != 0}">
-										<td colspan="${4 - fn:length(taytteet) % 4 }"></td>
-									</c:if>
-									</c:forEach>
-								</tr>
-							</table>
-							<script src="js/tayte-input-limit.js"></script>
-						</div>
-						<!-- Mobiilille täytevalikko -->
-						<div class="row">
-							<div class="input-field col s12 hide-on-med-and-up">
-								<select multiple>
-									<c:forEach items="${taytteet}" var="tayte"
-										varStatus="loopCount">
-										<c:forEach items="${pizza.tayteIdt }" var="pizzantaytteet">
-											<c:if test="${pizzantaytteet == tayte.id }">
-												<c:set var="ontayte" value="1"></c:set>
-											</c:if>
-										</c:forEach>
-										<option value="${tayte.id }"
-											<c:if test="${ontayte == 1 }"> selected</c:if>>${tayte.nimi }</option>
-										<c:set var="ontayte" value="0"></c:set>
-									</c:forEach>
-								</select> <label>Täytteet</label>
+								</c:forEach>
 							</div>
+							<script src="js/tayte-input-limit.js"></script>
 						</div>
 						<div class="row">
 							<a class="btn waves-effect waves-light btn-large red lighten-2"

@@ -29,11 +29,12 @@
 	<div class="row hide-on-med-and-up">
 		<div class="col s12">
 			<ul class="tabs">
-				<li class="tab col s12"><a href="#pizza-h" class="active"><img src="img/pizza_gear.png" alt="P">
-						</a></li>
-				<li class="tab col s12"><a href="#pizza-l"><img src="img/pizza_add.png" alt="L"></a></li>
-				<li class="tab col s12"><a href="#tayte-h"><img src="img/pizza_zoom.png" alt="T">
-						</a></li>
+				<li class="tab col s12"><a href="#pizza-h" class="active"><img
+						src="img/pizza_gear.png" alt="P"> </a></li>
+				<li class="tab col s12"><a href="#pizza-l"><img
+						src="img/pizza_add.png" alt="L"></a></li>
+				<li class="tab col s12"><a href="#tayte-h"><img
+						src="img/pizza_zoom.png" alt="T"> </a></li>
 			</ul>
 		</div>
 	</div>
@@ -50,7 +51,7 @@
 					<table class="bordered">
 						<thead>
 							<tr>
-								<th>#</th>
+								<th class="hide-on-small-only">#</th>
 								<th>Pizzan tiedot</th>
 								<th class="hide-on-small-only">Täytteet</th>
 								<th>Hinta</th>
@@ -67,7 +68,7 @@
 										<tr>
 									</c:otherwise>
 								</c:choose>
-								<td class="strong-id">${pizza.id }.</td>
+								<td class="strong-id hide-on-small-only">${pizza.id }.</td>
 								<td>${pizza.nimi }<c:if
 										test="${pizza.poistomerkinta != null }">
 										<br>
@@ -130,54 +131,30 @@
 						<form action="hallinta" method="post">
 							<div class="col s12 m12 l10 offset-l1">
 								<div class="row">
-									<div class="input-field col s9">
+									<div class="input-field col s12 m9 l9">
 										<input type="text" name="pizzanimi" id="pizzanimi"
 											autocomplete="off"> <label for="pizzanimi">Pizzan
 											nimi</label>
 									</div>
-									<div class="input-field col s3">
+									<div class="input-field col s12 m3 l3">
 										<input type="number" class="validate" min="0" step="0.05"
 											name="pizzahinta" id="pizzahinta" autocomplete="off"><label
 											for="pizzahinta" data-error="Virhe">Pizzan hinta</label>
 									</div>
 								</div>
 								<!-- Täytteiden valinta -->
-								<div class="row hide-on-small-only" id="pizza-taytteet">
-									<label id="taytteet-label">Täytteet</label>
-									<table class="pizzataulu">
-										<tr>
-											<c:forEach items="${taytteet}" var="tayte"
-												varStatus="loopCount">
-												<c:if
-													test="${loopCount.index % 4 == 0 && loopCount.index != 0}">
-										</tr>
-										<tr>
-											</c:if>
-											<td><input type="checkbox" id="${tayte.id }"
-												name="pizzatayte" value="${tayte.id }"
-												<c:if test="${tayte.saatavilla == false }">disabled="disabled"
-		</c:if>><label
-												for="${tayte.id }">${tayte.nimi }</label></td>
-											<c:if
-												test="${fn:length(taytteet) == loopCount.count && fn:length(taytteet) % 4 != 0}">
-												<td colspan="${4 - fn:length(taytteet) % 4 }"></td>
-											</c:if>
-											</c:forEach>
-
-										</tr>
-									</table>
-									<script src="js/tayte-input-limit.js"></script>
-								</div>
-								<!-- Mobiilille täytevalikko -->
-								<div class="row">
-									<div class="input-field col s12 hide-on-med-and-up">
-										<select multiple>
-											<c:forEach items="${taytteet}" var="tayte"
-												varStatus="loopCount">
-												<option value="${tayte.id }">${tayte.nimi }</option>
-											</c:forEach>
-										</select> <label>Täytteet</label>
+								<div class="row" id="pizza-taytteet">
+									<label id="taytteet-label">Täytteet</label> <br> <br>
+									<div class="row">
+										<c:forEach items="${taytteet}" var="tayte"
+											varStatus="loopCount">
+											<div class="col s6 m4 l3 taytediv">
+												<input type="checkbox" id="${tayte.id }" name="pizzatayte"
+													value="${tayte.id }"><label for="${tayte.id }">${tayte.nimi }</label>
+											</div>
+										</c:forEach>
 									</div>
+									<script src="js/tayte-input-limit.js"></script>
 								</div>
 								<div class="row">
 									<div class="col s12">
@@ -242,7 +219,7 @@
 							<table class="bordered">
 								<thead>
 									<tr>
-										<th>#</th>
+										<th class="hide-on-small-only">#</th>
 										<th>Täyte</th>
 										<th>Saatavilla</th>
 										<th></th>
@@ -258,7 +235,7 @@
 												<tr>
 											</c:otherwise>
 										</c:choose>
-										<td class="strong-id">${tayte.id }.</td>
+										<td class="strong-id hide-on-small-only">${tayte.id }.</td>
 										<td>${tayte.nimi }</td>
 										<td><c:choose>
 												<c:when test="${tayte.saatavilla == true }">Kyllä</c:when>
@@ -270,7 +247,7 @@
 											href="?tayte-edit=${tayte.id }"><i class="material-icons">edit</i></a>
 											<!-- <a
 											class="btn waves-effect waves-light red lighten-2 disabled"
-											href="#!"> <i class="material-icons">delete</i> --> </a></td>
+											href="#!"> <i class="material-icons">delete</i></a> --></td>
 									</c:forEach>
 								</tbody>
 							</table>

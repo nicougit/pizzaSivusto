@@ -13,7 +13,7 @@
 	<jsp:include page="header.jsp"></jsp:include>
 	<div id="row">
 		<div class="col s12 center-align">
-			<h1 class="firmanlogo">Castello é Fiori</h1>
+			<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
 			<h2>
 				Tervetuloa takaisin,
 				<c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out>
