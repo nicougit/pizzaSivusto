@@ -14,14 +14,26 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<div class="row">
+	<div class="row" id="isonavi">
 		<div class="col s10 offset-s1">
 			<ul class="tabs">
-				<li class="tab col s3"><a href="#pizza-h" class="active">Pizzojen
+				<li class="tab col s12"><a href="#pizza-h" class="active">Pizzojen
 						hallinta</a></li>
-				<li class="tab col s3"><a href="#pizza-l">Pizzan lisäys</a></li>
-				<li class="tab col s3"><a href="#tayte-h">Täytteiden
+				<li class="tab col s12"><a href="#pizza-l">Pizzan lisäys</a></li>
+				<li class="tab col s12"><a href="#tayte-h">Täytteiden
 						hallinta</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="row"id="pikkunavi">
+		<div class="col s10 offset-s1">
+			<ul class="tabs">
+				<li class="tab col s12"><a href="#pizza-h" class="active">P
+						</a></li>
+				<li class="tab col s12"><a href="#pizza-l">L</a></li>
+				<li class="tab col s12"><a href="#tayte-h">T
+						</a></li>
 			</ul>
 		</div>
 	</div>
@@ -76,7 +88,7 @@
 										<c:when test="${pizza.poistomerkinta == null}">
 											<a class="waves-effect waves-light btn red lighten-2"
 												href="?pizza-poista=${pizza.id }"> <i
-												class="material-icons">delete</i>
+												class="material-icons large">delete</i>
 											</a>
 										</c:when>
 										<c:otherwise>
@@ -141,7 +153,8 @@
 											</c:if>
 											<td><input type="checkbox" id="${tayte.id }"
 												name="pizzatayte" value="${tayte.id }"
-												<c:if test="${tayte.saatavilla == false }">disabled="disabled"</c:if>><label
+												<c:if test="${tayte.saatavilla == false }">disabled="disabled"
+		</c:if>><label
 												for="${tayte.id }">${tayte.nimi }</label></td>
 											<c:if
 												test="${fn:length(taytteet) == loopCount.count && fn:length(taytteet) % 4 != 0}">
@@ -153,25 +166,24 @@
 									</table>
 									<script src="js/tayte-input-limit.js"></script>
 								</div>
-								<div class="row">
-									<div class="col s12">
-										<button class="btn waves-effect waves-light btn-large"
-											type="submit" name="action" value="lisaapizza">Lisää
-											pizza</button>
-									</div>
-								</div>
-							</div>
-						</form>
-					</div>
-				</c:otherwise>
-			</c:choose>
+	<div class="row">
+		<div class="col s12">
+			<button class="btn waves-effect waves-light btn-large" type="submit"
+				name="action" value="lisaapizza">Lisää pizza</button>
 		</div>
+	</div>
+	</div>
+	</form>
+	</div>
+	</c:otherwise>
+	</c:choose>
+	</div>
 	</div>
 
 
 
 	<div class="row" id="tayte-h">
-		<div class="col s6">
+		<div class="col s12 m6">
 			<h2>Täytteet</h2>
 			<c:choose>
 				<c:when test="${empty taytteet}">
@@ -222,7 +234,7 @@
 				</c:otherwise>
 			</c:choose>
 		</div>
-		<div class="col s5 offset-s1" id="taytel">
+		<div class="col s12 m6 offset-s1" id="taytel">
 			<h2>Lisää täyte</h2>
 			<div class="row">
 				<form action="hallinta" method="post">
@@ -255,6 +267,8 @@
 			</div>
 		</div>
 	</div>
+
+
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>
