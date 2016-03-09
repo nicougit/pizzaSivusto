@@ -3,7 +3,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="pathi" value="/pizzaSivusto"></c:set>
 <div class="navbar-fixed">
 	<c:if test="${not empty kayttaja }">
 		<ul id="user-dropdowni" class="dropdown-content">
@@ -11,15 +10,16 @@
 			<li><a href="#!">Tilaushistoria</a></li>
 			<c:if
 				test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
-				<li><a href="${pathi }/hallinta">Hallinta</a></li>
+				
+				<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
 			</c:if>
 			<li class="divider"></li>
-			<li><a href="${pathi }/login?logout=true">Kirjaudu ulos</a></li>
+			<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu ulos</a></li>
 		</ul>
 	</c:if>
 	<nav>
 		<div class="nav-wrapper">
-			<a href="${pathi }" class="brand-logo">Castello é Fiori</a> <a
+			<a href="<c:url value='/login'/>" class="brand-logo">Castello é Fiori</a> <a
 				href="#" data-activates="mobiili-nav" class="button-collapse"><i
 				class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
@@ -34,7 +34,7 @@
 								class="material-icons right">arrow_drop_down</i></a></li>
 					</c:when>
 					<c:otherwise>
-						<li><a href="${pathi }/login">Kirjaudu sisään</a></li>
+						<li><a href="<c:url value='/login'/>">Kirjaudu sisään</a></li>
 					</c:otherwise>
 				</c:choose>
 			</ul>
@@ -48,13 +48,13 @@
 							<li><a href="#!">Tilaushistoria</a></li>
 							<c:if
 								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
-								<li><a href="${pathi }/hallinta">Hallinta</a></li>
+								<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
 							</c:if>
-							<li><a href="${pathi }/login?logout=true">Kirjaudu ulos</a></li>
+							<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu ulos</a></li>
 						</c:when>
 						<c:otherwise>
 							<li>
-							<li><a href="${pathi }/login">Kirjaudu sisään</a></li>
+							<li><a href="<c:url value='/login'/>">Kirjaudu sisään</a></li>
 						</c:otherwise>
 					</c:choose>
 			</ul>

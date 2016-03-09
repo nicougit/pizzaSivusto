@@ -11,11 +11,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Castello E Fiori Hallintasivu</title>
 <jsp:include page="head-include.jsp"></jsp:include>
-<script>
-	$(document).ready(function() {
-		$('ul.tabs').tabs();
-	});
-</script>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -38,7 +33,8 @@
 			<h2>Pizzat</h2>
 			<c:choose>
 				<c:when test="${empty pizzat}">
-					<div class="errori">Listalla ei ole vielä yhtään pizzaa.</div>
+					<div class="errori center-align">Listalla ei ole pizzoja, tai
+						niitä ei saatu noudettua tietokannasta.</div>
 				</c:when>
 				<c:otherwise>
 					<table class="bordered">
@@ -94,12 +90,12 @@
 							</c:forEach>
 						</tbody>
 					</table>
-										
+
 					<a class="waves-effect waves-light btn grey lighten-1"
 						onclick="window.print();" style="margin: 20px;"> <i
 						class="material-icons">insert_print</i>
 					</a>
-					 
+
 
 
 
@@ -112,9 +108,9 @@
 			<h2>Pizzan lisäys tietokantaan</h2>
 			<c:choose>
 				<c:when test="${empty taytteet}">
-					<div class="errori">Pizzojen lisääminen ei onnistu, koska
-						tietokannassa ei ole vielä yhtään täytettä. Lisää ensiksi
-						täytteet.</div>
+					<div class="errori center-align">Pizzaa ei voi lisätä, koska
+						täytteitä ei ole, tai niitä ei saatu noudettua tietokannasta.
+						Kokeile lisätä ensin täytteet.</div>
 				</c:when>
 				<c:otherwise>
 					<div class="row">
@@ -179,51 +175,53 @@
 			<h2>Täytteet</h2>
 			<c:choose>
 				<c:when test="${empty taytteet}">
-					<div class="errori">Tietokanta ei sisällä vielä yhtään
-						täytettä.</div>
+					<div class="row errori center-align">Täytteitä ei ole, tai
+						niitä ei saatu noudettua tietokannasta.</div>
 				</c:when>
 				<c:otherwise>
-					<form action="hallinta" method="post">
-						<table class="bordered">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Täyte</th>
-									<th>Saatavilla</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${taytteet}" var="tayte">
-									<c:choose>
-										<c:when test="${tayte.saatavilla == false }">
-											<tr class="red lighten-5">
-										</c:when>
-										<c:otherwise>
-											<tr>
-										</c:otherwise>
-									</c:choose>
-									<td class="strong-id">${tayte.id }.</td>
-									<td>${tayte.nimi }</td>
-									<td><c:choose>
-											<c:when test="${tayte.saatavilla == true }">Kyllä</c:when>
+					<div class="row">
+						<form action="hallinta" method="post">
+							<table class="bordered">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Täyte</th>
+										<th>Saatavilla</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${taytteet}" var="tayte">
+										<c:choose>
+											<c:when test="${tayte.saatavilla == false }">
+												<tr class="red lighten-5">
+											</c:when>
 											<c:otherwise>
+												<tr>
+											</c:otherwise>
+										</c:choose>
+										<td class="strong-id">${tayte.id }.</td>
+										<td>${tayte.nimi }</td>
+										<td><c:choose>
+												<c:when test="${tayte.saatavilla == true }">Kyllä</c:when>
+												<c:otherwise>
 											Ei
 										</c:otherwise>
-										</c:choose></td>
-									<td><a class="waves-effect waves-light btn"
-										href="?tayte-edit=${tayte.id }"><i class="material-icons">edit</i></a>
-										<a class="btn waves-effect waves-light red lighten-2 disabled"
-										href="#!"> <i class="material-icons">delete</i>
-									</a></td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-					</form>
+											</c:choose></td>
+										<td><a class="waves-effect waves-light btn"
+											href="?tayte-edit=${tayte.id }"><i class="material-icons">edit</i></a>
+											<a
+											class="btn waves-effect waves-light red lighten-2 disabled"
+											href="#!"> <i class="material-icons">delete</i>
+										</a></td>
+									</c:forEach>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</c:otherwise>
+			</c:choose>
 		</div>
-		</c:otherwise>
-		</c:choose>
 		<div class="col s5 offset-s1" id="taytel">
 			<h2>Lisää täyte</h2>
 			<div class="row">

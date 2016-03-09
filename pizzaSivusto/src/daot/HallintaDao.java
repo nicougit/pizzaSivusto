@@ -1,6 +1,5 @@
 package daot;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,9 +17,13 @@ public class HallintaDao {
 	// pizzat joissa on joku tietty täyte
 	// Muussa tapauksessa kelpaa mitkä tahansa arvot
 	public ArrayList<Pizza> haeKaikkiPizzat(int tyyppi, String tayteId) {
+		ArrayList<Pizza> pizzat = new ArrayList<>();
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			return pizzat;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		ArrayList<String> parametrit = new ArrayList<>();
@@ -72,9 +75,7 @@ public class HallintaDao {
 
 		}
 
-		// Luodaan ArrayList pizzoille ja siirretään HashMapin pizzat sinne
-		ArrayList<Pizza> pizzat = new ArrayList<>();
-
+		// Siirretään HashMapin entryt ArrayListiin
 		for (Map.Entry<Integer, Pizza> entry : pizzaVarasto.entrySet()) {
 			pizzat.add(entry.getValue());
 		}
@@ -143,6 +144,9 @@ public class HallintaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			return null;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, tayte_id, t.nimi AS tayte, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE pizza_id = ?";
@@ -204,12 +208,15 @@ public class HallintaDao {
 	}
 
 	public ArrayList<Tayte> haeKaikkiTaytteet() {
-
+		ArrayList<Tayte> taytteet = new ArrayList<>();
+		
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			return taytteet;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		ArrayList<Tayte> taytteet = new ArrayList<>();
 
 		String sql = "SELECT tayte_id, nimi, saatavilla FROM Tayte";
 
@@ -258,6 +265,11 @@ public class HallintaDao {
 		
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		// Katsotaan ensin, että samannimistä pizzaa ei ole, ja että kaikki
@@ -350,6 +362,11 @@ public class HallintaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		// Katsotaan, että kyseinen tayte_id on tietokannassa
@@ -509,6 +526,11 @@ public class HallintaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		// Määritellään lause ja parametrit
@@ -548,6 +570,11 @@ public class HallintaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		// Määritellään lause ja parametrit
@@ -584,6 +611,11 @@ public class HallintaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 

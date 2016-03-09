@@ -23,6 +23,11 @@ public class KayttajaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		
+		if (yhteys.getYhteys() == null) {
+			return kayttaja;
+		}
+		
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		// Suolan haku
@@ -102,6 +107,11 @@ public class KayttajaDao {
 
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
@@ -163,9 +173,13 @@ public class KayttajaDao {
 		// Suoritetaan haku
 
 		ArrayList<KayttajaLista> lista = new ArrayList<KayttajaLista>();
+		
 
 		Yhteys yhteysolio = new Yhteys();
 		Connection yhteys = yhteysolio.getYhteys();
+		if (yhteys == null) {
+			return lista;
+		}
 
 		try {
 			String sql = "SELECT id, tunnus, etunimi, sukunimi, tyyppi FROM Kayttaja ORDER BY id DESC LIMIT 10";
