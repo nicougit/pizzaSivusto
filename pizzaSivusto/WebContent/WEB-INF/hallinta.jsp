@@ -81,18 +81,31 @@
 								<td><fmt:formatNumber type="number" minFractionDigits="2"
 										maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 									EUR</td>
-								<td><a class="waves-effect waves-light btn"
-									href="?pizza-edit=${pizza.id }"><i class="material-icons">edit</i></a>
+								<td>
+								<a class='dropdown-button btn hide-on-large-only' href='#' data-activates='dd-${pizza.id }'><i class="material-icons">edit</i></a>
+								  <ul id="dd-${pizza.id }" class="dropdown-content">
+    <li><a href="?pizza-edit=${pizza.id }">Muokkaa</a></li>
+    									<c:choose>
+										<c:when test="${pizza.poistomerkinta == null}">
+<li><a href="?pizza-poista=${pizza.id }">Poista</a></li>
+										</c:when>
+										<c:otherwise>
+				<li><a href="?pizza-palauta=${pizza.id }">Palauta</a></li>
+										</c:otherwise>
+									</c:choose>
+  </ul>
+								<a class="waves-effect waves-light btn tooltipped hide-on-med-and-down"
+									href="?pizza-edit=${pizza.id }" data-position="left" data-delay="150" data-tooltip="Muokkaa"><i class="material-icons">edit</i></a>
 									<c:choose>
 										<c:when test="${pizza.poistomerkinta == null}">
-											<a class="waves-effect waves-light btn red lighten-2"
-												href="?pizza-poista=${pizza.id }"> <i
+											<a class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
+												href="?pizza-poista=${pizza.id }" data-position="right" data-delay="150" data-tooltip="Poista"> <i
 												class="material-icons large">delete</i>
 											</a>
 										</c:when>
 										<c:otherwise>
-											<a class="waves-effect waves-light btn red lighten-2"
-												href="?pizza-palauta=${pizza.id }"> <i
+											<a class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
+												href="?pizza-palauta=${pizza.id }" data-position="right" data-delay="150" data-tooltip="Palauta"> <i
 												class="material-icons">visibility_off</i>
 											</a>
 										</c:otherwise>

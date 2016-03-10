@@ -50,8 +50,7 @@
 						<a class="btn waves-effect waves-light btn-large red lighten-2"
 							href="${pathi }/hallinta">Peruuta</a>
 						<button class="btn waves-effect waves-light btn-large"
-							type="submit" name="action" value="paivitatayte">Päivitä
-							tiedot</button>
+							type="submit" name="action" value="paivitatayte">Päivitä</button>
 					</div>
 				</div>
 			</form>

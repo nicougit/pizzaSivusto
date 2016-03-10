@@ -65,35 +65,29 @@
 								class="validate" required title="Sähköpostiosoite"> <label
 								for="kayttajatunnus" data-error="Virhe">Sähköpostiosoite</label>
 						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s6">
+						<div class="input-field col s12 m6 l6">
 							<input type="password" id="salasana-rek" name="salasana-rek"
 								class="validate" pattern=".{6,}" required
 								title="Salasana - vähintään 6 merkkiä"> <label
 								for="salasana-rek" data-error="Lyhyt">Salasana</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s12 m6 l6">
 							<input type="password" id="salasana-rek2" name="salasana-rek2"
 								class="validate" pattern=".{6,}" required
 								title="Salasana uudelleen - vähintään 6 merkkiä"> <label
 								for="salasana-rek2" data-error="Lyhyt">Salasana
 								uudelleen</label>
 						</div>
-					</div>
-					<div class="row">
-						<div class="input-field col s6">
+						<div class="input-field col s12 m6 l6">
 							<input type="text" id="etunimi" name="etunimi" class="validate"
 								pattern="[\wäöå-+]{2,}" required title="Etunimi"> <label
 								for="etunimi" data-error="Virhe">Etunimi</label>
 						</div>
-						<div class="input-field col s6">
+						<div class="input-field col s12 m6 l6">
 							<input type="text" id="sukunimi" name="sukunimi" class="validate"
 								pattern="[\wäöå-+]{2,}" required title="Sukunimi"> <label
 								for="sukunimi" data-error="Virhe">Sukunimi</label>
 						</div>
-					</div>
-					<div class="row">
 						<div class="input-field col s12">
 							<input type="tel" id="puhelinnro" name="puhelinnro"
 								class="validate" pattern=".{0}||[\d]{8,12}"
@@ -130,7 +124,7 @@
 								<tr>
 									<th>ID</th>
 									<th>Login</th>
-									<th>Tyyppi</th>
+									<th class="hide-on-small-only">Tyyppi</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -138,7 +132,7 @@
 									<tr>
 										<td class="strong-id">${kayttaja.id }.</td>
 										<td>${kayttaja.tunnus }</td>
-										<td>${kayttaja.tyyppi }</td>
+										<td class="hide-on-small-only">${kayttaja.tyyppi }</td>
 									</tr>
 								</c:forEach>
 							</tbody>

@@ -53,7 +53,6 @@
 							<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu ulos</a></li>
 						</c:when>
 						<c:otherwise>
-							<li>
 							<li><a href="<c:url value='/login'/>">Kirjaudu sisään</a></li>
 						</c:otherwise>
 					</c:choose>
