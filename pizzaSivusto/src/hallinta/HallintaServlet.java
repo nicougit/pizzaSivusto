@@ -205,7 +205,7 @@ public class HallintaServlet extends HttpServlet {
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
 
-			if (apuri.validoiString(pizzanimi, "", 30) != true) {
+			if (apuri.validoiString(pizzanimi, "-", 30) != true) {
 				String virhe = "Muokattavan pizzan nimi on virheellinen!";
 				virhe(request, response, virhe);
 			} else {
@@ -304,7 +304,7 @@ public class HallintaServlet extends HttpServlet {
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
 
-			if (apuri.validoiString(pizzanimi, "", 30) != true) {
+			if (apuri.validoiString(pizzanimi, "-", 30) != true) {
 				String virhe = "Lisättävän pizzan nimi on virheellinen!";
 				virhe(request, response, virhe);
 			} else {
@@ -383,7 +383,7 @@ public class HallintaServlet extends HttpServlet {
 		Apuri apuri = new Apuri();
 
 		if (tayteId != null && tayteNimi != null && tayteSaatavilla != null) {
-			if (apuri.validoiInt(tayteId, 11) == true && apuri.validoiString(tayteNimi, "", 20) == true) {
+			if (apuri.validoiInt(tayteId, 11) == true && apuri.validoiString(tayteNimi, "-", 20) == true) {
 				if (tayteSaatavilla.equals("0")) {
 					tayteSaatavilla = "E";
 				} else if (tayteSaatavilla.equals("1")) {

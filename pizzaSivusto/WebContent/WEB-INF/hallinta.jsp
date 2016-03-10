@@ -52,9 +52,9 @@
 						<thead>
 							<tr>
 								<th class="hide-on-small-only">#</th>
-								<th>Pizzan tiedot</th>
+								<th>Nimi</th>
 								<th class="hide-on-small-only">Täytteet</th>
-								<th>Hinta</th>
+								<th class="hide-on-small-only">Hinta</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -82,7 +82,8 @@
 										varStatus="taytecounter">
 										<c:choose>
 											<c:when test="${pizzantayte.saatavilla == false }">
-												<span class="errori">${pizzantayte.nimi }</span><c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+												<span class="errori tooltipped"  data-position="bottom"
+												data-delay="500" data-tooltip="${pizzantayte.nimi } ei saatavilla">${pizzantayte.nimi }</span><c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
 											</c:when>
 											<c:otherwise>
 												${pizzantayte.nimi }<c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
@@ -90,7 +91,7 @@
 										</c:choose>
 										
 									</c:forEach></td>
-								<td><fmt:formatNumber type="number" minFractionDigits="2"
+								<td class="hide-on-small-only"><fmt:formatNumber type="number" minFractionDigits="2"
 										maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 									EUR</td>
 								<td><a class='dropdown-button btn hide-on-large-only'
@@ -109,13 +110,13 @@
 									</ul> <a
 									class="waves-effect waves-light btn tooltipped hide-on-med-and-down"
 									href="?pizza-edit=${pizza.id }" data-position="left"
-									data-delay="150" data-tooltip="Muokkaa"><i
+									data-delay="500" data-tooltip="Muokkaa"><i
 										class="material-icons">edit</i></a> <c:choose>
 										<c:when test="${pizza.poistomerkinta == null}">
 											<a
 												class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
 												href="?pizza-poista=${pizza.id }" data-position="right"
-												data-delay="150" data-tooltip="Poista"> <i
+												data-delay="500" data-tooltip="Poista"> <i
 												class="material-icons large">delete</i>
 											</a>
 										</c:when>
@@ -123,7 +124,7 @@
 											<a
 												class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
 												href="?pizza-palauta=${pizza.id }" data-position="right"
-												data-delay="150" data-tooltip="Palauta"> <i
+												data-delay="500" data-tooltip="Palauta"> <i
 												class="material-icons">visibility_off</i>
 											</a>
 										</c:otherwise>
@@ -275,8 +276,9 @@
 											Ei
 										</c:otherwise>
 											</c:choose></td>
-										<td><a class="waves-effect waves-light btn"
-											href="?tayte-edit=${tayte.id }"><i class="material-icons">edit</i></a>
+										<td><a class="waves-effect waves-light btn tooltipped"
+											href="?tayte-edit=${tayte.id }" data-position="right"
+									data-delay="500" data-tooltip="Muokkaa"><i class="material-icons">edit</i></a>
 											<!-- <a
 											class="btn waves-effect waves-light red lighten-2 disabled"
 											href="#!"> <i class="material-icons">delete</i></a> --></td>
