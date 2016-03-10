@@ -7,7 +7,7 @@ public class Pizza {
 	int id;
 	String nimi;
 	double hinta;
-	String taytteet;
+	ArrayList<Tayte> taytteet;
 	String poistomerkinta;
 	ArrayList<String> tayteIdt;
 
@@ -16,7 +16,7 @@ public class Pizza {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Pizza(int id, String nimi, double hinta, String taytteet, String poistomerkinta,
+	public Pizza(int id, String nimi, double hinta, ArrayList<Tayte> taytteet, String poistomerkinta,
 			ArrayList<String> tayteIdt) {
 		super();
 		this.id = id;
@@ -51,11 +51,11 @@ public class Pizza {
 		this.hinta = hinta;
 	}
 
-	public String getTaytteet() {
+	public ArrayList<Tayte> getTaytteet() {
 		return taytteet;
 	}
 
-	public void setTaytteet(String taytteet) {
+	public void setTaytteet(ArrayList<Tayte> taytteet) {
 		this.taytteet = taytteet;
 	}
 

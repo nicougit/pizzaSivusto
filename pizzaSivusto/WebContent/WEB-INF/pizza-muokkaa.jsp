@@ -75,7 +75,7 @@
 										<input type="checkbox" id="${tayte.id }" name="pizzatayte"
 											value="${tayte.id }"
 											<c:if test="${ontayte == 1 }"> checked</c:if>><label
-											for="${tayte.id }">${tayte.nimi }</label>
+											for="${tayte.id }"<c:if test="${tayte.saatavilla == false }"> class="errori-light"</c:if>>${tayte.nimi }</label>
 									</div>
 									<c:set var="ontayte" value="0"></c:set>
 								</c:forEach>

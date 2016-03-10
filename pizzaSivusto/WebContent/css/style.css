@@ -25,7 +25,11 @@ body {
 }
 
 .errori {
-	color: #F00;
+	color: #ef5350;
+}
+
+.errori-light {
+	color: #ef9a9a;
 }
 
 /* Hallintasivulla ID:t boldilla */

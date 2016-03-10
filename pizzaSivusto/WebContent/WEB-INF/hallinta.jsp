@@ -77,35 +77,53 @@
 												pattern="yyyy-MM-dd" /> <fmt:formatDate
 												pattern="dd.MM.yyyy" value="${parsittuDate }" /></span>
 									</c:if></td>
-								<td class="pienifontti hide-on-small-only">${pizza.taytteet }</td>
+								<td class="pienifontti hide-on-small-only"><c:forEach
+										items="${pizza.taytteet }" var="pizzantayte"
+										varStatus="taytecounter">
+										<c:choose>
+											<c:when test="${pizzantayte.saatavilla == false }">
+												<span class="errori">${pizzantayte.nimi }</span><c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+											</c:when>
+											<c:otherwise>
+												${pizzantayte.nimi }<c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+											</c:otherwise>
+										</c:choose>
+										
+									</c:forEach></td>
 								<td><fmt:formatNumber type="number" minFractionDigits="2"
 										maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 									EUR</td>
-								<td>
-								<a class='dropdown-button btn hide-on-large-only' href='#' data-activates='dd-${pizza.id }'><i class="material-icons">edit</i></a>
-								  <ul id="dd-${pizza.id }" class="dropdown-content">
-    <li><a href="?pizza-edit=${pizza.id }">Muokkaa</a></li>
-    									<c:choose>
+								<td><a class='dropdown-button btn hide-on-large-only'
+									href='#' data-activates='dd-${pizza.id }'><i
+										class="material-icons">edit</i></a>
+									<ul id="dd-${pizza.id }" class="dropdown-content">
+										<li><a href="?pizza-edit=${pizza.id }">Muokkaa</a></li>
+										<c:choose>
+											<c:when test="${pizza.poistomerkinta == null}">
+												<li><a href="?pizza-poista=${pizza.id }">Poista</a></li>
+											</c:when>
+											<c:otherwise>
+												<li><a href="?pizza-palauta=${pizza.id }">Palauta</a></li>
+											</c:otherwise>
+										</c:choose>
+									</ul> <a
+									class="waves-effect waves-light btn tooltipped hide-on-med-and-down"
+									href="?pizza-edit=${pizza.id }" data-position="left"
+									data-delay="150" data-tooltip="Muokkaa"><i
+										class="material-icons">edit</i></a> <c:choose>
 										<c:when test="${pizza.poistomerkinta == null}">
-<li><a href="?pizza-poista=${pizza.id }">Poista</a></li>
-										</c:when>
-										<c:otherwise>
-				<li><a href="?pizza-palauta=${pizza.id }">Palauta</a></li>
-										</c:otherwise>
-									</c:choose>
-  </ul>
-								<a class="waves-effect waves-light btn tooltipped hide-on-med-and-down"
-									href="?pizza-edit=${pizza.id }" data-position="left" data-delay="150" data-tooltip="Muokkaa"><i class="material-icons">edit</i></a>
-									<c:choose>
-										<c:when test="${pizza.poistomerkinta == null}">
-											<a class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
-												href="?pizza-poista=${pizza.id }" data-position="right" data-delay="150" data-tooltip="Poista"> <i
+											<a
+												class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
+												href="?pizza-poista=${pizza.id }" data-position="right"
+												data-delay="150" data-tooltip="Poista"> <i
 												class="material-icons large">delete</i>
 											</a>
 										</c:when>
 										<c:otherwise>
-											<a class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
-												href="?pizza-palauta=${pizza.id }" data-position="right" data-delay="150" data-tooltip="Palauta"> <i
+											<a
+												class="waves-effect waves-light btn red lighten-2 tooltipped hide-on-med-and-down"
+												href="?pizza-palauta=${pizza.id }" data-position="right"
+												data-delay="150" data-tooltip="Palauta"> <i
 												class="material-icons">visibility_off</i>
 											</a>
 										</c:otherwise>
@@ -163,7 +181,8 @@
 											varStatus="loopCount">
 											<div class="col s6 m4 l3 taytediv">
 												<input type="checkbox" id="${tayte.id }" name="pizzatayte"
-													value="${tayte.id }"><label for="${tayte.id }">${tayte.nimi }</label>
+													value="${tayte.id }"><label for="${tayte.id }"<c:if test="${tayte.saatavilla == false }"> class="errori-light"</c:if>>${tayte.nimi }</label>
+													
 											</div>
 										</c:forEach>
 									</div>

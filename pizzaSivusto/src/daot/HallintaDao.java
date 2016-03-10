@@ -28,7 +28,7 @@ public class HallintaDao {
 
 		ArrayList<String> parametrit = new ArrayList<>();
 
-		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id)";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id)";
 
 		if (tyyppi == 1) {
 			sql += " WHERE tayte_id = ?";
@@ -55,21 +55,41 @@ public class HallintaDao {
 			String nimikanta = (String) pizzaMappi.get("pizza");
 			String hintaString = (String) pizzaMappi.get("hinta");
 			String tayteKanta = (String) pizzaMappi.get("tayte");
+			String tayteIdKanta = (String) pizzaMappi.get("tayte_id");
+			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
+			
+			Tayte tayte = new Tayte();
+			
+			// Täyte-oliolle tiedot
+			tayte.setId(Integer.parseInt(tayteIdKanta));
+			tayte.setNimi(tayteKanta);
+			if (tayteSaatavilla.equals("K")) {
+				tayte.setSaatavilla(true);
+			} else if (tayteSaatavilla.equals("E")) {
+				tayte.setSaatavilla(false);
+			} else {
+				System.out.println("Tuntematon saatavilla-arvo: " + tayteSaatavilla + " - Asetetaan false.");
+				tayte.setSaatavilla(false);
+			}
 
 			// Jos HashMapissa on jo pizza tällä ID:llä, lisätään siihen uusi
 			// täyte
 			// Muuten lisätään HashMappiin uusi pizza
 			if (pizzaVarasto.containsKey(idKanta)) {
 				Pizza pizza = pizzaVarasto.get(idKanta);
-				pizza.setTaytteet(pizza.getTaytteet() + ", " + tayteKanta);
+				ArrayList<Tayte> taytteet = pizza.getTaytteet();
+				taytteet.add(tayte);
+				pizza.setTaytteet(taytteet);
 				pizzaVarasto.put(idKanta, pizza);
 
 			} else {
 				// Olion luonti ja vienti HashMappiin
-				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta, poistoKanta, null);
+				ArrayList<Tayte> taytteet = new ArrayList<>();
+				taytteet.add(tayte);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null);
 				pizzaVarasto.put(idKanta, pizza);
 			}
 
@@ -149,7 +169,7 @@ public class HallintaDao {
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, tayte_id, t.nimi AS tayte, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE pizza_id = ?";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, tayte_id, t.nimi AS tayte, saatavilla, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE pizza_id = ?";
 		ArrayList<String> parametrit = new ArrayList<>();
 		parametrit.add(id);
 
@@ -182,15 +202,34 @@ public class HallintaDao {
 			String tayteKanta = (String) pizzaMappi.get("tayte");
 			String tayteId = (String) pizzaMappi.get("tayte_id");
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
+			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
 
 			taytteet.add(tayteId);
+			
+			Tayte tayte = new Tayte();
+			
+			// Täyte-oliolle tiedot
+			tayte.setId(Integer.parseInt(tayteId));
+			tayte.setNimi(tayteKanta);
+			if (tayteSaatavilla.equals("K")) {
+				tayte.setSaatavilla(true);
+			} else if (tayteSaatavilla.equals("E")) {
+				tayte.setSaatavilla(false);
+			} else {
+				System.out.println("Tuntematon saatavilla-arvo: " + tayteSaatavilla + " - Asetetaan false.");
+				tayte.setSaatavilla(false);
+			}
 
 			if (looppeja == 0) {
-				pizza = new Pizza(idKanta, nimikanta, hintaKanta, tayteKanta, poistoKanta, null);
+				ArrayList<Tayte> taytelista = new ArrayList<>();
+				taytelista.add(tayte);
+				pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytelista, poistoKanta, null);
 			} else {
-				pizza.setTaytteet(pizza.getTaytteet() + ", " + tayteKanta);
+				ArrayList<Tayte> taytelista = pizza.getTaytteet();
+				taytelista.add(tayte);
+				pizza.setTaytteet(taytelista);
 			}
 
 			looppeja++;
