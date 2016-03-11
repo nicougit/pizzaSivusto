@@ -3,7 +3,7 @@ package daot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.TreeMap;
 
 import bean.Pizza;
 import bean.Tayte;
@@ -60,9 +60,9 @@ public class HallintaDao {
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
-			
+
 			Tayte tayte = new Tayte();
-			
+
 			// Täyte-oliolle tiedot
 			tayte.setId(Integer.parseInt(tayteIdKanta));
 			tayte.setNimi(tayteKanta);
@@ -94,10 +94,13 @@ public class HallintaDao {
 			}
 
 		}
+		
+		// TreeMap, jotta entryt on pizza_id:n mukaan järjestettynä
+		TreeMap<Integer, Pizza> puukartta = new TreeMap<>(pizzaVarasto);
 
 		// Siirretään HashMapin entryt ArrayListiin
-		for (Map.Entry<Integer, Pizza> entry : pizzaVarasto.entrySet()) {
-			pizzat.add(entry.getValue());
+		for (Pizza pizza : puukartta.values()) {
+			pizzat.add(pizza);
 		}
 
 		// Yhteyden sulkeminen
@@ -207,9 +210,9 @@ public class HallintaDao {
 			double hintaKanta = Double.parseDouble(hintaString);
 
 			taytteet.add(tayteId);
-			
+
 			Tayte tayte = new Tayte();
-			
+
 			// Täyte-oliolle tiedot
 			tayte.setId(Integer.parseInt(tayteId));
 			tayte.setNimi(tayteKanta);
@@ -248,14 +251,13 @@ public class HallintaDao {
 
 	public ArrayList<Tayte> haeKaikkiTaytteet() {
 		ArrayList<Tayte> taytteet = new ArrayList<>();
-		
+
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
 		if (yhteys.getYhteys() == null) {
 			return taytteet;
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
-
 
 		String sql = "SELECT tayte_id, nimi, saatavilla FROM Tayte";
 
@@ -299,9 +301,9 @@ public class HallintaDao {
 	}
 
 	public HashMap<String, String> lisaaPizza(String nimi, String hinta, String[] taytteet) {
-		
+
 		HashMap<String, String> vastaus = new HashMap<>();
-		
+
 		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
 		if (yhteys.getYhteys() == null) {
@@ -396,7 +398,7 @@ public class HallintaDao {
 	}
 
 	public HashMap<String, String> paivitaTayte(String id, String nimi, String saatavilla) {
-		
+
 		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
@@ -587,7 +589,7 @@ public class HallintaDao {
 		sql = "UPDATE Pizza SET poistomerkinta = NOW() WHERE pizza_id = ?";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
-		
+
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 
@@ -595,13 +597,12 @@ public class HallintaDao {
 			String virhe = "Pizzan poistomerkinnän lisääminen tietokantaan ei onnistunut";
 			vastaus.put("virhe", virhe);
 			return vastaus;
-		}
-		else {
+		} else {
 			String success = "Pizza merkitty poistetuksi!";
 			vastaus.put("success", success);
 			return vastaus;
 		}
-		
+
 	}
 
 	public HashMap<String, String> palautaPizza(String id) {

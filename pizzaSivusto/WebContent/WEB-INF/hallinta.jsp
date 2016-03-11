@@ -93,7 +93,7 @@
 									</c:forEach></td>
 								<td class="hide-on-small-only"><fmt:formatNumber type="number" minFractionDigits="2"
 										maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
-									EUR</td>
+									€</td>
 								<td><a class='dropdown-button btn hide-on-large-only'
 									href='#' data-activates='dd-${pizza.id }'><i
 										class="material-icons">edit</i></a>
