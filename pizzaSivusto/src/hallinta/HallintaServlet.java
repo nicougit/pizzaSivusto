@@ -501,7 +501,7 @@ public class HallintaServlet extends HttpServlet {
 		// Dao
 		HallintaDao dao = new HallintaDao();
 
-		if (tayteNimi != null && apuri.validoiString(tayteNimi, "", 20) == true && tayteSaatavilla != null) {
+		if (tayteNimi != null && apuri.validoiString(tayteNimi, "-", 20) == true && tayteSaatavilla != null) {
 
 			if (tayteSaatavilla.equals("0")) {
 				tayteSaatavilla = "E";

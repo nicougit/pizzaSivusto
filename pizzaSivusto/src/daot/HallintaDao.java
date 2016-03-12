@@ -35,7 +35,7 @@ public class HallintaDao {
 			parametrit.add(tayteId);
 		}
 
-		sql += " ORDER BY pizza_id ASC";
+		sql += " ORDER BY pizza_id ASC, tayte ASC";
 
 		kysely.suoritaYksiKyselyParam(sql, parametrit);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
@@ -248,7 +248,7 @@ public class HallintaDao {
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		String sql = "SELECT tayte_id, nimi, saatavilla FROM Tayte";
+		String sql = "SELECT tayte_id, nimi, saatavilla FROM Tayte ORDER BY nimi ASC";
 
 		kysely.suoritaKysely(sql);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
