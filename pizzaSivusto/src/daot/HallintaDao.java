@@ -43,12 +43,6 @@ public class HallintaDao {
 		// Iteraattorin luonti
 		Iterator iteraattori = kysely.getTulokset().iterator();
 
-		// Hashmap jossa pizzan id ja pizzaolio
-		// Pointtina tässä on yhdistää yhteen pizzaolioon jokainen rivi jossa
-		// sama pizza_id
-		// Kaikki täytteet menevät 'taytteet' Stringiin pilkuilla eroteltuina
-		HashMap<Integer, Pizza> pizzaVarasto = new HashMap<>();
-
 		while (iteraattori.hasNext()) {
 			HashMap pizzaMappi = (HashMap) iteraattori.next();
 			String idString = (String) pizzaMappi.get("pizza_id");
@@ -74,33 +68,28 @@ public class HallintaDao {
 				System.out.println("Tuntematon saatavilla-arvo: " + tayteSaatavilla + " - Asetetaan false.");
 				tayte.setSaatavilla(false);
 			}
-
-			// Jos HashMapissa on jo pizza tällä ID:llä, lisätään siihen uusi
-			// täyte
-			// Muuten lisätään HashMappiin uusi pizza
-			if (pizzaVarasto.containsKey(idKanta)) {
-				Pizza pizza = pizzaVarasto.get(idKanta);
-				ArrayList<Tayte> taytteet = pizza.getTaytteet();
-				taytteet.add(tayte);
-				pizza.setTaytteet(taytteet);
-				pizzaVarasto.put(idKanta, pizza);
-
-			} else {
-				// Olion luonti ja vienti HashMappiin
+			
+			
+			// Katsotaan, onko pizza jo listalla
+			// Jos on, lisätään siihen täyte
+			// Jos ei, luodaan uusi pizza
+			boolean pizzaloyty = false;
+			
+			for (int i = 0; i < pizzat.size(); i++) {
+				if (pizzat.get(i).getId() == idKanta) {
+					ArrayList<Tayte> taytteet = pizzat.get(i).getTaytteet();
+					taytteet.add(tayte);
+					pizzat.get(i).setTaytteet(taytteet);
+					pizzaloyty = true;
+				}				
+			}
+			
+			if (pizzaloyty == false) {
 				ArrayList<Tayte> taytteet = new ArrayList<>();
 				taytteet.add(tayte);
 				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null);
-				pizzaVarasto.put(idKanta, pizza);
+				pizzat.add(pizza);
 			}
-
-		}
-		
-		// TreeMap, jotta entryt on pizza_id:n mukaan järjestettynä
-		TreeMap<Integer, Pizza> puukartta = new TreeMap<>(pizzaVarasto);
-
-		// Siirretään HashMapin entryt ArrayListiin
-		for (Pizza pizza : puukartta.values()) {
-			pizzat.add(pizza);
 		}
 
 		// Yhteyden sulkeminen
