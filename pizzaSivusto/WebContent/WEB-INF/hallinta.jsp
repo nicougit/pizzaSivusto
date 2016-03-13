@@ -14,6 +14,7 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
+
 	<div class="row hide-on-small-only">
 		<div class="col s12 m12 l10 offset-l1">
 			<ul class="tabs">
@@ -25,6 +26,7 @@
 			</ul>
 		</div>
 	</div>
+
 
 	<div class="row hide-on-med-and-up">
 		<div class="col s12">
@@ -82,18 +84,22 @@
 										varStatus="taytecounter">
 										<c:choose>
 											<c:when test="${pizzantayte.saatavilla == false }">
-												<span class="errori tooltipped"  data-position="bottom"
-												data-delay="500" data-tooltip="${pizzantayte.nimi } ei saatavilla">${pizzantayte.nimi }</span><c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+												<span class="errori tooltipped" data-position="bottom"
+													data-delay="500"
+													data-tooltip="${pizzantayte.nimi } ei saatavilla">${pizzantayte.nimi }</span>
+												<c:if
+													test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
 											</c:when>
 											<c:otherwise>
-												${pizzantayte.nimi }<c:if test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+												${pizzantayte.nimi }<c:if
+													test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
 											</c:otherwise>
 										</c:choose>
-										
+
 									</c:forEach></td>
-								<td class="hide-on-small-only"><fmt:formatNumber type="number" minFractionDigits="2"
-										maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
-									€</td>
+								<td class="hide-on-small-only"><fmt:formatNumber
+										type="number" minFractionDigits="2" maxFractionDigits="2"
+										value="${pizza.hinta }"></fmt:formatNumber> €</td>
 								<td><a class='dropdown-button btn hide-on-large-only'
 									href='#' data-activates='dd-${pizza.id }'><i
 										class="material-icons">edit</i></a>
@@ -139,10 +145,19 @@
 							<br> <a class="waves-effect waves-light btn"
 								onclick="window.print();"> <i class="material-icons">print</i>
 								Tulosta
+							</a> <a href="#" class="waves-effect btn red lighten-2 "> <i
+								class="material-icons">navigation</i> Alkuun
 							</a>
 						</div>
 					</div>
-
+					<!-- "alkuun"-nappula mobiillla -->
+					<div class="row hide-on-med-and-up" style="text-align:center;">
+						<div class="col s12">
+						<br>
+							<a href="#" class="waves-effect waves-light btn red lighten-2"> <i class="material-icons">navigation</i>
+							</a>
+						</div>
+					</div>
 
 
 				</c:otherwise>
@@ -182,8 +197,9 @@
 											varStatus="loopCount">
 											<div class="col s6 m4 l3 taytediv">
 												<input type="checkbox" id="${tayte.id }" name="pizzatayte"
-													value="${tayte.id }"><label for="${tayte.id }"<c:if test="${tayte.saatavilla == false }"> class="errori-light"</c:if>>${tayte.nimi }</label>
-													
+													value="${tayte.id }"><label for="${tayte.id }"
+													<c:if test="${tayte.saatavilla == false }"> class="errori-light"</c:if>>${tayte.nimi }</label>
+
 											</div>
 										</c:forEach>
 									</div>
@@ -278,14 +294,29 @@
 											</c:choose></td>
 										<td><a class="waves-effect waves-light btn tooltipped"
 											href="?tayte-edit=${tayte.id }" data-position="right"
-									data-delay="500" data-tooltip="Muokkaa"><i class="material-icons">edit</i></a>
-											<!-- <a
+											data-delay="500" data-tooltip="Muokkaa"><i
+												class="material-icons">edit</i></a> <!-- <a
 											class="btn waves-effect waves-light red lighten-2 disabled"
 											href="#!"> <i class="material-icons">delete</i></a> --></td>
 									</c:forEach>
 								</tbody>
 							</table>
 						</form>
+					</div>
+					<!--  "alkuun" -nappula isommilla näytöillä -->
+					<div class="row hide-on-small-only">
+						<div class="col s12">
+							<a href="#" class="waves-effect btn red lighten-2 "> <i
+								class="material-icons">navigation</i> Alkuun
+							</a>
+						</div>
+					</div>
+					<!-- "alkuun" -nappula mobiililla -->
+					<div class="row hide-on-med-and-up" style="text-align:center";>
+						<div class="col s12">
+							<a href="#" class="waves-effect waves-light btn red lighten-2"> <i class="material-icons">navigation</i>
+							</a>
+						</div>
 					</div>
 				</c:otherwise>
 			</c:choose>
