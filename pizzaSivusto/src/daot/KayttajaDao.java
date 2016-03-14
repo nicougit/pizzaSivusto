@@ -57,7 +57,7 @@ public class KayttajaDao {
 			Tiiviste tiiviste = new Tiiviste();
 			String salasanatiiviste = null;
 			try {
-				salasanatiiviste = tiiviste.salaa(salasana, suola, 1);
+				salasanatiiviste = tiiviste.salaa(salasana, suola, 500);
 			} catch (Exception ex) {
 				System.out.println("Virhe salasanatiivisteen käsittelyssä - " + ex);
 			}
@@ -131,7 +131,7 @@ public class KayttajaDao {
 			try {
 				// Suolaus ja tiivistys
 				String suola = tiiviste.generoiSuola();
-				String passutiiviste = tiiviste.salaa(salasana, suola, 1);
+				String passutiiviste = tiiviste.salaa(salasana, suola, 500);
 
 				sql = "INSERT INTO Kayttaja VALUES (null, ?, ?, ?, null, ?, ?, 'user')";
 				parametrit.add(etunimi);

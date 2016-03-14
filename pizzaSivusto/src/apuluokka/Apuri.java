@@ -21,7 +21,7 @@ public class Apuri {
 	
 	// Regex patterni stringeille. Sallii kirjaimet, numerot ja välilyönnit.
 	public boolean validoiString(String stringi, String erikoismerkit, int maxpituus) {
-		Pattern patterni = Pattern.compile("^[\\wÄÖ][\\w\\s+ÄÖ" + erikoismerkit + "]{2," + (maxpituus - 1) + "}$");
+		Pattern patterni = Pattern.compile("^[\\wÄÖ][\\w\\s+äöÄÖ" + erikoismerkit + "]{2," + (maxpituus - 2) + "}[\\wäö]$");
 		Matcher matcheri = patterni.matcher(stringi);
 		return matcheri.find();
 	}

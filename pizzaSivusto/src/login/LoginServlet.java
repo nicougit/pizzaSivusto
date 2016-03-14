@@ -145,11 +145,11 @@ public class LoginServlet extends HttpServlet {
 					virhe(request, response, virhe);
 				} else {
 					if (etunimi.length() < 3 || sukunimi.length() < 3) {
-						String virhe = "Liian lyhyt etu- tai sukunimi!)";
+						String virhe = "Liian lyhyt etu- tai sukunimi!";
 						virhe(request, response, virhe);
 					} else if (apuri.validoiString(etunimi, "-", 50) == false
 							|| apuri.validoiString(sukunimi, "-", 50) == false) {
-						String virhe = "Etu- tai sukunimessä virheellisiä merkkejä!)";
+						String virhe = "Etu- tai sukunimessä virheellisiä merkkejä!";
 						virhe(request, response, virhe);
 					} else {
 						if (puhelinnro != null) {

@@ -4,6 +4,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -69,15 +70,16 @@
 					<table class="striped">
 						<thead>
 							<tr>
-								<th>#</th>
-								<th>Nimi</th>
+								<th>Pizzan nimi</th>
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach items="${pizzat}" var="pizza">
-								<tr>
-									<td class="strong-id">${pizza.id }</td>
-									<td>${pizza.nimi }</td>
+								<tr<c:if test="${pizza.poistomerkinta != null }"> class="red lighten-5"</c:if>>
+									<td>${pizza.nimi }<c:if test="${pizza.poistomerkinta != null }"><span class="pienifontti"> (Poistettu <fmt:parseDate
+												value="${pizza.poistomerkinta}" var="parsittuDate"
+												pattern="yyyy-MM-dd" /> <fmt:formatDate
+												pattern="dd.MM.yyyy" value="${parsittuDate }" />)</span></c:if></td>
 							</c:forEach>
 						</tbody>
 					</table>

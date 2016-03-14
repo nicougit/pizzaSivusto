@@ -53,7 +53,6 @@
 					<table class="bordered">
 						<thead>
 							<tr>
-								<th class="hide-on-small-only">#</th>
 								<th>Nimi</th>
 								<th class="hide-on-small-only">Täytteet</th>
 								<th class="hide-on-small-only">Hinta</th>
@@ -70,7 +69,6 @@
 										<tr>
 									</c:otherwise>
 								</c:choose>
-								<td class="strong-id hide-on-small-only">${pizza.id }.</td>
 								<td>${pizza.nimi }<c:if
 										test="${pizza.poistomerkinta != null }">
 										<br>
@@ -268,7 +266,6 @@
 							<table class="bordered">
 								<thead>
 									<tr>
-										<th class="hide-on-small-only">#</th>
 										<th>Täyte</th>
 										<th>Saatavilla</th>
 										<th></th>
@@ -284,7 +281,6 @@
 												<tr>
 											</c:otherwise>
 										</c:choose>
-										<td class="strong-id hide-on-small-only">${tayte.id }.</td>
 										<td>${tayte.nimi }</td>
 										<td><c:choose>
 												<c:when test="${tayte.saatavilla == true }">Kyllä</c:when>
