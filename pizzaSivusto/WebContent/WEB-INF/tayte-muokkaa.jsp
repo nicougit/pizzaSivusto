@@ -47,8 +47,9 @@
 				</div>
 				<div class="row">
 					<div class="col s12">
-					<br><br>
-						<a class="btn waves-effect waves-light btn-large red lighten-2"
+						<br>
+						<br> <a
+							class="btn waves-effect waves-light btn-large red lighten-2"
 							href="${pathi }/hallinta">Peruuta</a>
 						<button class="btn waves-effect waves-light btn-large"
 							type="submit" name="action" value="paivitatayte">Päivitä</button>
@@ -67,7 +68,7 @@
 						<c:set var="pizzasana" value="Pizza"></c:set>
 					</c:if>
 					<h3><c:out value="${fn:length(pizzat) } ${pizzasana } käyttää tätä täytettä"></c:out></h3>
-					<table class="striped">
+					<table class="bordered">
 						<thead>
 							<tr>
 								<th>Pizzan nimi</th>
@@ -76,10 +77,10 @@
 						<tbody>
 							<c:forEach items="${pizzat}" var="pizza">
 								<tr<c:if test="${pizza.poistomerkinta != null }"> class="red lighten-5"</c:if>>
-									<td>${pizza.nimi }<c:if test="${pizza.poistomerkinta != null }"><span class="pienifontti"> (Poistettu <fmt:parseDate
+									<td>${pizza.nimi }<c:if test="${pizza.poistomerkinta != null }"><span class="pienifontti right">Poistettu <fmt:parseDate
 												value="${pizza.poistomerkinta}" var="parsittuDate"
 												pattern="yyyy-MM-dd" /> <fmt:formatDate
-												pattern="dd.MM.yyyy" value="${parsittuDate }" />)</span></c:if></td>
+												pattern="dd.MM.yyyy" value="${parsittuDate }" /></span></c:if></td>
 							</c:forEach>
 						</tbody>
 					</table>
