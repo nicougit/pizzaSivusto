@@ -159,7 +159,7 @@
 										<a
 											class="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped"
 											href="#poistomodal" data-position="bottom" data-delay="500"
-											data-tooltip="Poistaa pizzat (${poistettaviapizzoja } kpl) tietokannasta pysyvästi"><i
+											data-tooltip="Poista pizzat (${poistettaviapizzoja } kpl) pysyvästi"><i
 											class="material-icons left">delete</i> Poista merkityt</a>
 										<br>
 										<br>
@@ -193,7 +193,8 @@
 												<br> <a href="#!"
 													class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
 												<a href="?poista-pizzat=true"
-													class="modal-action waves-effect waves-light btn">Poista</a>
+													class="modal-action waves-effect waves-light btn"><i
+											class="material-icons left">delete</i>Poista</a>
 											</div>
 										</div>
 									</c:otherwise>
@@ -345,19 +346,10 @@
 							</table>
 						</form>
 					</div>
-					<!--  "alkuun" -nappula isommilla näytöillä -->
-					<div class="row hide-on-small-only">
-						<div class="col s12">
-							<a href="#" class="waves-effect btn red lighten-2 "> <i
-								class="material-icons">navigation</i> Alkuun
-							</a>
-						</div>
-					</div>
-					<!-- "alkuun" -nappula mobiililla -->
-					<div class="row hide-on-med-and-up">
-						<div class="col s12">
-							<a href="#" class="waves-effect waves-light btn red lighten-2">
-								<i class="material-icons">navigation</i>
+					<div class="row">
+						<div class="col s12 small-centteri">
+							<a href="#" class="waves-effect btn"> <i
+								class="material-icons left">navigation</i> Alkuun
 							</a>
 						</div>
 					</div>

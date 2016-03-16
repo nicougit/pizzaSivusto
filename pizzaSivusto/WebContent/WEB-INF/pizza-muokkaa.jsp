@@ -84,7 +84,7 @@
 						</div>
 						<div class="row">
 							<a class="btn waves-effect waves-light btn-large red lighten-2"
-								href="${pathi }/hallinta">Peruuta</a>
+								href="<c:url value='/hallinta'/>">Peruuta</a>
 							<button class="btn waves-effect waves-light btn-large"
 								type="submit" name="action" value="paivitapizza">Päivitä</button>
 

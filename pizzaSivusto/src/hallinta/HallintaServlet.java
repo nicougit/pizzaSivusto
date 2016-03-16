@@ -101,24 +101,7 @@ public class HallintaServlet extends HttpServlet {
 					}
 
 				} else if (tayteEdit != null && apuri.validoiInt(tayteEdit, 11) == true) {
-
-					System.out.println("Täytettä '" + tayteEdit + "' halutaan muokata");
-
-					Tayte tayte = dao.haeTayte(tayteEdit);
-
-					if (tayte.getNimi() != null) {
-						ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(1, tayteEdit);
-						request.setAttribute("tayte", tayte);
-						request.setAttribute("pizzat", pizzat);
-
-						// Forwardataan pizzan muokkaukseen
-						rd = request.getRequestDispatcher("WEB-INF/tayte-muokkaa.jsp");
-						rd.forward(request, response);
-
-					} else {
-						String virhe = "Muokattavaksi valittua täytettä ei ole tietokannassa.";
-						virhe(request, response, virhe);
-					}
+					taytteenMuokkaus(request, response, null);
 				} else if (pizzaPoista != null && apuri.validoiInt(pizzaPoista, 11) == true) {
 					poistaPizza(request, response);
 				} else if (pizzaPalauta != null && apuri.validoiInt(pizzaPalauta, 11) == true) {
@@ -156,7 +139,6 @@ public class HallintaServlet extends HttpServlet {
 
 		request.setAttribute("pizzat", pizzat);
 		request.setAttribute("taytteet", taytteet);
-
 		rd.forward(request, response);
 	}
 
@@ -164,6 +146,35 @@ public class HallintaServlet extends HttpServlet {
 			throws ServletException, IOException {
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/paasy-evatty.jsp");
 		rd.forward(request, response);
+	}
+	
+	protected void taytteenMuokkaus(HttpServletRequest request, HttpServletResponse response, String tayteId)
+			throws ServletException, IOException {
+		
+		String tayteEdit = request.getParameter("tayte-edit");
+		HallintaDao dao = new HallintaDao();
+		
+		if (tayteId != null) {
+			tayteEdit = tayteId;
+		}
+		
+		System.out.println("Täytettä '" + tayteEdit + "' halutaan muokata");
+
+		Tayte tayte = dao.haeTayte(tayteEdit);
+
+		if (tayte.getNimi() != null) {
+			ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(1, tayteEdit);
+			request.setAttribute("tayte", tayte);
+			request.setAttribute("pizzat", pizzat);
+
+			// Forwardataan pizzan muokkaukseen
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tayte-muokkaa.jsp");
+			rd.forward(request, response);
+
+		} else {
+			String virhe = "Muokattavaksi valittua täytettä ei ole tietokannassa.";
+			virhe(request, response, virhe);
+		}
 	}
 
 	/**
@@ -406,7 +417,7 @@ public class HallintaServlet extends HttpServlet {
 
 					HallintaDao dao = new HallintaDao();
 
-					// Katsotaan, onnistuuko lisäys
+					// Katsotaan, onnistuuko päivitys
 					HashMap<String, String> vastaus = dao.paivitaTayte(tayteId, tayteNimi, tayteSaatavilla);
 					if (vastaus.get("virhe") != null) {
 						String virhe = vastaus.get("virhe");
@@ -457,7 +468,7 @@ public class HallintaServlet extends HttpServlet {
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
-
+			
 			naytaSivu(request, response);
 
 		}
@@ -544,14 +555,15 @@ public class HallintaServlet extends HttpServlet {
 			if (vastaus.get("virhe") != null) {
 				String virhe = vastaus.get("virhe");
 				request.setAttribute("virhe", virhe);
+				taytteenMuokkaus(request, response, poistaTayte);
 			} else if (vastaus.get("success") != null) {
 				String success = vastaus.get("success");
 				request.setAttribute("success", success);
+				naytaSivu(request, response);
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+				naytaSivu(request, response);
 			}
-
-			naytaSivu(request, response);
 
 		}
 

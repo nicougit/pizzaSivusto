@@ -31,7 +31,7 @@ public class HallintaDao {
 		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id)";
 
 		if (tyyppi == 1) {
-			sql += " WHERE tayte_id = ?";
+			sql += " WHERE EXISTS (SELECT * FROM PizzanTayte pt2 WHERE pt2.tayte_id = ? AND pt.pizza_id = pt2.pizza_id)";
 			parametrit.add(tayteId);
 		}
 
@@ -760,7 +760,15 @@ public class HallintaDao {
 			vastaus.put("virhe", virhe);
 			return vastaus;
 		}
-
+		
+		// Tarkistetaan, että poistettava täyte ei ole minkään pizzan ainoa täyte
+		sql = "SELECT pizza_id, tayte_id, COUNT(tayte_id) AS taytteita FROM PizzanTayte GROUP BY pizza_id HAVING taytteita = 1 AND tayte_id = ?";
+		if (kysely.montaRivia(sql, parametrit) > 0) {
+			String virhe = "Täyte on jonkun pizzan ainoa täyte";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		
 		// Poistetaan ensin viittaukset PizzanTaytteet-taulusta
 		sql = "DELETE FROM PizzanTayte WHERE tayte_id = ?";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
