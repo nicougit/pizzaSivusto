@@ -140,8 +140,8 @@
 							</c:forEach>
 						</tbody>
 					</table>
-					<br>
 					<div class="row">
+						<br>
 						<c:if test="${kayttaja.tyyppi == 'admin' }">
 							<div
 								class="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
@@ -168,6 +168,28 @@
 												<h4>Oletko varma?</h4>
 												<p>Poistettavaksi merkityt pizzat (${poistettaviapizzoja }
 													kpl) poistetaan tietokannasta pysyvästi.</p>
+
+												<table class="bordered">
+													<thead>
+														<tr>
+															<th>Pizzan nimi</th>
+														</tr>
+													</thead>
+													<tbody>
+														<c:forEach items="${pizzat}" var="pizza">
+															<c:if test="${pizza.poistomerkinta != null }">
+																<tr>
+																	<td>${pizza.nimi }<span class="pienifontti right">Merkitty
+																			poistettavaksi <fmt:parseDate
+																				value="${pizza.poistomerkinta}" var="parsittuDate"
+																				pattern="yyyy-MM-dd" /> <fmt:formatDate
+																				pattern="dd.MM.yyyy" value="${parsittuDate }" />
+																	</span>
+																	</td>
+															</c:if>
+														</c:forEach>
+													</tbody>
+												</table>
 												<br> <a href="#!"
 													class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
 												<a href="?poista-pizzat=true"
