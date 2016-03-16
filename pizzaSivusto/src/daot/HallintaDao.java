@@ -677,5 +677,113 @@ public class HallintaDao {
 		}
 
 	}
+	
+	public HashMap<String, String> poistaMerkityt() {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		// Katsotaan poistomerkittyjen pizzojen määrä
+		String sql = "SELECT pizza_id FROM Pizza WHERE poistomerkinta IS NOT NULL";
+		
+		int rivimaara = kysely.montaRivia(sql, new ArrayList<>());
+
+		if (rivimaara < 1) {
+			String virhe = "Yhdelläkään pizzalla ei ole poistomerkintää";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+		// Poistetaan ensin PizzanTäytteet
+		sql = "DELETE pt FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) WHERE poistomerkinta IS NOT NULL";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
+		
+		if (rivit < 1) {
+			String error = "Pizzan täytteiden poistaminen ei onnistunut";
+			vastaus.put("error", error);
+			return vastaus;
+		}
+		
+		// Poistetaan pizzat
+		sql = "DELETE FROM Pizza WHERE poistomerkinta IS NOT NULL";
+		rivit = paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Palautetaan tulokset
+		if (rivit > 0 && rivimaara == 1) {
+			String success = "Tietokannasta poistettiin " + rivimaara + " pizza";
+			vastaus.put("success", success);
+			return vastaus;
+		} 
+		else if (rivit > 0 && rivimaara > 1 ) {
+			String success = "Tietokannasta poistettiin " + rivimaara + " pizzaa";
+			vastaus.put("success", success);
+			return vastaus;
+		}
+		else {
+			String error = "Tietokannasta poistaessa tapahtui virhe";
+			vastaus.put("error", error);
+			return vastaus;
+		}
+
+	}
+	
+	public HashMap<String, String> poistaTayte(String id) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		// Katsotaan, onko poistettavaa täytettä olemassa
+		String sql = "SELECT tayte_id FROM Tayte WHERE tayte_id = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(id);
+
+		if (kysely.montaRivia(sql, parametrit) != 1) {
+			String virhe = "Täytettä ei ole tietokannassa";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+		// Poistetaan ensin viittaukset PizzanTaytteet-taulusta
+		sql = "DELETE FROM PizzanTayte WHERE tayte_id = ?";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		
+		// Poistetaan itse täyte
+		sql = "DELETE FROM Tayte WHERE tayte_id = ?";
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Palautetaan tulokset
+		if (rivit == 1) {
+			String success = "Täyte poistettiin tietokannasta";
+			vastaus.put("success", success);
+			return vastaus;
+		} else {
+			String virhe = "Täytettä poistaessa tapahtui virhe";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+	}
 
 }

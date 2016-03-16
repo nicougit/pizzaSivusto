@@ -44,6 +44,7 @@
 	<div class="row" id="pizza-h">
 		<div class="col s12">
 			<h2>Pizzat</h2>
+			<c:set var="poistettaviapizzoja" value="0"></c:set>
 			<c:choose>
 				<c:when test="${empty pizzat}">
 					<div class="errori center-align">Listalla ei ole pizzoja, tai
@@ -64,6 +65,8 @@
 								<c:choose>
 									<c:when test="${pizza.poistomerkinta != null }">
 										<tr class="red lighten-5">
+											<c:set var="poistettaviapizzoja"
+												value="${poistettaviapizzoja + 1 }"></c:set>
 									</c:when>
 									<c:otherwise>
 										<tr>
@@ -98,9 +101,9 @@
 								<td class="hide-on-small-only"><fmt:formatNumber
 										type="number" minFractionDigits="2" maxFractionDigits="2"
 										value="${pizza.hinta }"></fmt:formatNumber> €</td>
-								<td><a class='dropdown-button btn hide-on-large-only'
-									href='#' data-activates='dd-${pizza.id }'><i
-										class="material-icons">edit</i></a>
+								<td class="right-align"><a
+									class='dropdown-button btn hide-on-large-only' href='#'
+									data-activates='dd-${pizza.id }'><i class="material-icons">edit</i></a>
 									<ul id="dd-${pizza.id }" class="dropdown-content">
 										<li><a href="?pizza-edit=${pizza.id }">Muokkaa</a></li>
 										<c:choose>
@@ -137,27 +140,54 @@
 							</c:forEach>
 						</tbody>
 					</table>
-
-					<div class="row hide-on-small-only">
-						<div class="col s12">
-							<br> <a class="waves-effect waves-light btn"
-								onclick="window.print();"> <i class="material-icons">print</i>
+					<br>
+					<div class="row">
+						<c:if test="${kayttaja.tyyppi == 'admin' }">
+							<div
+								class="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
+								<c:choose>
+									<c:when test="${poistettaviapizzoja == 0 }">
+										<a
+											class="waves-effect waves-light btn modal-trigger red lighten-2 disabled tooltipped"
+											href="#!" data-position="bottom" data-delay="500"
+											data-tooltip="Yhtään pizzaa ei ole merkitty poistettavaksi"><i
+											class="material-icons left">delete</i> Poista merkityt</a>
+										<br>
+										<br>
+									</c:when>
+									<c:otherwise>
+										<a
+											class="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped"
+											href="#poistomodal" data-position="bottom" data-delay="500"
+											data-tooltip="Poistaa pizzat (${poistettaviapizzoja } kpl) tietokannasta pysyvästi"><i
+											class="material-icons left">delete</i> Poista merkityt</a>
+										<br>
+										<br>
+										<div id="poistomodal" class="modal">
+											<div class="modal-content center-align">
+												<h4>Oletko varma?</h4>
+												<p>Poistettavaksi merkityt pizzat (${poistettaviapizzoja }
+													kpl) poistetaan tietokannasta pysyvästi.</p>
+												<br> <a href="#!"
+													class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
+												<a href="?poista-pizzat=true"
+													class="modal-action waves-effect waves-light btn">Poista</a>
+											</div>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</c:if>
+						<div
+							class="col s12 small-centteri <c:if test="${kayttaja.tyyppi == 'admin' }">m6 l6 pull-m6 pull-l6</c:if> ">
+							<a class="waves-effect waves-light btn hide-on-med-and-down"
+								onclick="window.print();"> <i class="material-icons left">print</i>
 								Tulosta
-							</a> <a href="#" class="waves-effect btn red lighten-2 "> <i
-								class="material-icons">navigation</i> Alkuun
+							</a> <a href="#" class="waves-effect btn"> <i
+								class="material-icons left">navigation</i> Alkuun
 							</a>
 						</div>
 					</div>
-					<!-- "alkuun"-nappula mobiillla -->
-					<div class="row hide-on-med-and-up" style="text-align:center;">
-						<div class="col s12">
-						<br>
-							<a href="#" class="waves-effect waves-light btn red lighten-2"> <i class="material-icons">navigation</i>
-							</a>
-						</div>
-					</div>
-
-
 				</c:otherwise>
 			</c:choose>
 		</div>
@@ -202,13 +232,9 @@
 										</c:forEach>
 									</div>
 									<script src="js/tayte-input-limit.js"></script>
-								</div>
-								<div class="row">
-									<div class="col s12">
-										<button class="btn waves-effect waves-light btn-large"
-											type="submit" name="action" value="lisaapizza">Lisää
-											pizza</button>
-									</div>
+									<button class="btn waves-effect waves-light btn-large"
+										type="submit" name="action" value="lisaapizza">Lisää
+										pizza</button>
 								</div>
 							</div>
 						</form>
@@ -291,9 +317,7 @@
 										<td><a class="waves-effect waves-light btn tooltipped"
 											href="?tayte-edit=${tayte.id }" data-position="right"
 											data-delay="500" data-tooltip="Muokkaa"><i
-												class="material-icons">edit</i></a> <!-- <a
-											class="btn waves-effect waves-light red lighten-2 disabled"
-											href="#!"> <i class="material-icons">delete</i></a> --></td>
+												class="material-icons">edit</i></a></td>
 									</c:forEach>
 								</tbody>
 							</table>
@@ -308,9 +332,10 @@
 						</div>
 					</div>
 					<!-- "alkuun" -nappula mobiililla -->
-					<div class="row hide-on-med-and-up" style="text-align:center";>
+					<div class="row hide-on-med-and-up">
 						<div class="col s12">
-							<a href="#" class="waves-effect waves-light btn red lighten-2"> <i class="material-icons">navigation</i>
+							<a href="#" class="waves-effect waves-light btn red lighten-2">
+								<i class="material-icons">navigation</i>
 							</a>
 						</div>
 					</div>
@@ -318,7 +343,6 @@
 			</c:choose>
 		</div>
 	</div>
-
 
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>

@@ -1,11 +1,12 @@
 <%@page import="bean.Kayttaja"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <link href="http://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
-	<c:set var="url">${pageContext.request.contextPath}</c:set>
-<link type="text/css" rel="stylesheet" href="${url }/css/materialize.css" />
+<c:set var="url">${pageContext.request.contextPath}</c:set>
+<link type="text/css" rel="stylesheet"
+	href="${url }/css/materialize.css" />
 <link type="text/css" rel="stylesheet" href="${url }/css/style.css" />
 <link href='https://fonts.googleapis.com/css?family=Pacifico'
 	rel='stylesheet' type='text/css'>
@@ -17,6 +18,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(".button-collapse").sideNav();
+		$('.modal-trigger').leanModal();
 		$('select').material_select();
 	});
 </script>

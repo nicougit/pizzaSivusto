@@ -14,7 +14,6 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-
 	<div class="row">
 		<div class="col s12 m12 l5">
 			<form action="hallinta" method="post">
@@ -46,13 +45,43 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col s12">
-						<br>
-						<br> <a
+					<div class="col s12 center-align">
+						<br> <br> <a
 							class="btn waves-effect waves-light btn-large red lighten-2"
 							href="${pathi }/hallinta">Peruuta</a>
 						<button class="btn waves-effect waves-light btn-large"
 							type="submit" name="action" value="paivitatayte">Päivitä</button>
+						<c:if test="${kayttaja.tyyppi == 'admin' }">
+							<br>
+							<br>
+							<a
+								class="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped"
+								href="#poistomodal" data-position="bottom" data-delay="500"
+								data-tooltip="Poistaa täytteen tietokannasta"><i
+								class="material-icons left">delete</i> Poista täyte</a>
+							<br>
+							<br>
+							<div id="poistomodal" class="modal">
+								<div class="modal-content center-align">
+									<h4>Oletko varma?</h4>
+									<p class="center-align">
+										Täyte '${tayte.nimi }' poistetaan tietokannasta pysyvästi.
+										<c:if test="${fn:length(pizzat) == 1 }">
+											<br>
+											<br>${fn:length(pizzat) } Pizza käyttää edelleen tätä täytettä. Täyte poistuu tältä pizzalta.
+										</c:if>
+										<c:if test="${fn:length(pizzat) > 1 }">
+											<br>
+											<br>${fn:length(pizzat) } Pizzaa käyttää edelleen tätä täytettä. Täyte poistuu näiltä pizzoilta.
+										</c:if>
+									</p>
+									<br> <a href="#!"
+										class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
+									<a href="?poista-tayte=${tayte.id }"
+										class="modal-action waves-effect waves-light btn">Poista</a>
+								</div>
+							</div>
+						</c:if>
 					</div>
 				</div>
 			</form>
@@ -67,7 +96,10 @@
 					<c:if test="${fn:length(pizzat) == 1 }">
 						<c:set var="pizzasana" value="Pizza"></c:set>
 					</c:if>
-					<h3><c:out value="${fn:length(pizzat) } ${pizzasana } käyttää tätä täytettä"></c:out></h3>
+					<h3>
+						<c:out
+							value="${fn:length(pizzat) } ${pizzasana } käyttää tätä täytettä"></c:out>
+					</h3>
 					<table class="bordered">
 						<thead>
 							<tr>
@@ -76,11 +108,15 @@
 						</thead>
 						<tbody>
 							<c:forEach items="${pizzat}" var="pizza">
-								<tr<c:if test="${pizza.poistomerkinta != null }"> class="red lighten-5"</c:if>>
-									<td>${pizza.nimi }<c:if test="${pizza.poistomerkinta != null }"><span class="pienifontti right">Poistettu <fmt:parseDate
-												value="${pizza.poistomerkinta}" var="parsittuDate"
-												pattern="yyyy-MM-dd" /> <fmt:formatDate
-												pattern="dd.MM.yyyy" value="${parsittuDate }" /></span></c:if></td>
+								<tr
+									<c:if test="${pizza.poistomerkinta != null }"> class="red lighten-5"</c:if>>
+									<td>${pizza.nimi }<c:if
+											test="${pizza.poistomerkinta != null }">
+											<span class="pienifontti right">Poistettu <fmt:parseDate
+													value="${pizza.poistomerkinta}" var="parsittuDate"
+													pattern="yyyy-MM-dd" /> <fmt:formatDate
+													pattern="dd.MM.yyyy" value="${parsittuDate }" /></span>
+										</c:if></td>
 							</c:forEach>
 						</tbody>
 					</table>

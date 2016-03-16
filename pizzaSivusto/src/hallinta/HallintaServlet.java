@@ -66,6 +66,8 @@ public class HallintaServlet extends HttpServlet {
 				String tayteEdit = request.getParameter("tayte-edit");
 				String pizzaPoista = request.getParameter("pizza-poista");
 				String pizzaPalauta = request.getParameter("pizza-palauta");
+				String poistaPizzat = request.getParameter("poista-pizzat");
+				String poistaTayte = request.getParameter("poista-tayte");
 
 				// Apuri validointiin
 				Apuri apuri = new Apuri();
@@ -121,7 +123,14 @@ public class HallintaServlet extends HttpServlet {
 					poistaPizza(request, response);
 				} else if (pizzaPalauta != null && apuri.validoiInt(pizzaPalauta, 11) == true) {
 					palautaPizza(request, response);
-				} else {
+				}
+				else if (kayttaja.getTyyppi().equals("admin") && poistaPizzat != null) {
+					poistaMerkityt(request, response);
+				}
+				else if (kayttaja.getTyyppi().equals("admin") && poistaTayte != null) {
+					poistaTayte(request, response);
+				}
+				else {
 					naytaSivu(request, response);
 				}
 			} else {
@@ -472,6 +481,66 @@ public class HallintaServlet extends HttpServlet {
 			HallintaDao dao = new HallintaDao();
 
 			HashMap<String, String> vastaus = dao.palautaPizza(palautapizza);
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
+			} else {
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+			}
+
+			naytaSivu(request, response);
+
+		}
+
+	}
+
+	public void poistaMerkityt(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Haetaan parametrit
+		String poistaPizzat = request.getParameter("poista-pizzat");
+
+		if (poistaPizzat.equals("true")) {
+			HallintaDao dao = new HallintaDao();
+			HashMap<String, String> vastaus = dao.poistaMerkityt();
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
+			} else {
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+			}
+		}
+		else {
+			System.out.println("Saavuttiin poistaMerkityt-metodiin, mutta poista-pizzat oli '" + poistaPizzat + "'");
+		}
+
+		naytaSivu(request, response);
+
+	}
+	
+	public void poistaTayte(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String poistaTayte = request.getParameter("poista-tayte");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(poistaTayte, 11) == false) {
+			String virhe = "Poistettavan täytteen ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään poistaa täytettä ID: " + poistaTayte);
+
+			HallintaDao dao = new HallintaDao();
+
+			HashMap<String, String> vastaus = dao.poistaTayte(poistaTayte);
 			if (vastaus.get("virhe") != null) {
 				String virhe = vastaus.get("virhe");
 				request.setAttribute("virhe", virhe);
