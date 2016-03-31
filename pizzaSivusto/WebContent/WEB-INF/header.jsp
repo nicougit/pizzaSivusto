@@ -24,7 +24,7 @@
 				Fiori</a> <a href="#" data-activates="mobiili-nav"
 				class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
-				<li><a href="#!">Pizzat</a></li>
+				<li><a href="<c:url value='/pizza'/>">Pizzat</a></li>
 				<li><a href="#!">Yrityksemme</a></li>
 				<li><a href="#!"><i class="material-icons left">shopping_cart</i>
 						Ostoskori (0)</a></li>

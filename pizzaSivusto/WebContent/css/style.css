@@ -16,6 +16,18 @@ body {
 	min-height: 80%;
 }
 
+#fixedhinta{
+	position:absolute;
+	left:20px;
+	bottom:20px;
+	}
+	
+	#fixedhintam{
+	position:absolute;
+	right:20px;
+	top:35px;
+	}
+
 /* Navbarissa oleva firman nimi */
 .brand-logo {
 	margin-left: 20px;
