@@ -1,0 +1,37 @@
+body {
+	background: #AAA;
+	background-image: url("../img/landing-bg-test.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#main-container {
+	background: none;
+}
+
+.whitetext {
+	color: #FFF;
+	text-shadow: 2px 2px 3px rgba(0,0,0,0.5);
+}
+
+.navbar-fixed {
+}
+
+.nav-wrapper {
+	background: none;
+	box-shadow: none;
+}
+
+nav {
+	background: none;
+	box-shadow: none;
+}
+
+.valigni {
+	padding-top: 10%;
+}
+
+.footeri {
+	display: none;
+}
