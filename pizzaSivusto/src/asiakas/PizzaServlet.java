@@ -48,10 +48,9 @@ public class PizzaServlet extends HttpServlet {
 
 		// Pizzojen ja täytteiden haku
 		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat();
-		ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
+
 
 		request.setAttribute("pizzat", pizzat);
-		request.setAttribute("taytteet", taytteet);
 		rd.forward(request, response);
 	}
 
