@@ -14,32 +14,14 @@
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 
-	<div class="row">
-		<div class="col s10 offset-s1">
-
-			<c:if test="${not empty virhe }">
-				<h1>Virhe</h1>
-				<p class="flow-text center-align" style="color: red;">${virhe }<br>
-					<br> <a class="btn waves-effect waves-light btn-large"
-						href="${pathi }/hallinta">Takaisin hallintasivulle</a>
-				</p>
-			</c:if>
-
-			<c:if test="${not empty success }">
-				<h1>Onnistui</h1>
-				<p class="flow-text center-align" style="color: green;">${success }<br>
-					<br> <a class="btn waves-effect waves-light btn-large"
-						href="${pathi }/hallinta">Takaisin hallintasivulle</a>
-				</p>
-			</c:if>
-		</div>
-	</div>
-
-	<div class="row">
+<div class="row headertext">
+				<h1>${pizza.nimi }</h1>
+				<p class="flow-text">${pizza.kuvaus }</p>
+</div>
+	<div class="row" id="main-content">
 		<form action="hallinta" method="post">
 			<div class="col s12">
-				<h2>Muokkaa pizzaa</h2>
-				<br>
+			<h2>Muokkaa pizzaa</h2>
 				<div class="row">
 					<div class="col s12 m12 l10 offset-l1">
 						<div class="row">
@@ -59,6 +41,10 @@
 									class="validate" id="pizzahinta" min="0" autocomplete="off"
 									value="${pizza.hinta }"> <label for="pizzahinta"
 									data-error="Virhe">Pizzan hinta</label>
+							</div>
+							<div class="input-field col s12">
+								<textarea class="materialize-textarea" name="pizzakuvaus" id="pizzakuvaus" length="255">${pizza.kuvaus }</textarea>
+								<label for="pizzakuvaus">Pizzan kuvaus</label>
 							</div>
 						</div>
 						<div class="row" id="pizza-taytteet">

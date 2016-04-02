@@ -3,30 +3,42 @@ html, body {
 }
 
 body {
-	background: linear-gradient(#CCC, #EEE);
+	background: #FFF;
+	background-image: url("../img/landing-bg-test-2.jpg");
 	background-repeat: no-repeat;
-	background-color: #EEE;
+	background-size: 100% auto;
 }
 
 #main-container {
-	background: #FFF;
-	padding: 20px;
-	margin-bottom: 30px;
-	border-radius: 0px 0px 50px 50px;
 	min-height: 80%;
+	margin-bottom: 30px;
 }
 
-#fixedhinta{
-	position:absolute;
-	left:20px;
-	bottom:20px;
-	}
-	
-	#fixedhintam{
-	position:absolute;
-	right:20px;
-	top:35px;
-	}
+#main-content {
+	min-height: 80%;
+	background: #FFF;
+	padding: 30px;
+	background: #FFF;
+}
+
+.headertext {
+	color: #FFF;
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+	text-align: center;
+	min-height: 130px;
+}
+
+#fixedhinta {
+	position: absolute;
+	left: 20px;
+	bottom: 20px;
+}
+
+#fixedhintam {
+	position: absolute;
+	right: 20px;
+	top: 35px;
+}
 
 /* Navbarissa oleva firman nimi */
 .brand-logo {
@@ -62,6 +74,7 @@ h1, h2, h3 {
 
 h1 {
 	font-size: 36pt;
+	margin-top: 0px;
 }
 
 h2 {
@@ -89,7 +102,34 @@ h3 {
 }
 
 @media only screen and (max-width: 600px) {
-  .small-centteri {
-    text-align: center;
-  }
+	.small-centteri {
+		text-align: center;
+	}
+	body {
+	background-size: 100% 400px;
+	}
+}
+
+.loginmodaali {
+	max-width: 450px;
+}
+
+/* Navbar tyylit */
+nav {
+	background: none;
+	box-shadow: none;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+
+.nav-scrolled {
+	background: rgba(0, 0, 0, 0.6);
+	box-shadow: 4px 0px 5px rgba(0, 0, 0, 0.4);
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
 }

@@ -11,15 +11,14 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
-	<div class="center-align">
+	<div class="row headertext">
+	<h1>Tervetuloa!</h1>
 		<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
 			aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
 			erikoistunut pizzoihin. Panostamme laatuun, joten hankimme kaikki
 			raaka-aineemme tarkkaan harkituilta toimittajilta.</p>
 	</div>
-	<div class="divider"></div>
-
+<div id="main-content">
 	<div class="row">
 		<div class="col s12 m12 l5 push-l7">
 			<div class="row">
@@ -141,6 +140,7 @@
 				</c:otherwise>
 			</c:choose>
 		</div>
+	</div>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>

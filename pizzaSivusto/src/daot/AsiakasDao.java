@@ -21,12 +21,7 @@ public class AsiakasDao {
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla"
-				+ " FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE NOT EXISTS "
-				+ "(SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id)"
-				+ " WHERE p.pizza_id = pizza_id AND saatavilla = 'E')"
-				+ "	AND p.poistomerkinta IS NULL "		    	
-					+"ORDER BY p.nimi ASC";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, kuvaus, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL ORDER BY p.nimi ASC";
 				
 
 		kysely.suoritaKysely(sql);
@@ -44,6 +39,7 @@ public class AsiakasDao {
 			String tayteIdKanta = (String) pizzaMappi.get("tayte_id");
 			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
+			String kuvausKanta = (String) pizzaMappi.get("kuvaus");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
 
@@ -78,7 +74,7 @@ public class AsiakasDao {
 			if (pizzaloyty == false) {
 				ArrayList<Tayte> taytteet = new ArrayList<>();
 				taytteet.add(tayte);
-				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null, kuvausKanta);
 				pizzat.add(pizza);
 			}
 		}

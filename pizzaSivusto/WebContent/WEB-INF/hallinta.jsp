@@ -14,7 +14,11 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-
+<div class="row headertext">
+<h1>Hallinta</h1>
+<p class="flow-text">Tietokannassa on yhteensä ${fn:length(pizzat) } pizzaa ja ${fn:length(taytteet) } täytettä!</p>
+</div>
+<div class="row" id="main-content">
 	<div class="row hide-on-small-only">
 		<div class="col s12 m12 l10 offset-l1">
 			<ul class="tabs">
@@ -239,6 +243,10 @@
 											name="pizzahinta" id="pizzahinta" autocomplete="off"><label
 											for="pizzahinta" data-error="Virhe">Pizzan hinta</label>
 									</div>
+																<div class="input-field col s12">
+								<textarea class="materialize-textarea" name="pizzakuvaus" id="pizzakuvaus" length="255">${pizza.kuvaus }</textarea>
+								<label for="pizzakuvaus">Pizzan kuvaus</label>
+							</div>
 								</div>
 								<!-- Täytteiden valinta -->
 								<div class="row" id="pizza-taytteet">
@@ -356,6 +364,7 @@
 				</c:otherwise>
 			</c:choose>
 		</div>
+	</div>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>

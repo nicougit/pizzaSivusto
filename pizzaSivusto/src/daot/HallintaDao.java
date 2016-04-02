@@ -28,7 +28,7 @@ public class HallintaDao {
 
 		ArrayList<String> parametrit = new ArrayList<>();
 
-		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id)";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, kuvaus, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id)";
 
 		if (tyyppi == 1) {
 			sql += " WHERE EXISTS (SELECT * FROM PizzanTayte pt2 WHERE pt2.tayte_id = ? AND pt.pizza_id = pt2.pizza_id)";
@@ -52,6 +52,7 @@ public class HallintaDao {
 			String tayteIdKanta = (String) pizzaMappi.get("tayte_id");
 			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
+			String kuvausKanta = (String) pizzaMappi.get("kuvaus");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
 
@@ -87,7 +88,7 @@ public class HallintaDao {
 			if (pizzaloyty == false) {
 				ArrayList<Tayte> taytteet = new ArrayList<>();
 				taytteet.add(tayte);
-				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null, kuvausKanta);
 				pizzat.add(pizza);
 			}
 		}
@@ -161,7 +162,7 @@ public class HallintaDao {
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-		String sql = "SELECT pizza_id, p.nimi AS pizza, hinta, tayte_id, t.nimi AS tayte, saatavilla, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE pizza_id = ?";
+		String sql = "SELECT pizza_id, p.nimi AS pizza, kuvaus, hinta, tayte_id, t.nimi AS tayte, saatavilla, p.poistomerkinta FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE pizza_id = ?";
 		ArrayList<String> parametrit = new ArrayList<>();
 		parametrit.add(id);
 
@@ -195,6 +196,7 @@ public class HallintaDao {
 			String tayteId = (String) pizzaMappi.get("tayte_id");
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
 			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
+			String kuvausKanta = (String) pizzaMappi.get("kuvaus");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
 
@@ -217,7 +219,7 @@ public class HallintaDao {
 			if (looppeja == 0) {
 				ArrayList<Tayte> taytelista = new ArrayList<>();
 				taytelista.add(tayte);
-				pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytelista, poistoKanta, null);
+				pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytelista, poistoKanta, null, kuvausKanta);
 			} else {
 				ArrayList<Tayte> taytelista = pizza.getTaytteet();
 				taytelista.add(tayte);
@@ -289,7 +291,7 @@ public class HallintaDao {
 
 	}
 
-	public HashMap<String, String> lisaaPizza(String nimi, String hinta, String[] taytteet) {
+	public HashMap<String, String> lisaaPizza(String nimi, String kuvaus, String hinta, String[] taytteet) {
 
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -331,12 +333,13 @@ public class HallintaDao {
 		}
 
 		// Itse pizzan lisäys Pizza-taulukkoon
-		sql = "INSERT INTO Pizza VALUES (null, ?, ?, null)";
+		sql = "INSERT INTO Pizza VALUES (null, ?, ?, null, ?)";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
 		parametrit.clear();
 		parametrit.add(nimi);
 		parametrit.add(hinta);
+		parametrit.add(kuvaus);
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
 		int pizzasuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
@@ -446,7 +449,7 @@ public class HallintaDao {
 		}
 	}
 
-	public HashMap<String, String> paivitaPizza(String id, String nimi, String hinta, String[] taytteet) {
+	public HashMap<String, String> paivitaPizza(String id, String nimi, String kuvaus, String hinta, String[] taytteet) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
@@ -493,11 +496,12 @@ public class HallintaDao {
 		}
 
 		// Itse pizzan tietojen päivitys
-		sql = "UPDATE Pizza SET nimi = ?, hinta = ? WHERE pizza_id = ?";
+		sql = "UPDATE Pizza SET nimi = ?, kuvaus = ?, hinta = ? WHERE pizza_id = ?";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
 		parametrit.clear();
 		parametrit.add(nimi);
+		parametrit.add(kuvaus);
 		parametrit.add(hinta);
 		parametrit.add(id);
 

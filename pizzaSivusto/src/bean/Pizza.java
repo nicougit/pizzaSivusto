@@ -10,6 +10,7 @@ public class Pizza {
 	ArrayList<Tayte> taytteet;
 	String poistomerkinta;
 	ArrayList<String> tayteIdt;
+	String kuvaus;
 
 	public Pizza() {
 		super();
@@ -17,7 +18,7 @@ public class Pizza {
 	}
 
 	public Pizza(int id, String nimi, double hinta, ArrayList<Tayte> taytteet, String poistomerkinta,
-			ArrayList<String> tayteIdt) {
+			ArrayList<String> tayteIdt, String kuvaus) {
 		super();
 		this.id = id;
 		this.nimi = nimi;
@@ -25,6 +26,7 @@ public class Pizza {
 		this.taytteet = taytteet;
 		this.poistomerkinta = poistomerkinta;
 		this.tayteIdt = tayteIdt;
+		this.kuvaus = kuvaus;
 	}
 
 	public int getId() {
@@ -73,6 +75,14 @@ public class Pizza {
 
 	public void setTayteIdt(ArrayList<String> tayteIdt) {
 		this.tayteIdt = tayteIdt;
+	}
+
+	public String getKuvaus() {
+		return kuvaus;
+	}
+
+	public void setKuvaus(String kuvaus) {
+		this.kuvaus = kuvaus;
 	}
 
 }

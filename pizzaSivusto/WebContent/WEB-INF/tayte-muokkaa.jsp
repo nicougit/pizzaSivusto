@@ -14,8 +14,10 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
+	<div class="row headertext">
 	<h1>${tayte.nimi }</h1>
-	<div class="row">
+	</div>
+	<div class="row" id="main-content">
 		<div class="col s12 m12 l5">
 			<form action="hallinta" method="post">
 				<h2>Muokkaa täytettä</h2>

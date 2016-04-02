@@ -25,7 +25,7 @@
 <c:if test="${not empty success }">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			Materialize.toast('${success}', 3000, 'teal lighten-3');
+			Materialize.toast('${success}', 3000, 'green darken-1');
 			Materialize.toast();
 		});
 	</script>
@@ -38,3 +38,13 @@
 		});
 	</script>
 </c:if>
+<script>
+	$(window).scroll(function() {
+		if ($(document).scrollTop() > 100) {
+			$('nav').addClass('nav-scrolled');
+
+		} else {
+			$('nav').removeClass('nav-scrolled');
+		}
+	});
+</script>

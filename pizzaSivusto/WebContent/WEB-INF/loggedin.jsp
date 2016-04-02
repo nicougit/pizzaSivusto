@@ -11,20 +11,32 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-	<div id="row">
-		<div class="col s12 center-align">
-			<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
-			<h2>
+	<div class="headertext">
+			<h1>
 				Tervetuloa takaisin,
 				<c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out>
 				!
-			</h2>
-			<div class="divider"></div>
-			<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
-				aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
-				erikoistunut pizzoihin. Panostamme laatuun, joten hankimme kaikki
-				raaka-aineemme tarkkaan harkituilta toimittajilta.</p>
+			</h1>
+			<p class="flow-text">Vierailit palvelussamme viimeksi XX.XX.XX!</p>
+			<a class="waves-effect waves-light btn-large"
+			href="<c:url value='/pizza'/>"><i class="material-icons right">restaurant_menu</i>
+			Menu</a> <br> <br>
+	</div>
 
+	<div id="main-content">
+		<div class="row">
+			<div class="col s12 m6 center-align">
+				<h2>Diipa daapa</h2>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				<br><br>
+				Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</div>
+			<div class="col s12 m6 center-align">
+				<h2>Tilaushistoria</h2>
+				Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+				<br><br>
+				Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+			</div>
 		</div>
 	</div>
 

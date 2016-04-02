@@ -20,12 +20,11 @@
 	</c:if>
 	<nav>
 		<div class="nav-wrapper">
-			<a href="<c:url value='/login'/>" class="brand-logo">Castello é
-				Fiori</a> <a href="#" data-activates="mobiili-nav"
-				class="button-collapse"><i class="material-icons">menu</i></a>
+			<a href="<c:url value='/'/>" class="brand-logo">Castello é Fiori</a>
+			<a href="#" data-activates="mobiili-nav" class="button-collapse"><i
+				class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
-				<li><a href="<c:url value='/pizza'/>">Pizzat</a></li>
-				<li><a href="#!">Yrityksemme</a></li>
+				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
 				<li><a href="#!"><i class="material-icons left">shopping_cart</i>
 						Ostoskori (0)</a></li>
 				<c:choose>
@@ -41,8 +40,7 @@
 				</c:choose>
 			</ul>
 			<ul class="side-nav" id="mobiili-nav">
-				<li><a href="#!">Pizzat</a></li>
-				<li><a href="#!">Yrityksemme</a></li>
+				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
 				<li><a href="#!">Ostoskori (0)</a> <c:choose>
 						<c:when test="${not empty kayttaja }">
 							<li class="divider"></li>
@@ -65,7 +63,7 @@
 </div>
 <div class="container" id="main-container">
 	<c:if test="${empty kayttaja }">
-		<div id="loginmodal" class="modal">
+		<div id="loginmodal" class="modal loginmodaali">
 			<div class="modal-content center-align">
 				<form method="post" action="<c:url value='/login'/>">
 					<h4>Kirjaudu sisään</h4>
@@ -78,8 +76,8 @@
 					</div>
 					<div class="row">
 						<div class="input-field col s12">
-							<input type="password" name="salasana" id="salasana-modal"> <label
-								for="salasana-modal">Salasana</label>
+							<input type="password" name="salasana" id="salasana-modal">
+							<label for="salasana-modal">Salasana</label>
 						</div>
 					</div>
 					<div class="row">
@@ -88,6 +86,10 @@
 								class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
 							<button class="btn waves-effect waves-light" type="submit"
 								name="action" value="login">Kirjaudu</button>
+							<br>
+							<br> <span class="pienifontti"> Jos et ole vielä
+								jäsen, voit rekisteröityä <a href="<c:url value='/login'/>">täältä</a>.
+							</span>
 						</div>
 					</div>
 				</form>
