@@ -21,9 +21,14 @@
 	<nav>
 		<div class="nav-wrapper">
 			<a href="<c:url value='/'/>" class="brand-logo">Castello é Fiori</a>
-			<a href="#" data-activates="mobiili-nav" class="button-collapse"><i
-				class="material-icons">menu</i></a>
+			<a href="#" data-activates="mobiili-nav"
+				class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
+				<c:if
+					test="${pageContext.request.requestURI == '/pizzaSivusto/WEB-INF/pizzat.jsp'}">
+					<li><a href="#pizzat">Pizzat</a></li>
+					<li><a href="#juomat">Juomat</a></li>
+				</c:if>
 				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
 				<li><a href="#!"><i class="material-icons left">shopping_cart</i>
 						Ostoskori (0)</a></li>
@@ -86,9 +91,9 @@
 								class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
 							<button class="btn waves-effect waves-light" type="submit"
 								name="action" value="login">Kirjaudu</button>
-							<br>
-							<br> <span class="pienifontti"> Jos et ole vielä
-								jäsen, voit rekisteröityä <a href="<c:url value='/login'/>">täältä</a>.
+							<br> <br> <span class="pienifontti"> Jos et ole
+								vielä jäsen, voit rekisteröityä <a
+								href="<c:url value='/login'/>">täältä</a>.
 							</span>
 						</div>
 					</div>

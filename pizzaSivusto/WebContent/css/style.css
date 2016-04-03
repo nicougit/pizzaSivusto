@@ -28,18 +28,6 @@ body {
 	min-height: 130px;
 }
 
-#fixedhinta {
-	position: absolute;
-	left: 20px;
-	bottom: 20px;
-}
-
-#fixedhintam {
-	position: absolute;
-	right: 20px;
-	top: 35px;
-}
-
 /* Navbarissa oleva firman nimi */
 .brand-logo {
 	margin-left: 20px;
@@ -73,12 +61,12 @@ h1, h2, h3 {
 }
 
 h1 {
-	font-size: 36pt;
+	font-size: 52pt;
 	margin-top: 0px;
 }
 
 h2 {
-	font-size: 30pt;
+	font-size: 40pt;
 }
 
 h3 {
@@ -133,3 +121,33 @@ nav {
 	transition: all 0.5s ease;
 	-webkit-transition: all 0.5s ease;
 }
+
+/* Menu-sivun asetuksia */
+
+.covertausta {
+	background: #FFF;
+	background-image: url("../img/landing-bg-test-2.jpg");
+	background-size:cover;
+	background-attachment: fixed;
+}
+
+.tuotediv {
+	margin:7pt;
+	border-radius:3pt;
+	border:solid 3pt;
+	border-color: orange;
+}
+
+.whitetext {
+	color: #FFF;
+	padding:2pt;
+}
+
+.shadow {
+	text-shadow: 2pt 3pt 3pt black;
+}
+
+.left-margin{
+	margin-left: 5pt;
+}
+
