@@ -18,14 +18,10 @@ var updateCount = function() {
 	$("#taytteet-label").text("Täytteet " + checked + " / 5");
 }
 
-$(document).ready(function() {
-	updateCount();
-});
-
-$("#pizza-taytteet input:checkbox").on("click",function() {
-	updateCount();
-});
-
 $("#pizza-taytteet input:checkbox").on("change",function() {
+	updateCount();
+});
+
+$(document).ready(function() {
 	updateCount();
 });

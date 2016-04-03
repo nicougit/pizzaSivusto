@@ -4,9 +4,10 @@ html, body {
 
 body {
 	background: #FFF;
-	background-image: url("../img/landing-bg-test-2.jpg");
+	background-image: url("../img/landing-bg-test.jpg");
 	background-repeat: no-repeat;
-	background-size: 100% auto;
+	background-size: cover;
+	background-attachment: fixed;
 }
 
 #main-container {
@@ -61,12 +62,12 @@ h1, h2, h3 {
 }
 
 h1 {
-	font-size: 52pt;
+	font-size: 36pt;
 	margin-top: 0px;
 }
 
 h2 {
-	font-size: 40pt;
+	font-size: 30pt;
 }
 
 h3 {
@@ -86,7 +87,7 @@ h3 {
 }
 
 .taytediv {
-	margin-bottom: 25px;
+	margin-bottom: 10px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -98,21 +99,38 @@ h3 {
 	}
 }
 
+.footeri {
+	color: #FFF;
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
 .loginmodaali {
 	max-width: 450px;
 }
 
 /* Navbar tyylit */
 nav {
+	background: rgba(0, 0, 0, 0.6);
+	box-shadow: 4px 0px 5px rgba(0, 0, 0, 0.4);
+}
+
+.nav-scrolled {
+	background: rgba(0, 0, 0, 0.6);
+	box-shadow: 4px 0px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Isoilla näytöillä navbar tausta ylhäällä pois */
+@media only screen and (min-width: 992px) {
+	nav {
 	background: none;
 	box-shadow: none;
 	-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
 	transition: all 0.5s ease;
-}
+	}
 
-.nav-scrolled {
+	.nav-scrolled {
 	background: rgba(0, 0, 0, 0.6);
 	box-shadow: 4px 0px 5px rgba(0, 0, 0, 0.4);
 	-webkit-transition: all 0.5s ease;
@@ -120,13 +138,18 @@ nav {
 	-o-transition: all 0.5s ease;
 	transition: all 0.5s ease;
 	-webkit-transition: all 0.5s ease;
+	}	
 }
+@media only screen and (max-width: 992px) {
+	h1 { margin-top: 20px; }	
+}
+
 
 /* Menu-sivun asetuksia */
 
 .covertausta {
 	background: #FFF;
-	background-image: url("../img/landing-bg-test-2.jpg");
+	background-image: url("../img/landing-bg-test.jpg");
 	background-size:cover;
 	background-attachment: fixed;
 }
@@ -150,4 +173,3 @@ nav {
 .left-margin{
 	margin-left: 5pt;
 }
-

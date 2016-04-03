@@ -11,10 +11,9 @@
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
+	<div class="row headertext">
 	<h1>Pääsy evätty</h1>
-
-	<div class="row">
-		<div class="col s12 center-align">
+	<p class="flow-text">
 			<c:choose>
 				<c:when test="${not empty kayttaja }">
 					Sinulla ei ole oikeutta tälle sivulle. Käyttäjätasosi on ${kayttaja.tyyppi }.
@@ -23,8 +22,10 @@
 					Sinulla ei ole oikeutta tälle sivulle. Et ole kirjautunut sisään.
 				</c:otherwise>
 			</c:choose>
+			</p>
+									<a class="waves-effect waves-light btn btn-large"
+					href="<c:url value='/'/>">Takaisin etusivulle</a>
 		</div>
-	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>
 

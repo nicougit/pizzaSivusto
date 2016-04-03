@@ -16,10 +16,31 @@
 	src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="${url }/js/materialize.js"></script>
 <script type="text/javascript">
+	var naytaVirhe = function(viesti) {
+		$(document).ready(function() {
+			Materialize.toast(viesti, 3000, 'red lighten-2');
+			Materialize.toast();
+		});
+	}
+	
+	var naytaSuccess = function(viesti) {
+		$(document).ready(function() {
+			Materialize.toast(viesti, 3000, 'green darken-1');
+			Materialize.toast();
+		});
+	}
 	$(document).ready(function() {
 		$(".button-collapse").sideNav();
 		$('.modal-trigger').leanModal();
 		$('select').material_select();
+	});
+	$(window).scroll(function() {
+		if ($(document).scrollTop() > 100) {
+			$('nav').addClass('nav-scrolled');
+
+		} else {
+			$('nav').removeClass('nav-scrolled');
+		}
 	});
 </script>
 <c:if test="${not empty success }">
@@ -38,13 +59,3 @@
 		});
 	</script>
 </c:if>
-<script>
-	$(window).scroll(function() {
-		if ($(document).scrollTop() > 100) {
-			$('nav').addClass('nav-scrolled');
-
-		} else {
-			$('nav').removeClass('nav-scrolled');
-		}
-	});
-</script>

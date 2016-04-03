@@ -23,7 +23,7 @@
 			Menu</a> <br> <br>
 	</div>
 
-	<div id="main-content">
+	<div class="row" id="main-content">
 		<div class="row">
 			<div class="col s12 m6 center-align">
 				<h2>Diipa daapa</h2>

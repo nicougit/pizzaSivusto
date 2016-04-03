@@ -9,11 +9,6 @@
 <title>Castello E Fiori - Virhe</title>
 <jsp:include page="WEB-INF/head-include.jsp"></jsp:include>
 <link href="css/experimental.css" rel="stylesheet" type="text/css" />
-<style>
-.footeri {
-	display: none;
-}
-</style>
 </head>
 <body>
 	<jsp:include page="WEB-INF/header.jsp"></jsp:include>
