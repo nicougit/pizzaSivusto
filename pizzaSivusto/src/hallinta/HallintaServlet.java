@@ -1,6 +1,7 @@
 package hallinta;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import apuluokka.Apuri;
 import apuluokka.DeployAsetukset;
@@ -68,6 +72,8 @@ public class HallintaServlet extends HttpServlet {
 				String pizzaPalauta = request.getParameter("pizza-palauta");
 				String poistaPizzat = request.getParameter("poista-pizzat");
 				String poistaTayte = request.getParameter("poista-tayte");
+				
+				String pizzatJsonina = request.getParameter("pizzatJsonina");
 
 				// Apuri validointiin
 				Apuri apuri = new Apuri();
@@ -110,7 +116,10 @@ public class HallintaServlet extends HttpServlet {
 					poistaMerkityt(request, response);
 				} else if (kayttaja.getTyyppi().equals("admin") && poistaTayte != null) {
 					poistaTayte(request, response);
-				} else {
+				} else if (pizzatJsonina != null) {
+					pizzatJsonina(request, response);
+				}
+				else {
 					naytaSivu(request, response);
 				}
 			} else {
@@ -196,6 +205,10 @@ public class HallintaServlet extends HttpServlet {
 			lisaaTayte(request, response);
 		} else if (action != null && action.equals("paivitatayte")) {
 			paivitaTayte(request, response);
+		} else if (action != null && action.equals("haepizzat")) {
+			pizzatJsonina(request, response);
+		} else if (action != null && action.equals("haetaytteet")) {
+			taytteetJsonina(request, response);
 		} else {
 			naytaSivu(request, response);
 		}
@@ -320,7 +333,7 @@ public class HallintaServlet extends HttpServlet {
 
 		System.out.println("Käyttäjä yrittää lisätä pizzaa, katsotaan onko vaadittavat tiedot syötetty.");
 
-		if (pizzanimi != null && pizzahinta != null && taytetaulu != null) {
+		if (pizzanimi != null && pizzahinta != null && pizzakuvaus != null && taytetaulu != null) {
 
 			System.out.println("Yritetään lisätä pizzaa attribuuteilla:");
 			System.out.println(
@@ -371,7 +384,8 @@ public class HallintaServlet extends HttpServlet {
 									HallintaDao dao = new HallintaDao();
 
 									// Katsotaan, onnistuuko lisäys
-									HashMap<String, String> vastaus = dao.lisaaPizza(pizzanimi, pizzakuvaus, pizzahinta, taytetaulu);
+									HashMap<String, String> vastaus = dao.lisaaPizza(pizzanimi, pizzakuvaus, pizzahinta,
+											taytetaulu);
 									if (vastaus.get("virhe") != null) {
 										String virhe = vastaus.get("virhe");
 										request.setAttribute("virhe", virhe);
@@ -382,7 +396,7 @@ public class HallintaServlet extends HttpServlet {
 										request.setAttribute("virhe",
 												"Tietokantaan viedessä tapahtui tuntematon virhe.");
 									}
-									naytaSivu(request, response);
+									jsonVastaus(request, response, vastaus);
 
 								} else {
 									String virhe = "Ei yhtään täytettä valittuna!";
@@ -483,7 +497,7 @@ public class HallintaServlet extends HttpServlet {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
 
-			naytaSivu(request, response);
+			jsonVastaus(request, response, vastaus);
 
 		}
 
@@ -516,7 +530,7 @@ public class HallintaServlet extends HttpServlet {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
 
-			naytaSivu(request, response);
+			jsonVastaus(request, response, vastaus);
 
 		}
 
@@ -540,11 +554,13 @@ public class HallintaServlet extends HttpServlet {
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
+			
+			jsonVastaus(request, response, vastaus);
 		} else {
 			System.out.println("Saavuttiin poistaMerkityt-metodiin, mutta poista-pizzat oli '" + poistaPizzat + "'");
+			
+			naytaSivu(request, response);
 		}
-
-		naytaSivu(request, response);
 
 	}
 
@@ -621,7 +637,7 @@ public class HallintaServlet extends HttpServlet {
 					request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 				}
 
-				naytaSivu(request, response);
+				jsonVastaus(request, response, vastaus);
 			}
 
 		} else {
@@ -630,12 +646,105 @@ public class HallintaServlet extends HttpServlet {
 		}
 	}
 
+	protected void pizzatJsonina(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Pizzojen haku
+		HallintaDao dao = new HallintaDao();
+		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(0, "");
+
+		// Json Array
+		JSONArray pizzatJson = new JSONArray();
+
+		for (int i = 0; i < pizzat.size(); i++) {
+			Pizza pizza = pizzat.get(i);
+			JSONObject pizzaobjekti = new JSONObject();
+			JSONArray taytearray = new JSONArray();
+			pizzaobjekti.put("id", pizza.getId());
+			pizzaobjekti.put("nimi", pizza.getNimi());
+			pizzaobjekti.put("hinta", pizza.getHinta());
+			pizzaobjekti.put("kuvaus", pizza.getKuvaus());
+			pizzaobjekti.put("poistomerkinta", pizza.getPoistomerkinta());
+			for (int j = 0; j < pizza.getTaytteet().size(); j++) {
+				JSONObject tayteobjekti = new JSONObject();
+				tayteobjekti.put("id", pizza.getTaytteet().get(j).getId());
+				tayteobjekti.put("nimi", pizza.getTaytteet().get(j).getNimi());
+				tayteobjekti.put("saatavilla", pizza.getTaytteet().get(j).getSaatavilla());
+				taytearray.add(tayteobjekti);
+			}
+			pizzaobjekti.put("taytteet", taytearray);
+			pizzatJson.add(pizzaobjekti);
+		}
+
+		// Encoding ja printtaus
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+		out.print(pizzatJson);
+	}
+
+	protected void taytteetJsonina(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Pizzojen haku
+		HallintaDao dao = new HallintaDao();
+		ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
+
+		// Json Array
+		JSONArray taytteetJson = new JSONArray();
+
+		for (int i = 0; i < taytteet.size(); i++) {
+			Tayte tayte = taytteet.get(i);
+			JSONObject tayteobjekti = new JSONObject();
+			tayteobjekti.put("id", tayte.getId());
+			tayteobjekti.put("nimi", tayte.getNimi());
+			tayteobjekti.put("saatavilla", tayte.getSaatavilla());
+			taytteetJson.add(tayteobjekti);
+		}
+
+		// Encoding ja printtaus
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+		out.print(taytteetJson);
+	}
+
+	protected void jsonVastaus(HttpServletRequest request, HttpServletResponse response,
+			HashMap<String, String> vastaus) throws ServletException, IOException {
+
+		JSONArray jsonarray = new JSONArray();
+		JSONObject jsonvastaus = new JSONObject();
+
+		if (vastaus.get("virhe") != null) {
+			jsonvastaus.put("virhe", vastaus.get("virhe"));
+		} else if (vastaus.get("success") != null) {
+			jsonvastaus.put("success", vastaus.get("success"));
+		} else {
+			jsonvastaus.put("virhe", "Tuntematon virhe JSONia käsitellessä");
+		}
+
+		jsonarray.add(jsonvastaus);
+
+		// Encoding ja printtaus
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+		out.print(jsonarray);
+
+	}
+
 	// Error-attribuutin asetus ja redirect
 	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
 			throws ServletException, IOException {
-		request.setAttribute("virhe", virhe);
+		// request.setAttribute("virhe", virhe);
+		HashMap<String, String> vastaus = new HashMap<>();
+		vastaus.put("virhe", virhe);
 		System.out.println(virhe);
-		naytaSivu(request, response);
+		// naytaSivu(request, response);
+		jsonVastaus(request, response, vastaus);
 	}
 
 }
