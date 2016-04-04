@@ -10,6 +10,8 @@
 <link type="text/css" rel="stylesheet" href="${url }/css/style.css" />
 <link href='https://fonts.googleapis.com/css?family=Pacifico'
 	rel='stylesheet' type='text/css'>
+<link href="${url }/img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+<link href="${url }/img/favicon.ico" rel="icon" type="image/x-icon">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <script type="text/javascript"
