@@ -25,7 +25,7 @@
 				class="button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
 				<c:if
-					test="${pageContext.request.requestURI == '/pizzaSivusto/WEB-INF/pizzat.jsp'}">
+					test="${pageContext.request.requestURI == '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
 					<li><a href="#pizzat">Pizzat</a></li>
 					<li><a href="#juomat">Juomat</a></li>
 				</c:if>

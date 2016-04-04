@@ -14,7 +14,7 @@
 	<div class="headertext">
 		<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
 		<p class="flow-text">Olemme Hämeenlinnalainen perheyritys, joka on
-			aloittanut toimintansa jo 50-luvulla. Me Castello é Fioressa haluamme
+			aloittanut toimintansa jo 50-luvulla. Me Castello é Fiorissa haluamme
 			tarjota jokaiselle jotain unohtumatonta. Taidolla, tunteella ja
 			rakkaudella teemme Teille Hämeenlinnan maukkaimmat italialaiset
 			pizzat.</p>

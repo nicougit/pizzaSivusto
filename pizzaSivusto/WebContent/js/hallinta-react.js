@@ -4,17 +4,24 @@ var Tayte = React.createClass({
 		var saatavilla = "";
 		if (this.props.saatavilla == true) {
 			saatavilla = "Saatavilla";
+			return (
+				<tr>
+				<td>{this.props.nimi }</td>
+				<td>{saatavilla }</td>
+				<td><a className="waves-effect waves-light btn tooltipped right" href={"?tayte-edit=" + this.props.id }><i className="material-icons">edit</i></a></td>
+				</tr>
+			);
 		}
 		else {
 			saatavilla = "Ei saatavilla";
+			return (
+				<tr className="red lighten-5">
+				<td>{this.props.nimi }</td>
+				<td>{saatavilla }</td>
+				<td><a className="waves-effect waves-light btn tooltipped right" href={"?tayte-edit=" + this.props.id }><i className="material-icons">edit</i></a></td>
+				</tr>
+			);
 		}
-		return (
-			<tr>
-			<td>{this.props.nimi }</td>
-			<td>{saatavilla }</td>
-			<td><a className="waves-effect waves-light btn tooltipped right" href={"?tayte-edit=" + this.props.id }><i className="material-icons">edit</i></a></td>
-			</tr>
-		);
 	}
 });
 
@@ -123,7 +130,7 @@ var Pizza = React.createClass({
 				<tr>
 				<td>{this.props.nimi }</td>
 				<td className="pienifontti hide-on-small-only">{taytteet }</td>
-				<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2) } €</td>
+				<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2).replace(".",",") } €</td>
 				<td className="right-align">
 				<a className="waves-effect waves-light btn tooltipped" href={"?pizza-edit=" + this.props.id } data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a> <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.pizzanPoisto } data-position="right" data-delay="500" data-tooltip="Poista"> <i className="material-icons large">delete</i></button></td>
 				</tr>
@@ -187,12 +194,22 @@ var Pizzalista = React.createClass({
 // Palauttaa yksittäisen täytteen checkbox rivin pizzan lisäystä varten
 var TayteCheckbox = React.createClass({
 	render: function() {
+		if (this.props.saatavilla == true) {
 		return (
 			<div className="col s6 m4 l3 taytediv">
 			<input type="checkbox" id={this.props.id } value={this.props.id} name="pizzatayte" onChange={this.props.laskeValitut }/>
 			<label htmlFor={this.props.id }>{this.props.nimi }</label>
 			</div>
 		);
+		}
+		else {
+			return (
+				<div className="col s6 m4 l3 taytediv">
+				<input type="checkbox" id={this.props.id } value={this.props.id} name="pizzatayte" onChange={this.props.laskeValitut }/>
+				<label className="errori-light" htmlFor={this.props.id }>{this.props.nimi }</label>
+				</div>
+			);
+		}
 	}
 });
 
