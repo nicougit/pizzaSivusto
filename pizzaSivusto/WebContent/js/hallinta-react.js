@@ -67,6 +67,13 @@ var TaytteenLisays = React.createClass({
 			$("#submittayte").attr("disabled", true);
 		}
 	},
+	componentWillReceiveProps: function(propsit) {
+		if (propsit.tayteLisaysStatus) {
+			if (propsit.tayteLisaysStatus == "success") {
+				this.setState({taytenimi: ""}, function() { this.paivitanappi() });
+			}
+		}
+	},
 	render: function() {
 		return (
 			<div className="col s12 m12 l5 push-l7 " id="taytel">
@@ -160,6 +167,10 @@ var Pizzalista = React.createClass({
 		$("#poistomodal").closeModal();
 	},
 	render: function() {
+		var nappistatus = {"disabled": "disabled"};
+		if (this.props.poistettavia > 0) {
+			nappistatus = {};
+		}
 		return (
 			<div className="col s12">
 			<table className="bordered">
@@ -177,7 +188,7 @@ var Pizzalista = React.createClass({
 			</table>
 			<br />
 			<div className="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
-			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista pizzat pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
+			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista pizzat pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
 			<div id="poistomodal" className="modal">
 			<div className="modal-content center-align">
 			<h4>Oletko varma?</h4>
@@ -254,6 +265,18 @@ var PizzanLisays = React.createClass({
 				$("#submitpizza").attr("disabled", true);
 			}
 		},
+		componentWillReceiveProps: function(propsit) {
+			if (propsit.pizzaLisaysStatus) {
+				if (propsit.pizzaLisaysStatus == "success") {
+					this.setState({pizzanimi: "", pizzahinta: "", pizzakuvaus: ""}, function() { this.paivitanappi() });
+					$("#pizza-taytteet input:checkbox").each(
+						function() {
+							$(this).attr("checked", false);
+						});
+					this.laskeValitut();
+				}
+			}
+		},
 		render: function() {
 			return (
 				<div className="col s12">
@@ -326,7 +349,7 @@ var PizzanLisays = React.createClass({
 	// Hallintasivun renderointi ja funktiot
 	var Hallintasivu = React.createClass({
 		getInitialState: function() {
-			return { pizzat: [], taytteet: [], poistettavat: 0 };
+			return { pizzat: [], taytteet: [], poistettavat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null };
 		},
 		componentDidMount: function() {
 			this.haePizzat();
@@ -398,7 +421,7 @@ var PizzanLisays = React.createClass({
 											}
 											else if (vastaus.success != null) {
 												naytaSuccess(vastaus.success);
-												$("#taytenimi").val("");
+												this.setState({ tayteLisaysStatus: "success" });
 												this.haeTaytteet();
 											}
 											else {
@@ -424,11 +447,7 @@ var PizzanLisays = React.createClass({
 													}
 													else if (vastaus.success != null) {
 														naytaSuccess(vastaus.success);
-														$("#pizzanimi, #pizzahinta, #pizzakuvaus").val("");
-														$("#pizza-taytteet input:checkbox").each(
-															function() {
-																$(this).attr("checked", false);
-															});
+															this.setState({ pizzaLisaysStatus: "success" });
 															this.haePizzat();
 														}
 														else {
@@ -448,8 +467,7 @@ var PizzanLisays = React.createClass({
 															<div>
 															<div className="row headertext">
 															<h1>Hallinta</h1>
-															<p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa ja {this.state.taytteet.length } täytettä!
-															<br />Poistomerkittyja pizzoja {this.state.poistettavat } kpl</p>
+															<p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa ja {this.state.taytteet.length } täytettä!</p>
 															</div>
 															<div id="main-content">
 															<Navigaatio />
@@ -457,10 +475,10 @@ var PizzanLisays = React.createClass({
 															<Pizzalista pizzat={this.state.pizzat } palautaPizza={this.kasittelePizza } poistaPizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>
 															</div>
 															<div className="row" id="pizza-l">
-															<PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza }/>
+															<PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>
 															</div>
 															<div className="row" id="tayte-h">
-															<TaytteenLisays lahetaLisays={this.lisaaTayte } />
+															<TaytteenLisays lahetaLisays={this.lisaaTayte } tayteLisaysStatus={this.state.tayteLisaysStatus } />
 															<Taytelista taytteet={this.state.taytteet } />
 															</div>
 															</div>

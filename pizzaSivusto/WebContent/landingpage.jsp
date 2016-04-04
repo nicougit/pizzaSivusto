@@ -18,9 +18,9 @@
 			tarjota jokaiselle jotain unohtumatonta. Taidolla, tunteella ja
 			rakkaudella teemme Teille Hämeenlinnan maukkaimmat italialaiset
 			pizzat.</p>
-		<br> <a class="waves-effect waves-light btn-large"
+		<a class="waves-effect waves-light btn-large"
 			href="<c:url value='/pizza'/>"><i class="material-icons right">restaurant_menu</i>
-			Menu</a> <br> <br>
+			Menu</a> <br> <br> <br>
 	</div>
 	<div class="row" id="main-content">
 		<div class="col s12 l4 center-align">
