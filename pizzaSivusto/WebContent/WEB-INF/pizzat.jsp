@@ -9,7 +9,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Castello &#233; Fiori - Menu</title>
 <jsp:include page="head-include.jsp"></jsp:include>
-<link href="css/experimental.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>

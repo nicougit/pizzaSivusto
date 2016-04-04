@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Castello E Fiori - Pääsy evätty</title>
+<title>Castello &#233; Fiori - Pääsy evätty</title>
 <jsp:include page="head-include.jsp"></jsp:include>
 </head>
 <body>
