@@ -9,11 +9,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Castello &#233; Fiori - Menu</title>
 <jsp:include page="head-include.jsp"></jsp:include>
+<link href='https://fonts.googleapis.com/css?family=Martel:200'
+	rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway:200italic' rel='stylesheet' type='text/css'>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
-
-
 	<div class="headertext">
 		<h1>Menu</h1>
 		<p class="flow-text shadow">Täydellinen pizzataikina syntyy
@@ -22,82 +23,71 @@
 			oikea mozzarella. Lisäksi käytämme pizzoissamme vain tuoreita ja
 			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta</p>
 	</div>
-
-
-
-	<c:choose>
-		<c:when test="${empty pizzat}">
-			<div class="errori center-align">Listalla ei ole pizzoja, tai
-				niitä ei saatu noudettua tietokannasta.</div>
-		</c:when>
-		<c:otherwise>
-
-			<div class="row" id="main-content">
-			<div class="section" id="pizzat"></div>
-				<div class="section">
-					<h2 class="brand-logo big">Pizzat</h2>
-				</div>
-
+	<div class="row" id="main-content">
+		<c:choose>
+			<c:when test="${empty pizzat}">
+				<div class="errori center-align">Listalla ei ole pizzoja, tai
+					niitä ei saatu noudettua tietokannasta.</div>
+			</c:when>
+			<c:otherwise>
+				<h2 id="pizzat" class="menu-pizzaname menu-title">Pizzat</h2>
 				<c:forEach items="${pizzat}" var="pizza">
-
-					<div class="grey darken-2 col s12 m12 center tuotediv">
-						<h3 class="shadow">${pizza.nimi}
+					<div class="center-align">
+						<c:set var="pizzahinta">
 							<fmt:formatNumber type="number" minFractionDigits="2"
 								maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
-							€
+						</c:set>
+						<h3 class="menu-pizzaname">${pizza.nimi }
+							<span class="menu-pizzahinta">${fn:replace(pizzahinta, ".", ",") }
+								€</span>
 						</h3>
-						<p class="flow-text">${pizza.kuvaus}</p>
-
-						<div class="row">
-							<c:forEach items="${pizza.taytteet}" var="pizzantayte"
-								varStatus="taytecounter">
-											${pizzantayte.nimi}
-											<c:if
-									test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+						<span class="menu-pizzataytteet"> <c:forEach
+								items="${pizza.taytteet }" var="tayte" varStatus="status">
+							${tayte.nimi }<c:if
+									test="${fn:length(pizza.taytteet) > status.count }">, </c:if>
 							</c:forEach>
-						</div>
-						<p class="strong-id">
-							<a href="#" class="waves-effect waves-light btn left-margin"><i
-								class="material-icons">shopping_cart</i></a>
-						</p>
-
+						</span>
+						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
+						<br>
+						<button class="btn waves-effect waves-light" type="button">Lisää
+							ostoskoriin</button>
+						<br> <br>
+						<div class="divider"></div>
 					</div>
+					<br>
 				</c:forEach>
-			</div>
 
-			<div class="row" id="main-content">
-			<div class="section" id="juomat"></div>
-				<div class="section" >
-					<h2 class="brand-logo big">Juomat</h2>
-				</div>
-
+				<h2 id="juomat" class="menu-pizzaname menu-title">Juomat</h2>
 				<c:forEach items="${pizzat}" var="pizza">
-
-					<div class="grey darken-2 col s12 m12 center tuotediv">
-						<h3 class="shadow">${pizza.nimi}
+					<div class="center-align">
+						<c:set var="pizzahinta">
 							<fmt:formatNumber type="number" minFractionDigits="2"
 								maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
-							€
+						</c:set>
+						<h3 class="menu-pizzaname">${pizza.nimi }
+							<span class="menu-pizzahinta">${fn:replace(pizzahinta, ".", ",") }
+								€</span>
 						</h3>
-						<p class="flow-text">${pizza.kuvaus}</p>
-						<div class="row">
-							<c:forEach items="${pizza.taytteet}" var="pizzantayte"
-								varStatus="taytecounter">
-											${pizzantayte.nimi}
-											<c:if
-									test="${fn:length(pizza.taytteet) > taytecounter.count }">, </c:if>
+						<span class="menu-pizzataytteet"> <c:forEach
+								items="${pizza.taytteet }" var="tayte" varStatus="status">
+							${tayte.nimi }<c:if
+									test="${fn:length(pizza.taytteet) > status.count }">, </c:if>
 							</c:forEach>
-						</div>
-						<p class="strong-id">
-							<a href="#" class="waves-effect waves-light btn left-margin"><i
-								class="material-icons">shopping_cart</i></a>
-						</p>
+						</span>
+						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
+						<br>
+						<button class="btn waves-effect waves-light" type="button">Lisää
+							ostoskoriin</button>
+						<br> <br>
+						<div class="divider"></div>
 					</div>
+					<br>
 				</c:forEach>
-			</div>
 
-		</c:otherwise>
-	</c:choose>
+			</c:otherwise>
+		</c:choose>
+
+	</div>
 
 
 	<jsp:include page="footer.jsp"></jsp:include>

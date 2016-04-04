@@ -147,33 +147,23 @@ nav {
 }
 
 /* Menu-sivun asetuksia */
-.covertausta {
-	background: #FFF;
-	background-image: url("../img/landing-bg-test.jpg");
-	background-size: cover;
-	background-attachment: fixed;
+.menu-pizzaname {
+	font-family: 'Martel', serif;
+	margin-bottom: 10px;
 }
-
-.tuotediv {
-	margin: 7pt;
-	border-radius: 3pt;
-	border: solid 3pt;
-	border-color: orange;
-	color: #FFF;
-	padding: 2pt;
+.menu-pizzataytteet {
+	font-family: 'Martel', serif;
+	font-size: 14pt;
 }
-
-
-.shadow {
-	text-shadow: 2pt 3pt 3pt black;
+.menu-pizzakuvaus {
+	max-width: 90%;
+	font-family: 'Raleway', sans-serif;
+	font-size: 14pt;
+	margin: 5px auto;
 }
-
-.big{
-	font-size:40pt;
+.menu-pizzahinta {
+	margin-left: 30px;
 }
-
-
-.seventy {
-	font-size: 18pt;
-	line-height: 25pt;
+.menu-title {
+	font-size: 40pt;
 }
