@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Castello E Fiori Hallintasivu</title>
+<title>Castello &#233; Fiori Hallintasivu</title>
 <jsp:include page="head-include.jsp"></jsp:include>
 <script src="build/react.js"></script>
 <script src="build/react-dom.js"></script>
