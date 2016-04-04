@@ -12,6 +12,26 @@
 <link href='https://fonts.googleapis.com/css?family=Martel:200'
 	rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Raleway:200italic' rel='stylesheet' type='text/css'>
+<script>
+// Törkeesti intternetistä 99% kopioitu skripti
+// Scrollaa smoothisti pizza / juomat nappeja klikatessa
+// Source:
+// https://css-tricks.com/snippets/jquery/smooth-scrolling/
+$(function() {
+	  $('a[href*="#"]:not([href="#"])').click(function() {
+	    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+	      var target = $(this.hash);
+	      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+	      if (target.length) {
+	        $('html, body').animate({
+	          scrollTop: target.offset().top -80
+	        }, 500);
+	        return false;
+	      }
+	    }
+	  });
+	});
+</script>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -31,6 +51,7 @@
 			</c:when>
 			<c:otherwise>
 				<h2 id="pizzat" class="menu-pizzaname menu-title">Pizzat</h2>
+				<br>
 				<c:forEach items="${pizzat}" var="pizza">
 					<div class="center-align">
 						<c:set var="pizzahinta">

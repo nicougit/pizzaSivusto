@@ -149,6 +149,7 @@ nav {
 /* Menu-sivun asetuksia */
 .menu-pizzaname {
 	font-family: 'Martel', serif;
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 .menu-pizzataytteet {
@@ -162,7 +163,9 @@ nav {
 	margin: 5px auto;
 }
 .menu-pizzahinta {
-	margin-left: 30px;
+	margin-left: 20px;
+	font-size: 18pt;
+	vertical-align: middle;
 }
 .menu-title {
 	font-size: 40pt;
