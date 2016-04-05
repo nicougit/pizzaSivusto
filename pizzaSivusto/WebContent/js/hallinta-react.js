@@ -1,27 +1,26 @@
 // Palauttaa yksittäisen täytetaulukon rivin
 var Tayte = React.createClass({
+	muokkaaTaytetta: function() {
+		var tayte = {id: this.props.id, nimi: this.props.nimi, saatavilla: this.props.saatavilla };
+		this.props.muokkaaTaytetta(tayte);
+	},
 	render: function() {
 		var saatavilla = "";
+		var tyyli = {};
 		if (this.props.saatavilla == true) {
 			saatavilla = "Saatavilla";
-			return (
-				<tr>
-				<td>{this.props.nimi }</td>
-				<td>{saatavilla }</td>
-				<td><a className="waves-effect waves-light btn tooltipped right" href={"?tayte-edit=" + this.props.id }><i className="material-icons">edit</i></a></td>
-				</tr>
-			);
 		}
 		else {
 			saatavilla = "Ei saatavilla";
-			return (
-				<tr className="red lighten-5">
-				<td>{this.props.nimi }</td>
-				<td>{saatavilla }</td>
-				<td><a className="waves-effect waves-light btn tooltipped right" href={"?tayte-edit=" + this.props.id }><i className="material-icons">edit</i></a></td>
-				</tr>
-			);
+			tyyli = {"className": "red lighten-5"};
 		}
+		return (
+			<tr {... tyyli}>
+			<td>{this.props.nimi }</td>
+			<td>{saatavilla }</td>
+			<td><button className="waves-effect waves-light btn tooltipped right" onClick={this.muokkaaTaytetta }><i className="material-icons">edit</i></button></td>
+			</tr>
+		);
 	}
 });
 
@@ -40,7 +39,7 @@ var Taytelista = React.createClass({
 			</tr>
 			</thead>
 			<tbody>
-			{this.props.taytteet.map((o, i) => <Tayte key={o.id} id={o.id} nimi={o.nimi} saatavilla={o.saatavilla} />)}
+			{this.props.taytteet.map((o, i) => <Tayte key={o.id} id={o.id} nimi={o.nimi} saatavilla={o.saatavilla} muokkaaTaytetta={this.props.muokkaaTaytetta }/>)}
 			</tbody>
 			</table>
 			</div>
@@ -114,6 +113,87 @@ var TaytteenLisays = React.createClass({
 	}
 });
 
+// Täytteen muokkaus formi
+var TaytteenMuokkaus = React.createClass({
+	getInitialState: function() {
+		return ({taytenimi: this.props.tayte.nimi, taytesaatavilla: this.props.tayte.saatavilla });
+	},
+	componentDidMount: function() {
+	},
+	paivitanimi: function(e) {
+		this.setState({taytenimi: e.target.value }, function() { this.paivitanappi() });
+	},
+	paivitanappi: function() {
+		if (this.state.taytenimi.length > 2) {
+			$("#paivitatayte").attr("disabled", false);
+		}
+		else {
+			$("#paivitatayte").attr("disabled", true);
+		}
+	},
+	componentWillReceiveProps: function(propsit) {
+		if (propsit.tayte) {
+			this.setState({taytenimi: propsit.tayte.nimi, taytesaatavilla: propsit.tayte.saatavilla});
+		}
+	},
+	vaihdasaatavuus: function(e) {
+		var value = e.target.value;
+		if (value == 0) {
+			this.setState({taytesaatavilla: false});
+		}
+		else {
+			this.setState({taytesaatavilla: true});
+		}
+	},
+	lahetaPaivitys: function() {
+		var saatavuus = 0;
+		if (this.state.taytesaatavilla === true) {
+			saatavuus = 1;
+		}
+		var submitdata = [{name: "action", value: "paivitatayte"}, {name: "tayteid", value: this.props.tayte.id}, {name: "taytenimi", value: this.state.taytenimi}, {name: "taytesaatavilla", value: saatavuus}];
+		this.props.lahetaPaivitys(submitdata);
+	},
+	render: function() {
+		return (
+			<div className="col s12 m12 l5 push-l7" id="taytem">
+			<h2>Muokkaa täytettä</h2>
+			<div className="row">
+			<form id="tayteformi">
+			<div className="row">
+			<div className="col s12 input-field">
+			<input type="text" name="taytenimi" id="taytenimi"
+			className="fieldi" value={this.state.taytenimi } onChange={this.paivitanimi }/> <label
+			htmlFor="taytenimi" className="active">Täytteen nimi</label>
+			</div>
+			</div>
+			<div className="row">
+			<div className="col s6">
+			<input name="taytesaatavilla" type="radio" id="saatavilla"
+			value="1" checked={this.state.taytesaatavilla === true} onChange={this.vaihdasaatavuus}/>
+			<label htmlFor="saatavilla">Saatavilla</label>
+			</div>
+			<div className="col s6">
+			<input name="taytesaatavilla" type="radio" id="eisaatavilla"
+			value="0" checked={this.state.taytesaatavilla === false} onChange={this.vaihdasaatavuus}/>
+			<label htmlFor="eisaatavilla">Ei
+			saatavilla</label>
+			</div>
+			</div>
+			<div className="row">
+			<div className="col s12">
+			<button className="btn waves-effect waves-light btn-large left red lighten-2"
+			type="button" onClick={this.props.peruuta }>Peruuta</button>
+			<button className="btn waves-effect waves-light btn-large right"
+			type="button" id="paivitatayte" onClick={this.lahetaPaivitys }>Päivitä</button>
+			</div>
+			</div>
+			</form>
+			</div>
+			</div>
+		);
+	}
+});
+
 // Palauttaa yksittäisen pizzataulukon rivin
 var Pizza = React.createClass({
 	pizzanPoisto: function() {
@@ -132,28 +212,24 @@ var Pizza = React.createClass({
 				taytteet+= ", ";
 			}
 		}
-		if (this.props.poistomerkinta == null) {
-			return (
-				<tr>
-				<td>{this.props.nimi }</td>
-				<td className="pienifontti hide-on-small-only">{taytteet }</td>
-				<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2).replace(".",",") } €</td>
-				<td className="right-align">
-				<a className="waves-effect waves-light btn tooltipped" href={"?pizza-edit=" + this.props.id } data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a> <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.pizzanPoisto } data-position="right" data-delay="500" data-tooltip="Poista"> <i className="material-icons large">delete</i></button></td>
-				</tr>
-			);
+		var poistomerkitty = {};
+		var muokkaanappi = <a className="waves-effect waves-light btn tooltipped" href={"?pizza-edit=" + this.props.id } data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a>;
+		var poistonappi = "";
+		if (this.props.poistomerkinta != null) {
+			poistomerkitty = {"className": "red lighten-5"};
+			poistonappi = <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.pizzanPalautus } data-position="right" data-delay="500" data-tooltip="Palauta"> <i className="material-icons large">visibility_off</i></button>;
 		}
 		else {
-			return (
-				<tr className="red lighten-5">
-				<td>{this.props.nimi }<br/><span className="pienifontti hide-on-small-only">Poistettu {this.props.poistomerkinta }</span></td>
-				<td className="pienifontti hide-on-small-only">{taytteet }</td>
-				<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2) } €</td>
-				<td className="right-align">
-				<a className="waves-effect waves-light btn tooltipped" href={"?pizza-edit=" + this.props.id } data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a> <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.pizzanPalautus } data-position="right" data-delay="500" data-tooltip="Palauta"> <i className="material-icons large">visibility_off</i></button></td>
-				</tr>
-			);
+			poistonappi = <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.pizzanPoisto } data-position="right" data-delay="500" data-tooltip="Poista"> <i className="material-icons large">delete</i></button>;
 		}
+		return (
+			<tr {... poistomerkitty}>
+			<td>{this.props.nimi }</td>
+			<td className="pienifontti hide-on-small-only">{taytteet }</td>
+			<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2).replace(".",",") } €</td>
+			<td className="right-align">{muokkaanappi } {poistonappi }</td>
+			</tr>
+		);
 	}
 });
 
@@ -205,22 +281,16 @@ var Pizzalista = React.createClass({
 // Palauttaa yksittäisen täytteen checkbox rivin pizzan lisäystä varten
 var TayteCheckbox = React.createClass({
 	render: function() {
-		if (this.props.saatavilla == true) {
+		var tyyli = {};
+		if (this.props.saatavilla != true) {
+			tyyli = {"className": "errori-light"};
+		}
 		return (
 			<div className="col s6 m4 l3 taytediv">
 			<input type="checkbox" id={this.props.id } value={this.props.id} name="pizzatayte" onChange={this.props.laskeValitut }/>
-			<label htmlFor={this.props.id }>{this.props.nimi }</label>
+			<label {... tyyli} htmlFor={this.props.id }>{this.props.nimi }</label>
 			</div>
 		);
-		}
-		else {
-			return (
-				<div className="col s6 m4 l3 taytediv">
-				<input type="checkbox" id={this.props.id } value={this.props.id} name="pizzatayte" onChange={this.props.laskeValitut }/>
-				<label className="errori-light" htmlFor={this.props.id }>{this.props.nimi }</label>
-				</div>
-			);
-		}
 	}
 });
 
@@ -273,180 +343,180 @@ var PizzanLisays = React.createClass({
 						function() {
 							$(this).attr("checked", false);
 						});
-					this.laskeValitut();
-				}
-			}
-		},
-		render: function() {
-			return (
-				<div className="col s12">
-				<div className="row">
-				<h2>Lisää pizza</h2>
-				<form id="lisaysformi">
-				<div className="col s12 m12 l10 offset-l1">
-				<div className="row">
-				<div className="input-field col s12 m9 l9">
-				<input type="text" name="pizzanimi" id="pizzanimi" value={this.state.pizzanimi } onChange={this.paivitanimi }/>
-				<label htmlFor="pizzanimi">Pizzan nimi</label>
-				</div>
-				<div className="input-field col s12 m3 l3">
-				<input type="number" className="validate" min="0" step="0.05" name="pizzahinta" id="pizzahinta" value={this.state.pizzahinta } onChange={this.paivitahinta }/>
-				<label htmlFor="pizzahinta" data-error="Virhe">Pizzan hinta</label>
-				</div>
-				<div className="input-field col s12">
-				<textarea className="materialize-textarea" name="pizzakuvaus" id="pizzakuvaus" length="255" value={this.state.pizzakuvaus } onChange={this.paivitakuvaus }></textarea>
-				<label htmlFor="pizzakuvaus">Pizzan kuvaus</label>
-				</div>
-				</div>
-				<div className="row" id="pizza-taytteet">
-				<label id="taytteet-label">Täytteet {this.state.valittuja } / 5</label><br/><br/>
-				<div className="row">
-				{this.props.taytteet.map((o, i) => <TayteCheckbox key={o.id} id={o.id} nimi={o.nimi} saatavilla={o.saatavilla } laskeValitut={this.laskeValitut } />)}
-				</div>
-				</div>
-				<button className="btn waves-effect waves-light btn-large" id="submitpizza" type="button" onClick={this.props.lisaaPizza }>Lisää pizza</button>
-				</div>
-				</form>
-				</div>
-				</div>
-			);
-		}
-	});
-
-	// Hallintasivun navigaatio
-	var Navigaatio = React.createClass({
-		render: function() {
-			return (
-				<div>
-				<div className="row hide-on-small-only">
-				<div className="col s12 m12 l10 offset-l1">
-				<ul className="tabs">
-				<li className="tab col s12"><a href="#pizza-h" className="active">Pizzojen
-				hallinta</a></li>
-				<li className="tab col s12"><a href="#pizza-l">Pizzan lisäys</a></li>
-				<li className="tab col s12"><a href="#tayte-h">Täytteiden
-				hallinta</a></li>
-				</ul>
-				</div>
-				</div>
-				<div className="row hide-on-med-and-up">
-				<div className="col s12">
-				<ul className="tabs">
-				<li className="tab col s12"><a href="#pizza-h" className="active"><img
-				src="img/pizza_gear.png" alt="P" /> </a></li>
-				<li className="tab col s12"><a href="#pizza-l"><img
-				src="img/pizza_add.png" alt="L" /></a></li>
-				<li className="tab col s12"><a href="#tayte-h"><img
-				src="img/pizza_zoom.png" alt="T" /> </a></li>
-				</ul>
-				</div>
-				</div>
-				</div>
-			);
-		}
-	});
-
-	// Hallintasivun renderointi ja funktiot
-	var Hallintasivu = React.createClass({
-		getInitialState: function() {
-			return { pizzat: [], taytteet: [], poistettavat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null };
-		},
-		componentDidMount: function() {
-			this.haePizzat();
-			this.haeTaytteet();
-			$('ul.tabs').tabs();
-		},
-		haePizzat: function() {
-			return $.post("hallinta", {action: "haepizzat"}).done(
-				function(json) {
-					console.log("Haettiin pizzat, pituus " + json.length);
-					var poistettavat = 0;
-					for (var i = 0; i < json.length; i++) {
-						if (json[i].poistomerkinta != null) {
-							poistettavat++;
-						}
+						this.laskeValitut();
 					}
-					this.setState({ pizzat: json, poistettavat: poistettavat })
-				}.bind(this)).fail(
-					function(jqxhr, textStatus, error) {
-						var errori = textStatus + ", " + error;
-						console.log("Error pizzoja hakiessa: " + errori);
-					});
-				},
-				kasittelePizza: function(toiminto) {
-					console.log("Käsitellään: " + JSON.stringify(toiminto));
-					$.get("hallinta", toiminto).done(
-						function(json) {
-							var vastaus = json[0];
-							if (vastaus.virhe != null) {
-								console.log(vastaus.virhe);
-								naytaVirhe(vastaus.virhe);
+				}
+			},
+			render: function() {
+				return (
+					<div className="col s12">
+					<div className="row">
+					<h2>Lisää pizza</h2>
+					<form id="lisaysformi">
+					<div className="col s12 m12 l10 offset-l1">
+					<div className="row">
+					<div className="input-field col s12 m9 l9">
+					<input type="text" name="pizzanimi" id="pizzanimi" value={this.state.pizzanimi } onChange={this.paivitanimi }/>
+					<label htmlFor="pizzanimi">Pizzan nimi</label>
+					</div>
+					<div className="input-field col s12 m3 l3">
+					<input type="number" className="validate" min="0" step="0.05" name="pizzahinta" id="pizzahinta" value={this.state.pizzahinta } onChange={this.paivitahinta }/>
+					<label htmlFor="pizzahinta" data-error="Virhe">Pizzan hinta</label>
+					</div>
+					<div className="input-field col s12">
+					<textarea className="materialize-textarea" name="pizzakuvaus" id="pizzakuvaus" length="255" value={this.state.pizzakuvaus } onChange={this.paivitakuvaus }></textarea>
+					<label htmlFor="pizzakuvaus">Pizzan kuvaus</label>
+					</div>
+					</div>
+					<div className="row" id="pizza-taytteet">
+					<label id="taytteet-label">Täytteet {this.state.valittuja } / 5</label><br/><br/>
+					<div className="row">
+					{this.props.taytteet.map((o, i) => <TayteCheckbox key={o.id} id={o.id} nimi={o.nimi} saatavilla={o.saatavilla } laskeValitut={this.laskeValitut } />)}
+					</div>
+					</div>
+					<button className="btn waves-effect waves-light btn-large" id="submitpizza" type="button" onClick={this.props.lisaaPizza }>Lisää pizza</button>
+					</div>
+					</form>
+					</div>
+					</div>
+				);
+			}
+		});
+
+		// Hallintasivun navigaatio
+		var Navigaatio = React.createClass({
+			render: function() {
+				return (
+					<div>
+					<div className="row hide-on-small-only">
+					<div className="col s12 m12 l10 offset-l1">
+					<ul className="tabs">
+					<li className="tab col s12"><a href="#pizza-h" className="active">Pizzojen
+					hallinta</a></li>
+					<li className="tab col s12"><a href="#pizza-l">Pizzan lisäys</a></li>
+					<li className="tab col s12"><a href="#tayte-h">Täytteiden
+					hallinta</a></li>
+					</ul>
+					</div>
+					</div>
+					<div className="row hide-on-med-and-up">
+					<div className="col s12">
+					<ul className="tabs">
+					<li className="tab col s12"><a href="#pizza-h" className="active"><img
+					src="img/pizza_gear.png" alt="P" /> </a></li>
+					<li className="tab col s12"><a href="#pizza-l"><img
+					src="img/pizza_add.png" alt="L" /></a></li>
+					<li className="tab col s12"><a href="#tayte-h"><img
+					src="img/pizza_zoom.png" alt="T" /> </a></li>
+					</ul>
+					</div>
+					</div>
+					</div>
+				);
+			}
+		});
+
+		// Hallintasivun renderointi ja funktiot
+		var Hallintasivu = React.createClass({
+			getInitialState: function() {
+				return { pizzat: [], taytteet: [], poistettavat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null, muokattavaTayte: {} };
+			},
+			componentDidMount: function() {
+				this.haePizzat();
+				this.haeTaytteet();
+				$('ul.tabs').tabs();
+			},
+			haePizzat: function() {
+				return $.post("hallinta", {action: "haepizzat"}).done(
+					function(json) {
+						console.log("Haettiin pizzat, pituus " + json.length);
+						var poistettavat = 0;
+						for (var i = 0; i < json.length; i++) {
+							if (json[i].poistomerkinta != null) {
+								poistettavat++;
 							}
-							else if (vastaus.success != null) {
-								console.log(vastaus.success);
-								naytaSuccess(vastaus.success);
-								this.haePizzat();
-							}
-							else {
-								console.log(JSON.stringify(json));
-								naytaVirhe("Virhe JSON vastauksessa!")
-							}
-						}.bind(this)).fail(
-							function(jqxhr, textStatus, error) {
-								var errori = textStatus + ", " + error;
-								console.log("Faili: " + errori);
-								console.log(JSON.stringify(json));
-								naytaVirhe("Virhe javascriptissa!")
-							});
-						},
-						haeTaytteet: function() {
-							return $.post("hallinta", {action: "haetaytteet"}).done(
-								function(json) {
-									console.log("Haettiin taytteet, pituus " + json.length);
-									this.setState({ taytteet: json })
-								}.bind(this)).fail(
-									function(jqxhr, textStatus, error) {
-										var errori = textStatus + ", " + error;
-										console.log("Error taytteita hakiessa: " + errori);
-									});
-								},
-								lisaaTayte: function() {
-									var submitdata = $("#tayteformi" ).serializeArray();
-									submitdata.push({name: "action", value: "lisaatayte"});
-									$.post("hallinta", submitdata).done(
-										function(json) {
-											var vastaus = json[0];
-											if (vastaus.virhe != null) {
-												naytaVirhe(vastaus.virhe);
-											}
-											else if (vastaus.success != null) {
-												naytaSuccess(vastaus.success);
-												this.setState({ tayteLisaysStatus: "success" });
-												this.haeTaytteet();
-											}
-											else {
-												console.log(JSON.stringify(json));
-												naytaVirhe("Virhe JSON vastauksessa!")
-											}
-										}.bind(this)).fail(
-											function(jqxhr, textStatus, error) {
-												var errori = textStatus + ", " + error;
-												console.log("Faili: " + errori);
-												console.log(JSON.stringify(json));
-												naytaVirhe("Virhe javascriptissa!")
-											});
-										},
-										lisaaPizza: function() {
-											var submitdata = $("#lisaysformi" ).serializeArray();
-											submitdata.push({name: "action", value: "lisaapizza"});
-											$.post("hallinta", submitdata).done(
-												function(json) {
-													var vastaus = json[0];
-													if (vastaus.virhe != null) {
-														naytaVirhe(vastaus.virhe);
-													}
-													else if (vastaus.success != null) {
-														naytaSuccess(vastaus.success);
+						}
+						this.setState({ pizzat: json, poistettavat: poistettavat })
+					}.bind(this)).fail(
+						function(jqxhr, textStatus, error) {
+							var errori = textStatus + ", " + error;
+							console.log("Error pizzoja hakiessa: " + errori);
+						});
+					},
+					kasittelePizza: function(toiminto) {
+						console.log("Käsitellään: " + JSON.stringify(toiminto));
+						$.get("hallinta", toiminto).done(
+							function(json) {
+								var vastaus = json[0];
+								if (vastaus.virhe != null) {
+									console.log(vastaus.virhe);
+									naytaVirhe(vastaus.virhe);
+								}
+								else if (vastaus.success != null) {
+									console.log(vastaus.success);
+									naytaSuccess(vastaus.success);
+									this.haePizzat();
+								}
+								else {
+									console.log(JSON.stringify(json));
+									naytaVirhe("Virhe JSON vastauksessa!")
+								}
+							}.bind(this)).fail(
+								function(jqxhr, textStatus, error) {
+									var errori = textStatus + ", " + error;
+									console.log("Faili: " + errori);
+									console.log(JSON.stringify(json));
+									naytaVirhe("Virhe javascriptissa!")
+								});
+							},
+							haeTaytteet: function() {
+								return $.post("hallinta", {action: "haetaytteet"}).done(
+									function(json) {
+										console.log("Haettiin taytteet, pituus " + json.length);
+										this.setState({ taytteet: json })
+									}.bind(this)).fail(
+										function(jqxhr, textStatus, error) {
+											var errori = textStatus + ", " + error;
+											console.log("Error taytteita hakiessa: " + errori);
+										});
+									},
+									lisaaTayte: function() {
+										var submitdata = $("#tayteformi" ).serializeArray();
+										submitdata.push({name: "action", value: "lisaatayte"});
+										$.post("hallinta", submitdata).done(
+											function(json) {
+												var vastaus = json[0];
+												if (vastaus.virhe != null) {
+													naytaVirhe(vastaus.virhe);
+												}
+												else if (vastaus.success != null) {
+													naytaSuccess(vastaus.success);
+													this.setState({ tayteLisaysStatus: "success" });
+													this.haeTaytteet();
+												}
+												else {
+													console.log(JSON.stringify(json));
+													naytaVirhe("Virhe JSON vastauksessa!")
+												}
+											}.bind(this)).fail(
+												function(jqxhr, textStatus, error) {
+													var errori = textStatus + ", " + error;
+													console.log("Faili: " + errori);
+													console.log(JSON.stringify(json));
+													naytaVirhe("Virhe javascriptissa!")
+												});
+											},
+											lisaaPizza: function() {
+												var submitdata = $("#lisaysformi" ).serializeArray();
+												submitdata.push({name: "action", value: "lisaapizza"});
+												$.post("hallinta", submitdata).done(
+													function(json) {
+														var vastaus = json[0];
+														if (vastaus.virhe != null) {
+															naytaVirhe(vastaus.virhe);
+														}
+														else if (vastaus.success != null) {
+															naytaSuccess(vastaus.success);
 															this.setState({ pizzaLisaysStatus: "success" });
 															this.haePizzat();
 														}
@@ -462,7 +532,46 @@ var PizzanLisays = React.createClass({
 															naytaVirhe("Virhe javascriptissa!")
 														});
 													},
+													muokkaaTaytetta: function(tayte) {
+														this.setState({muokattavaTayte: tayte});
+													},
+													peruutaTaytemuokkaus: function() {
+														this.setState({muokattavaTayte: {}});
+													},
+													lahetaTaytePaivitys: function(tayte) {
+														console.log("Halutaan päivittää täyte");
+														console.log(JSON.stringify(tayte));
+														$.post("hallinta", tayte).done(
+															function(json) {
+																var vastaus = json[0];
+																if (vastaus.virhe != null) {
+																	naytaVirhe(vastaus.virhe);
+																}
+																else if (vastaus.success != null) {
+																	naytaSuccess(vastaus.success);
+																	this.haeTaytteet();
+																	this.setState({muokattavaTayte: {}});
+																}
+																else {
+																	console.log(JSON.stringify(json));
+																	naytaVirhe("Virhe JSON vastauksessa!")
+																}
+															}.bind(this)).fail(
+																function(jqxhr, textStatus, error) {
+																	var errori = textStatus + ", " + error;
+																	console.log("Faili: " + errori);
+																	console.log(JSON.stringify(json));
+																	naytaVirhe("Virhe javascriptissa!")
+																});
+													},
 													render: function() {
+														var taytetoiminto = "";
+														if (Object.keys(this.state.muokattavaTayte).length === 0) {
+															taytetoiminto = <TaytteenLisays lahetaLisays={this.lisaaTayte } tayteLisaysStatus={this.state.tayteLisaysStatus } />;
+													 	}
+														else {
+															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
+														}
 														return(
 															<div>
 															<div className="row headertext">
@@ -478,8 +587,8 @@ var PizzanLisays = React.createClass({
 															<PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>
 															</div>
 															<div className="row" id="tayte-h">
-															<TaytteenLisays lahetaLisays={this.lisaaTayte } tayteLisaysStatus={this.state.tayteLisaysStatus } />
-															<Taytelista taytteet={this.state.taytteet } />
+															{taytetoiminto}
+															<Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>
 															</div>
 															</div>
 															</div>

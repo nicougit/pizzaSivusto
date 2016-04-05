@@ -456,7 +456,7 @@ public class HallintaServlet extends HttpServlet {
 					} else {
 						request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 					}
-					naytaSivu(request, response);
+					jsonVastaus(request, response, vastaus);
 				}
 
 			} else {
