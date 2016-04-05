@@ -36,12 +36,12 @@ $(function() {
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 	<div class="headertext">
-		<h1>Menu</h1>
-		<p class="flow-text shadow">Täydellinen pizzataikina syntyy
+		<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
+		<p class="flow-text">Täydellinen pizzataikina syntyy
 			hitaalla nostatuksella. Päällä tomaattikastiketta, joka on
 			valmistettu salaisella sukureseptillä. Kokonaisuuden kruunaa aito
 			oikea mozzarella. Lisäksi käytämme pizzoissamme vain tuoreita ja
-			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta</p>
+			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta.</p>
 	</div>
 	<div class="row" id="main-content">
 		<c:choose>
@@ -79,6 +79,7 @@ $(function() {
 				</c:forEach>
 
 				<h2 id="juomat" class="menu-pizzaname menu-title">Juomat</h2>
+				<br>
 				<c:forEach items="${pizzat}" var="pizza">
 					<div class="center-align">
 						<c:set var="pizzahinta">

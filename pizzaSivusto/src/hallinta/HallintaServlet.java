@@ -72,7 +72,7 @@ public class HallintaServlet extends HttpServlet {
 				String pizzaPalauta = request.getParameter("pizza-palauta");
 				String poistaPizzat = request.getParameter("poista-pizzat");
 				String poistaTayte = request.getParameter("poista-tayte");
-				
+
 				String pizzatJsonina = request.getParameter("pizzatJsonina");
 
 				// Apuri validointiin
@@ -118,8 +118,7 @@ public class HallintaServlet extends HttpServlet {
 					poistaTayte(request, response);
 				} else if (pizzatJsonina != null) {
 					pizzatJsonina(request, response);
-				}
-				else {
+				} else {
 					naytaSivu(request, response);
 				}
 			} else {
@@ -328,6 +327,7 @@ public class HallintaServlet extends HttpServlet {
 		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
 		String pizzakuvaus = request.getParameter("pizzakuvaus");
 		String[] taytetaulu = request.getParameterValues("pizzatayte");
+		String json = request.getParameter("json");
 
 		// Asetetaan 'Pizzan Lisäys'-sivu näytettäväksi kun palataan
 
@@ -396,7 +396,11 @@ public class HallintaServlet extends HttpServlet {
 										request.setAttribute("virhe",
 												"Tietokantaan viedessä tapahtui tuntematon virhe.");
 									}
-									jsonVastaus(request, response, vastaus);
+									if (json != null) {
+										jsonVastaus(request, response, vastaus);
+									} else {
+										naytaSivu(request, response);
+									}
 
 								} else {
 									String virhe = "Ei yhtään täytettä valittuna!";
@@ -422,6 +426,7 @@ public class HallintaServlet extends HttpServlet {
 		String tayteId = request.getParameter("tayteid");
 		String tayteNimi = request.getParameter("taytenimi");
 		String tayteSaatavilla = request.getParameter("taytesaatavilla");
+		String json = request.getParameter("json");
 
 		System.out.println(tayteId);
 		System.out.println(tayteNimi);
@@ -456,7 +461,11 @@ public class HallintaServlet extends HttpServlet {
 					} else {
 						request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 					}
-					jsonVastaus(request, response, vastaus);
+					if (json != null) {
+						jsonVastaus(request, response, vastaus);
+					} else {
+						naytaSivu(request, response);
+					}
 				}
 
 			} else {
@@ -474,6 +483,7 @@ public class HallintaServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String poistapizza = request.getParameter("pizza-poista");
+		String json = request.getParameter("json");
 
 		// Validoidaan input
 		Apuri apuri = new Apuri();
@@ -496,8 +506,11 @@ public class HallintaServlet extends HttpServlet {
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
-
-			jsonVastaus(request, response, vastaus);
+			if (json != null) {
+				jsonVastaus(request, response, vastaus);
+			} else {
+				naytaSivu(request, response);
+			}
 
 		}
 
@@ -507,6 +520,7 @@ public class HallintaServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String palautapizza = request.getParameter("pizza-palauta");
+		String json = request.getParameter("json");
 
 		// Validoidaan input
 		Apuri apuri = new Apuri();
@@ -529,8 +543,11 @@ public class HallintaServlet extends HttpServlet {
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
-
-			jsonVastaus(request, response, vastaus);
+			if (json != null) {
+				jsonVastaus(request, response, vastaus);
+			} else {
+				naytaSivu(request, response);
+			}
 
 		}
 
@@ -541,6 +558,7 @@ public class HallintaServlet extends HttpServlet {
 
 		// Haetaan parametrit
 		String poistaPizzat = request.getParameter("poista-pizzat");
+		String json = request.getParameter("json");
 
 		if (poistaPizzat.equals("true")) {
 			HallintaDao dao = new HallintaDao();
@@ -554,11 +572,12 @@ public class HallintaServlet extends HttpServlet {
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
-			
-			jsonVastaus(request, response, vastaus);
+			if (json != null) {
+				jsonVastaus(request, response, vastaus);
+			}
 		} else {
 			System.out.println("Saavuttiin poistaMerkityt-metodiin, mutta poista-pizzat oli '" + poistaPizzat + "'");
-			
+
 			naytaSivu(request, response);
 		}
 
@@ -604,6 +623,7 @@ public class HallintaServlet extends HttpServlet {
 		// Haetaan parametrit
 		String tayteNimi = request.getParameter("taytenimi");
 		String tayteSaatavilla = request.getParameter("taytesaatavilla");
+		String json = request.getParameter("json");
 
 		// Apuri validointiin
 		Apuri apuri = new Apuri();
@@ -636,8 +656,11 @@ public class HallintaServlet extends HttpServlet {
 				} else {
 					request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 				}
-
-				jsonVastaus(request, response, vastaus);
+				if (json != null) {
+					jsonVastaus(request, response, vastaus);
+				} else {
+					naytaSivu(request, response);
+				}
 			}
 
 		} else {
@@ -739,12 +762,16 @@ public class HallintaServlet extends HttpServlet {
 	// Error-attribuutin asetus ja redirect
 	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
 			throws ServletException, IOException {
-		// request.setAttribute("virhe", virhe);
-		HashMap<String, String> vastaus = new HashMap<>();
-		vastaus.put("virhe", virhe);
+		String json = request.getParameter("json");
 		System.out.println(virhe);
-		// naytaSivu(request, response);
-		jsonVastaus(request, response, vastaus);
+		if (json != null) {
+			HashMap<String, String> vastaus = new HashMap<>();
+			vastaus.put("virhe", virhe);
+			jsonVastaus(request, response, vastaus);
+		} else {
+			request.setAttribute("virhe", virhe);
+			naytaSivu(request, response);
+		}
 	}
 
 }

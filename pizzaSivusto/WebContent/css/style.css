@@ -20,13 +20,18 @@ body {
 	background: #FFF;
 	padding: 30px;
 	background: #FFF;
+	box-shadow: 0px 0px 15px 1px rgba(0,0,0,0.5);
 }
 
 .headertext {
 	color: #FFF;
-	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+	text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.6);
 	text-align: center;
 	min-height: 130px;
+}
+
+.headertext h2, .headertext h1 {
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.4);
 }
 
 /* Navbarissa oleva firman nimi */
@@ -84,6 +89,7 @@ h3 {
 	font-family: 'Pacifico', cursive;
 	letter-spacing: 6px;
 	margin-top: 10px;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .taytediv {

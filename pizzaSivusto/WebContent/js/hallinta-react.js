@@ -148,7 +148,7 @@ var TaytteenMuokkaus = React.createClass({
 		if (this.state.taytesaatavilla === true) {
 			saatavuus = 1;
 		}
-		var submitdata = [{name: "action", value: "paivitatayte"}, {name: "tayteid", value: this.props.tayte.id}, {name: "taytenimi", value: this.state.taytenimi}, {name: "taytesaatavilla", value: saatavuus}];
+		var submitdata = [{name: "action", value: "paivitatayte"}, {name: "tayteid", value: this.props.tayte.id}, {name: "taytenimi", value: this.state.taytenimi}, {name: "taytesaatavilla", value: saatavuus}, {name: "json", value: "true"}];
 		this.props.lahetaPaivitys(submitdata);
 	},
 	render: function() {
@@ -201,11 +201,11 @@ var TaytteenMuokkaus = React.createClass({
 var Pizza = React.createClass({
 	pizzanPoisto: function() {
 		var id = this.props.id;
-		this.props.palautaPizza({"pizza-poista": id });
+		this.props.kasittelePizza({"pizza-poista": id, "json": "true" });
 	},
 	pizzanPalautus: function() {
 		var id = this.props.id;
-		this.props.palautaPizza({"pizza-palauta": id });
+		this.props.kasittelePizza({"pizza-palauta": id, "json": "true" });
 	},
 	render: function() {
 		var taytteet = "";
@@ -242,7 +242,7 @@ var Pizzalista = React.createClass({
 		$("#poistomodal").openModal();
 	},
 	poistaValitut: function() {
-		this.props.poistaValitut({ "poista-pizzat": "true" });
+		this.props.poistaValitut({ "poista-pizzat": "true", "json": "true" });
 		$("#poistomodal").closeModal();
 	},
 	render: function() {
@@ -262,7 +262,7 @@ var Pizzalista = React.createClass({
 			</tr>
 			</thead>
 			<tbody>
-			{this.props.pizzat.map((o, i) => <Pizza key={o.id} id={o.id} nimi={o.nimi} hinta={o.hinta } taytteet={o.taytteet } poistomerkinta={o.poistomerkinta} palautaPizza={this.props.palautaPizza } poistaPizza={this.props.poistaPizza }/>)}
+			{this.props.pizzat.map((o, i) => <Pizza key={o.id} id={o.id} nimi={o.nimi} hinta={o.hinta } taytteet={o.taytteet } poistomerkinta={o.poistomerkinta} kasittelePizza={this.props.kasittelePizza } />)}
 			</tbody>
 			</table>
 			<br />
@@ -486,6 +486,7 @@ var PizzanLisays = React.createClass({
 									lisaaTayte: function() {
 										var submitdata = $("#tayteformi" ).serializeArray();
 										submitdata.push({name: "action", value: "lisaatayte"});
+										submitdata.push({name: "json", value: "true"});
 										$.post("hallinta", submitdata).done(
 											function(json) {
 												var vastaus = json[0];
@@ -512,6 +513,7 @@ var PizzanLisays = React.createClass({
 											lisaaPizza: function() {
 												var submitdata = $("#lisaysformi" ).serializeArray();
 												submitdata.push({name: "action", value: "lisaapizza"});
+												submitdata.push({name: "json", value: "true"});
 												$.post("hallinta", submitdata).done(
 													function(json) {
 														var vastaus = json[0];
@@ -542,8 +544,6 @@ var PizzanLisays = React.createClass({
 														this.setState({muokattavaTayte: {}});
 													},
 													lahetaTaytePaivitys: function(tayte) {
-														console.log("Halutaan päivittää täyte");
-														console.log(JSON.stringify(tayte));
 														$.post("hallinta", tayte).done(
 															function(json) {
 																var vastaus = json[0];
@@ -585,7 +585,7 @@ var PizzanLisays = React.createClass({
 															<div id="main-content">
 															<Navigaatio />
 															<div className="row" id="pizza-h">
-															<Pizzalista pizzat={this.state.pizzat } palautaPizza={this.kasittelePizza } poistaPizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>
+															<Pizzalista pizzat={this.state.pizzat } kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>
 															</div>
 															<div className="row" id="pizza-l">
 															<PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>
