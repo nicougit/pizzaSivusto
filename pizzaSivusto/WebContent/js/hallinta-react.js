@@ -118,8 +118,6 @@ var TaytteenMuokkaus = React.createClass({
 	getInitialState: function() {
 		return ({taytenimi: this.props.tayte.nimi, taytesaatavilla: this.props.tayte.saatavilla });
 	},
-	componentDidMount: function() {
-	},
 	paivitanimi: function(e) {
 		this.setState({taytenimi: e.target.value }, function() { this.paivitanappi() });
 	},
@@ -157,6 +155,7 @@ var TaytteenMuokkaus = React.createClass({
 		return (
 			<div className="col s12 m12 l5 push-l7" id="taytem">
 			<h2>Muokkaa täytettä</h2>
+			<h3>{this.props.tayte.nimi }</h3>
 			<div className="row">
 			<form id="tayteformi">
 			<div className="row">
@@ -184,7 +183,11 @@ var TaytteenMuokkaus = React.createClass({
 			<button className="btn waves-effect waves-light btn-large left red lighten-2"
 			type="button" onClick={this.props.peruuta }>Peruuta</button>
 			<button className="btn waves-effect waves-light btn-large right"
-			type="button" id="paivitatayte" onClick={this.lahetaPaivitys }>Päivitä</button>
+			type="button" id="paivitatayte" onClick={this.lahetaPaivitys }><i className="material-icons left">done</i>Päivitä</button>
+			</div>
+			<div className="col s12 center-align pienifontti">
+			<br /><br />
+			Täytteen poisto toistaiseksi vielä <a href={"?tayte-edit=" + this.props.tayte.id}>täältä</a>
 			</div>
 			</div>
 			</form>
@@ -550,6 +553,7 @@ var PizzanLisays = React.createClass({
 																else if (vastaus.success != null) {
 																	naytaSuccess(vastaus.success);
 																	this.haeTaytteet();
+																	this.haePizzat();
 																	this.setState({muokattavaTayte: {}});
 																}
 																else {
