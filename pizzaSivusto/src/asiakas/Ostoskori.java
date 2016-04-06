@@ -1,13 +1,21 @@
 package asiakas;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import daot.AsiakasDao;
+import bean.Ostos;
+import bean.Pizza;
 
 // Tämä tiedosto on vielä varhaisessa betavaiheessa! t:Pasi
 
@@ -22,64 +30,65 @@ public class Ostoskori extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		// Keksin lisäys
-		if (request.getParameter("lisaa") != null) {
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 
-			int tuote = Integer.parseInt(request.getParameter("item_id"));
-			int kuvaus = Integer.parseInt(request.getParameter("item_quantity"));
-	
-			Cookie[] items = request.getCookies();
+		// Katsotaan oikeudet
+		HttpSession sessio = request.getSession(true);
+
+		ArrayList<Ostos> ostoskori = (ArrayList<Ostos>) sessio
+				.getAttribute("ostoskori");
+
+		if (ostoskori == null) {
+			ostoskori = new ArrayList<Ostos>();
+		}
+		
+		PrintWriter out = response.getWriter();
+
+		String lisaa = request.getParameter("lisaa");
+		String id = request.getParameter("id");
+		String tyyppi = request.getParameter("tyyppi");
+
+		if (lisaa != null) {
+
+			if (id != null && id != null && tyyppi != null) {
+				int idint = Integer.parseInt(id);
+				Ostos ostos = new Ostos(idint, tyyppi);
+				ostoskori.add(ostos);
+				System.out.println("Lisätty käyttäjän ostoskoriin tuote id: "
+						+ ostos.getId() + " jonka tyyppi on "
+						+ ostos.getTyyppi());
+			}
+
+			sessio.setAttribute("ostoskori", ostoskori);
+
+		}
+		
+		if (ostoskori != null) {
+			ArrayList<Pizza> pizzat = haeOstoskorinPizzat(ostoskori);
 			
-			if (items != null) {
-				
-				for (int i = 0; i < items.length; i++) {
-					String tuoteString = Integer.toString(tuote);
-					if (items[i].getName().equals(tuoteString)) {
-					System.out.println("Tällainen löytyi jo! Vanha korvataan uudella.");
-					kuvaus = kuvaus+1;
-					}
-				}
-										
-				Cookie item = new Cookie(Integer.toString(tuote), Integer.toString(kuvaus));
-				
-				item.setMaxAge(60);
-				// Cookien ikä 60 sekuntia testimielessä
-				
-				response.addCookie(item);
-				
-				System.out.println("Keksi " + tuote + " lisätty kuvauksella "+kuvaus);
-				
-				request.getRequestDispatcher("ostoskori.jsp").forward(request,
-						response);
-				
+			for (int i = 0; i < ostoskori.size(); i++) {
+				out.print(ostoskori.get(i).toString() + "\n");
+			}
+			
+			out.print("\n\n\nTarkemmilla tiedoilla:\n\n\n");
+			
+			for (int i = 0; i < pizzat.size(); i++) {
+				out.print("#" + pizzat.get(i).getId() + ", " + pizzat.get(i).getNimi() + " - Hinta: " + pizzat.get(i).getHinta() + "\n");
 			}
 		}
-
-		// Keksien haku
-		if (request.getParameter("hae") != null) {
-
-			Cookie items[] = request.getCookies();
-
-			for (int i = 0; i < items.length; i++) {
-
-				// SessioID tallentuu myös keksiksi joten getName ja getValue näyttää sessiokeksin tiedot
-				// System.out.println(items[i].getName()+" "+items[i].getValue());
-				
-				// Eli tarvitaan täsmäytin
-				if (items[i].getName().matches("\\d{1,3}")) {
-					System.out.println(items[i].getName()+" "+items[i].getValue());
-				}
-				
-			}
-			request.getRequestDispatcher("ostoskori.jsp").forward(request,
-					response);
-		}
-
+		
 	}
-
-	public void PoistaKeksi(HttpServletRequest request,
-			HttpServletResponse response) {
-		System.out.println("Keksin poistoa ei vielä toteutettu mutta helppo toteuttaa...");
+	
+	protected ArrayList<Pizza> haeOstoskorinPizzat(ArrayList<Ostos> ostoskori) {
+		ArrayList<Pizza> pizzat= new ArrayList<>();
+		AsiakasDao dao = new AsiakasDao();
+	
+		
+		pizzat = dao.haeOstoskorinPizzat(ostoskori);
+		
+		return pizzat;
 	}
-
 }

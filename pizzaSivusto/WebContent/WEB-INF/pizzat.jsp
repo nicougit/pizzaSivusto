@@ -70,8 +70,8 @@ $(function() {
 						</span>
 						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
 						<br>
-						<button class="btn waves-effect waves-light" type="button">Lisää
-							ostoskoriin</button>
+						<a class="btn waves-effect waves-light" href="${pageContext.request.contextPath }/ostoskori?lisaa=true&tyyppi=pizza&id=${pizza.id }">Lisää
+							ostoskoriin</a>
 						<br> <br>
 						<div class="divider"></div>
 					</div>

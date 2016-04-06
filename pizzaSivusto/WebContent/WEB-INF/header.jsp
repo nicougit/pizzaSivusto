@@ -30,8 +30,8 @@
 					<li><a href="#juomat">Juomat</a></li>
 				</c:if>
 				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
-				<li><a href="#!"><i class="material-icons left">shopping_cart</i>
-						Ostoskori (0)</a></li>
+				<li><a class="modal-trigger" href="#ostoskorimodal"><i class="material-icons left">shopping_cart</i>
+						Ostoskori 11€</a></li>
 				<c:choose>
 					<c:when test="${not empty kayttaja }">
 						<li><a class="dropdown-button" href="#!"
@@ -98,6 +98,40 @@
 						</div>
 					</div>
 				</form>
+			</div>
+		</div>
+				<div id="ostoskorimodal" class="modal">
+			<div class="modal-content center-align">
+					<h4>Ostoskori</h4>
+					Ostoskorissa 2 tuotetta
+					<table>
+					<thead>
+					<tr>
+					<th>Nimi</th>
+					<th>Hinta</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+					<td>Pizza number one</td>
+					<td>5 €</td>
+					</tr>
+					<tr>
+					<td>Pizza number twooo</td>
+					<td>6 €</td>
+					</tr>
+					<tr style="border-top: 1px solid #AAA">
+					<td class="right-align">Yhteishinta</td>
+					<td>11 €</td>
+					</tbody>
+					</table>
+					<div class="row">
+						<div class="input-field col s12">
+							<a href="#!"
+								class="modal-action modal-close waves-effect waves-light btn red lighten-2">Sulje</a>
+							<button class="btn waves-effect waves-light" type="button">Tilaamaan</button>
+						</div>
+					</div>
 			</div>
 		</div>
 	</c:if>
