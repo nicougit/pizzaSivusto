@@ -26,6 +26,13 @@ public class Apuri {
 		return matcheri.find();
 	}
 	
+	// Regex patterni pizzan kuvauksille
+	public boolean validoiKuvaus(String stringi) {
+		Pattern patterni = Pattern.compile("^[\\w\\s+äöÄÖ .,:!?\"-]{2,255}$");
+		Matcher matcheri = patterni.matcher(stringi);
+		return matcheri.find();
+	}
+	
 	// Lähinnä ID validointeja varten
 	public boolean validoiInt(String stringi, int maxpituus) {
 		try {

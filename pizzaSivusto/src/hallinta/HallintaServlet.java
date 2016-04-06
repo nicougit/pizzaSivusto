@@ -254,7 +254,7 @@ public class HallintaServlet extends HttpServlet {
 							virhe(request, response, virhe);
 						} else {
 
-							if (pizzakuvaus == null || pizzakuvaus.length() > 255) {
+							if (apuri.validoiKuvaus(pizzakuvaus) == false) {
 								String virhe = "Muokattavan pizzan kuvaus on virheellinen";
 								virhe(request, response, virhe);
 							} else {
@@ -359,7 +359,7 @@ public class HallintaServlet extends HttpServlet {
 						// Validoidaan jokainen täyte
 						boolean taytteetOk = true;
 
-						if (pizzakuvaus == null || pizzakuvaus.length() > 255) {
+						if (apuri.validoiKuvaus(pizzakuvaus) == false) {
 							String virhe = "Muokattavan pizzan kuvaus on virheellinen";
 							virhe(request, response, virhe);
 						}
@@ -436,7 +436,7 @@ public class HallintaServlet extends HttpServlet {
 		Apuri apuri = new Apuri();
 
 		if (tayteId != null && tayteNimi != null && tayteSaatavilla != null) {
-			if (apuri.validoiInt(tayteId, 11) == true && apuri.validoiString(tayteNimi, "-", 20) == true) {
+			if (apuri.validoiInt(tayteId, 11) == true && apuri.validoiString(tayteNimi, " -", 20) == true) {
 				if (tayteSaatavilla.equals("0")) {
 					tayteSaatavilla = "E";
 				} else if (tayteSaatavilla.equals("1")) {
@@ -631,7 +631,7 @@ public class HallintaServlet extends HttpServlet {
 		// Dao
 		HallintaDao dao = new HallintaDao();
 
-		if (tayteNimi != null && apuri.validoiString(tayteNimi, "-", 20) == true && tayteSaatavilla != null) {
+		if (tayteNimi != null && apuri.validoiString(tayteNimi, " -", 20) == true && tayteSaatavilla != null) {
 
 			if (tayteSaatavilla.equals("0")) {
 				tayteSaatavilla = "E";
