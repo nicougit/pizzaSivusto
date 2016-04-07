@@ -12,6 +12,7 @@
 <link href='https://fonts.googleapis.com/css?family=Martel:200'
 	rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Raleway:200italic' rel='stylesheet' type='text/css'>
+<script src="js/pizzat.js" type="text/javascript"></script>
 <script>
 // Törkeesti intternetistä 99% kopioitu skripti
 // Scrollaa smoothisti pizza / juomat nappeja klikatessa
@@ -70,8 +71,8 @@ $(function() {
 						</span>
 						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
 						<br>
-						<a class="btn waves-effect waves-light" href="${pageContext.request.contextPath }/ostoskori?lisaa=true&tyyppi=pizza&id=${pizza.id }">Lisää
-							ostoskoriin</a>
+						<button class="btn waves-effect waves-light" type="button" onClick="lisaaOstoskoriin(${pizza.id},'pizza')">Lisää
+							ostoskoriin</button>
 						<br> <br>
 						<div class="divider"></div>
 					</div>

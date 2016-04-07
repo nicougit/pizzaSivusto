@@ -33,26 +33,45 @@
 					tuotteita ostoskoriin menustamme!</p>
 			</c:when>
 			<c:otherwise>
-				<table>
+			<c:set var="yhteishinta" value="0"></c:set>
+				<table class="striped">
 					<thead>
 						<tr>
 							<td>Nimi</td>
 							<td>Hinta</td>
+							<td></td>
 						</tr>
 					</thead>
 					<tbody>
 						<c:forEach items="${pizzat}" var="pizza">
+						<c:set var="yhteishinta">${(yhteishinta + pizza.hinta) }</c:set>
 							<tr>
 								<td>${pizza.nimi }</td>
 								<td><c:set var="pizzahinta">
 										<fmt:formatNumber type="number" minFractionDigits="2"
 											maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 									</c:set> ${fn:replace(pizzahinta, ".", ",") } €</td>
+									<td></td>
 							</tr>
 						</c:forEach>
-
+						<c:set var="yhteishinta">
+										<fmt:formatNumber type="number" minFractionDigits="2"
+											maxFractionDigits="2" value="${yhteishinta }"></fmt:formatNumber>
+											</c:set>
+						<tr class="strong-id">
+						<td class="right-align">Yhteishinta</td>
+						<td>${fn:replace(yhteishinta, ".", ",") } €</td>
+						<td></td>
+						</tr>
 					</tbody>
 				</table>
+				<div class="row">
+				<div class="col s12 right-align">
+				<br>
+				<button class="btn waves-effect waves-light red lighten-2" type="button">Tyhjennä</button> 
+				<button class="btn waves-effect waves-light" type="button">Tilaa</button>
+				</div>
+				</div>
 			</c:otherwise>
 		</c:choose>
 

@@ -45,19 +45,37 @@ public class Ostoskori extends HttpServlet {
 
 		String ostoskoriJsonina = request.getParameter("ostoskoriJsonina");
 
-		// Ostoskoriin lisäys
-		String lisaa = request.getParameter("lisaa");
-
-		if (lisaa != null) {
-			if (lisaa.equals("true")) {
-				lisaaTuote(request, response);
-			}
-		} else if (ostoskoriJsonina != null) {
+		if (ostoskoriJsonina != null) {
 
 		} else {
 			naytaSivu(request, response);
 		}
 
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
+		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
+		String action = request.getParameter("action");
+		
+		if (action != null){
+			if (action.equals("lisaa")) {
+				lisaaTuote(request, response);
+			}
+			else {
+				String virhe = "Tuntematon action";
+				virhe(request, response, virhe);
+			}
+		}
+		else {
+			doGet(request, response);
+		}
+		
 	}
 
 	protected void lisaaTuote(HttpServletRequest request, HttpServletResponse response)
@@ -98,7 +116,7 @@ public class Ostoskori extends HttpServlet {
 						sessio.setAttribute("ostoskori", ostoskori);
 						if (json != null) {
 							HashMap<String, String> vastaus = new HashMap<>();
-							vastaus.put("success", "Pizza lisätty ostoskoriin!");
+							vastaus.put("success", pizza.getNimi() + " lisätty ostoskoriin!");
 							jsonVastaus(request, response, vastaus);
 						} else {
 							naytaSivu(request, response);
