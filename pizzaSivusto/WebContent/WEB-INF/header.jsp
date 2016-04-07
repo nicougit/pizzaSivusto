@@ -21,8 +21,8 @@
 	<nav>
 		<div class="nav-wrapper">
 			<a href="<c:url value='/'/>" class="brand-logo">Castello é Fiori</a>
-			<a href="#" data-activates="mobiili-nav"
-				class="button-collapse"><i class="material-icons">menu</i></a>
+			<a href="#" data-activates="mobiili-nav" class="button-collapse"><i
+				class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
 				<c:if
 					test="${pageContext.request.requestURI == '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
@@ -30,8 +30,9 @@
 					<li><a href="#juomat">Juomat</a></li>
 				</c:if>
 				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
-				<li><a class="modal-trigger" href="#ostoskorimodal"><i class="material-icons left">shopping_cart</i>
-						Ostoskori<span class="navbar-yhteishinta pienifontti"></span></a></li>
+				<li><a class="modal-trigger" href="#ostoskorimodal"><i
+						class="material-icons left">shopping_cart</i> Ostoskori<span
+						class="navbar-yhteishinta pienifontti"></span></a></li>
 				<c:choose>
 					<c:when test="${not empty kayttaja }">
 						<li><a class="dropdown-button" href="#!"
@@ -46,7 +47,8 @@
 			</ul>
 			<ul class="side-nav" id="mobiili-nav">
 				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
-				<li><a href="<c:url value='/ostoskori'/>">Ostoskori<span class="navbar-yhteishinta right"></span></a> <c:choose>
+				<li><a href="<c:url value='/ostoskori'/>">Ostoskori<span
+						class="navbar-yhteishinta right"></span></a> <c:choose>
 						<c:when test="${not empty kayttaja }">
 							<li class="divider"></li>
 							<li><a href="#!">${kayttaja.tunnus }</a></li>
@@ -100,32 +102,40 @@
 				</form>
 			</div>
 		</div>
-				<div id="ostoskorimodal" class="modal">
-			<div class="modal-content center-align">
-					<h4>Ostoskori</h4>
-					<span id="ostoskori-yhteismaara"></span>
-					<table id="ostoskori-table" class="striped">
-					<thead>
+	</c:if>
+	<div id="ostoskorimodal" class="modal">
+		<div class="modal-content center-align">
+			<h4>Ostoskori</h4>
+			<span id="ostoskori-yhteismaara"></span>
+			<table id="ostoskori-table" class="striped">
+				<thead>
 					<tr>
-					<th>Nimi</th>
-					<th class="center-align">Hinta</th>
+						<th>Nimi</th>
+						<th class="center-align">Hinta</th>
 					</tr>
-					</thead>
-					<tbody id="ostoskori-tbody">
+				</thead>
+				<tbody id="ostoskori-tbody">
 					<tr style="border-top: 1px solid #AAA">
-					<td class="right-align">Yhteishinta</td>
-					<td id="ostoskori-yhteishinta">11 €</td>
-					</tbody>
-					</table>
-					<br>
-					<div class="row">
-						<div class="input-field col s12">
-							<a href="#!"
-								class="modal-action modal-close waves-effect waves-light btn red lighten-2 left" id="ostoskori-sulkunappi">Sulje</a>
-								<button class="btn waves-effect waves-light orange lighten-1 center" type="button" id="ostoskori-tyhjennysnappi" onClick="tyhjennaOstoskori()"><i class="material-icons left">clear</i>Tyhjennä</button>
-							<a class="btn waves-effect waves-light right" id="ostoskori-tilausnappi" href="<c:url value='/ostoskori'/>"><i class="material-icons left">shopping_cart</i>Tilaamaan</a>
-						</div>
-					</div>
+						<td class="right-align">Yhteishinta</td>
+						<td id="ostoskori-yhteishinta">11 €</td>
+				</tbody>
+			</table>
+			<br>
+			<div class="row">
+				<div class="input-field col s12">
+					<a href="#!"
+						class="modal-action modal-close waves-effect waves-light btn red lighten-2 left"
+						id="ostoskori-sulkunappi">Sulje</a>
+					<button
+						class="btn waves-effect waves-light orange lighten-1 center"
+						type="button" id="ostoskori-tyhjennysnappi"
+						onClick="tyhjennaOstoskori()">
+						<i class="material-icons left">clear</i>Tyhjennä
+					</button>
+					<a class="btn waves-effect waves-light right"
+						id="ostoskori-tilausnappi" href="<c:url value='/ostoskori'/>"><i
+						class="material-icons left">shopping_cart</i>Tilaamaan</a>
+				</div>
 			</div>
 		</div>
-	</c:if>
+	</div>
