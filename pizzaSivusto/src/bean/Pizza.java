@@ -85,4 +85,10 @@ public class Pizza {
 		this.kuvaus = kuvaus;
 	}
 
+	@Override
+	public String toString() {
+		return "Pizza [id=" + id + ", nimi=" + nimi + ", hinta=" + hinta + ", taytteet=" + taytteet
+				+ ", poistomerkinta=" + poistomerkinta + ", tayteIdt=" + tayteIdt + ", kuvaus=" + kuvaus + "]";
+	}
+
 }

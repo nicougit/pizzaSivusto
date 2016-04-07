@@ -1,42 +1,64 @@
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.List"%>
-<%@page import="asiakas.Ostoskori" %>
-
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<!-- HUOM laitoin tämän tänne GitHubiin vaan jemmaan myöhempää testailua varten t:Pasi -->
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>OSTOSKORIN TESTAILUA</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Castello &#233; Fiori - Ostoskori</title>
+<jsp:include page="head-include.jsp"></jsp:include>
 </head>
 <body>
+	<jsp:include page="header.jsp"></jsp:include>
+	<div class="headertext">
+		<h1>Ostoskori</h1>
+		<p class="flow-text">
+			<c:choose>
+				<c:when test="${fn:length(pizzat) == 0 }">
+		Ostoskorisi on tyhjÃ¤
+		</c:when>
+				<c:otherwise>
+				Ostoskorissa yhteensÃ¤ ${fn:length(pizzat) } pizzaa
+		</c:otherwise>
+			</c:choose>
+		</p>
+	</div>
+	<div class="row" id="main-content">
+		<h2>Ostoskorin sisÃ¤ltÃ¶</h2>
+		<c:choose>
+			<c:when test="${fn:length(pizzat) == 0 }">
+				<p class="center-align"> Ostoskorisi on tyhjÃ¤. LisÃ¤Ã¤
+					tuotteita ostoskoriin menustamme!</p>
+			</c:when>
+			<c:otherwise>
+				<table>
+					<thead>
+						<tr>
+							<td>Nimi</td>
+							<td>Hinta</td>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${pizzat}" var="pizza">
+							<tr>
+								<td>${pizza.nimi }</td>
+								<td><c:set var="pizzahinta">
+										<fmt:formatNumber type="number" minFractionDigits="2"
+											maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
+									</c:set> ${fn:replace(pizzahinta, ".", ",") } â‚¬</td>
+							</tr>
+						</c:forEach>
 
-	<table>
-		<tr>
-			<td><h2>Testisivu</h2></td>
-		</tr>
-		
-		<tr>
-			<td>
-				<form action="ostoskori" method="get">
-				 	<input type="number" name="item_id" placeholder="Item ID" />
-				 	<input type="number" name="item_quantity" placeholder="Quantity" />
-					<input type="hidden" name="added" value="true">
-					<button type="submit" name="lisaa">Add item</button>
-					<button type="submit" name="hae">Fetch stuff</button>
-				</form>
-			</td>
-		</tr>
-		<tr>
-			<td><a href="#">Remove item ability does not work yet</a></td>
-		</tr>
-	</table>
+					</tbody>
+				</table>
+			</c:otherwise>
+		</c:choose>
 
+	</div>
+
+
+	<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>
