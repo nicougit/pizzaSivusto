@@ -41,7 +41,7 @@ $(function() {
 			hitaalla nostatuksella. Päällä tomaattikastiketta, joka on
 			valmistettu salaisella sukureseptillä. Kokonaisuuden kruunaa aito
 			oikea mozzarella. Lisäksi käytämme pizzoissamme vain tuoreita ja
-			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta.<br>
+			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta.</p>
 	</div>
 	<div class="row" id="main-content">
 		<c:choose>

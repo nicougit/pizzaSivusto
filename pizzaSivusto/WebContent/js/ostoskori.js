@@ -1,6 +1,7 @@
+var pathi = "/" + window.location.pathname.split("/")[1] + "/ostoskori";
+
 var lisaaOstoskoriin = function(id, tyyppi) {
-  console.log("Yritetään lisätä tuotetta ostoskoriin, id:" + id + " - tyyppi:" + tyyppi);
-  $.post("ostoskori", {action: "lisaa", id: id, tyyppi: tyyppi, json: "true"}).done(
+  $.post(pathi, {action: "lisaa", id: id, tyyppi: tyyppi, json: "true"}).done(
     function(json) {
       var vastaus = json[0];
       if (vastaus.virhe != null) {
@@ -18,8 +19,27 @@ var lisaaOstoskoriin = function(id, tyyppi) {
       });
     }
 
+    var poistaOstoskorista = function(index) {
+      $.post(pathi, {action: "poista", index: index, json: "true"}).done(
+        function(json) {
+          var vastaus = json[0];
+          if (vastaus.virhe != null) {
+            naytaVirhe(vastaus.virhe);
+          }
+          else if (vastaus.success != null) {
+            naytaSuccess(vastaus.success);
+            printtaaOstoskori();
+          }
+        }).fail(
+          function(jqxhr, textStatus, error) {
+            var errori = textStatus + ", " + error;
+            console.log("Error ostoskorista poistaessa: " + errori);
+            naytaVirhe("Pizzan poistaminen ostoskorista ei onnistunut")
+          });
+        }
+
     var tyhjennaOstoskori = function() {
-      $.post("ostoskori", {action: "tyhjenna", json: "true"}).done(
+      $.post(pathi, {action: "tyhjenna", json: "true"}).done(
         function(json) {
           var vastaus = json[0];
           if (vastaus.virhe != null) {
@@ -39,7 +59,7 @@ var lisaaOstoskoriin = function(id, tyyppi) {
         }
 
     function haeOstoskori() {
-      return $.get("ostoskori", {"ostoskoriJsonina": "true"}).done(
+      return $.get(pathi, {"ostoskoriJsonina": "true"}).done(
         function(json) {
         }).fail(
           function(jqxhr, textStatus, error) {
@@ -59,16 +79,20 @@ var lisaaOstoskoriin = function(id, tyyppi) {
             var tuotteita = ostoskori.length;
             var ostoskoririvit = "";
             var yhteishinta = 0;
-            if (ostoskori.length > 0) {
+            if (tuotteita > 0) {
               ostoskori.map(function(o, i) {
-                ostoskoririvit += "<tr><td>" + o.nimi + "</td><td class=\"center-align\">" + formatoiHinta(o.hinta) + "</td></tr>";
+                ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + o.nimi + "</td><td>" + formatoiHinta(o.hinta) + "<a href=\"#!\" class=\"ostoskori-poistonappi right\" onClick=\"poistaOstoskorista(" + o.indeksi + ")\"><i class=\"material-icons small\">clear</i></a> </td></tr>";
                 yhteishinta += o.hinta;
               });
               yhteishinta = formatoiHinta(yhteishinta);
-              ostoskoririvit += "<tr class=\"ostoskori-yhteishinta\"><td class=\"right-align\">Yhteishinta</td><td class=\"center-align\">" + yhteishinta + "</td></tr>"
+              var tuotesana = "tuotetta";
+              if (tuotteita == 1) {
+                tuotesana = "tuote"
+              }
+              ostoskoririvit += "<tr class=\"ostoskori-yhteishinta\"><td class=\"right-align\">Yhteensä</td><td>" + yhteishinta + "</td></tr>"
               $("#ostoskori-table, #ostoskori-tilausnappi, #ostoskori-tyhjennysnappi").removeClass("hide");
               $("#ostoskori-sulkunappi").removeClass("center").addClass("left");
-              $("#ostoskori-yhteismaara").html("Ostoskorissa yhteensä " + tuotteita + " tuotetta");
+              $("#ostoskori-yhteismaara").html("Ostoskorissa on yhteensä " + tuotteita + " " + tuotesana + ".");
               $(".navbar-yhteishinta").html(" " + yhteishinta);
               $("#ostoskori-tbody").html(ostoskoririvit);
             }

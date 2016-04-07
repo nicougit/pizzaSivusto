@@ -110,14 +110,11 @@
 			<table id="ostoskori-table" class="striped">
 				<thead>
 					<tr>
-						<th>Nimi</th>
-						<th class="center-align">Hinta</th>
+						<th>Tuotteen nimi</th>
+						<th>Hinta</th>
 					</tr>
 				</thead>
 				<tbody id="ostoskori-tbody">
-					<tr style="border-top: 1px solid #AAA">
-						<td class="right-align">Yhteishinta</td>
-						<td id="ostoskori-yhteishinta">11 €</td>
 				</tbody>
 			</table>
 			<br>

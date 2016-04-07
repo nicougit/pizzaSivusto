@@ -18,10 +18,15 @@
 			tarjota jokaiselle jotain unohtumatonta. Taidolla, tunteella ja
 			rakkaudella teemme Teille Hämeenlinnan maukkaimmat italialaiset
 			pizzat.</p>
-		<a class="waves-effect waves-light btn-large"
-			href="<c:url value='/pizza'/>"><i class="material-icons right">restaurant_menu</i>
-			Menu</a> <br> <br> <br>
 	</div>
+	<div class="row">
+		<div class="col s12 center-align">
+			<a class="waves-effect waves-light btn-large"
+				href="<c:url value='/pizza'/>"><i class="material-icons right">restaurant_menu</i>Menu
+			</a>
+		</div>
+	</div>
+	<br>
 	<div class="row" id="main-content">
 		<div class="col s12 l4 center-align">
 			<h2>Bingo</h2>

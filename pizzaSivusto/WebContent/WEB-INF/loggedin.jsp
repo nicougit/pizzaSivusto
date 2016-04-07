@@ -17,7 +17,7 @@
 				<c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out>
 				!
 			</h1>
-			<p class="flow-text">Vierailit palvelussamme viimeksi XX.XX.XX!</p>
+			<p class="flow-text">Siirry selaamaan menuamme alla olevasta napista!</p>
 			<a class="waves-effect waves-light btn-large"
 			href="<c:url value='/pizza'/>"><i class="material-icons right">restaurant_menu</i>
 			Menu</a> <br> <br>

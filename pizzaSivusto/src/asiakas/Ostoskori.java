@@ -75,7 +75,10 @@ public class Ostoskori extends HttpServlet {
 				lisaaTuote(request, response);
 			} else if (action.equals("tyhjenna")) {
 				tyhjennaOstoskori(request, response);
-			} else {
+			} else if (action.equals("poista")) {
+				poistaTuote(request, response);
+			}
+			else {
 				String virhe = "Tuntematon action";
 				virhe(request, response, virhe);
 			}
@@ -136,6 +139,60 @@ public class Ostoskori extends HttpServlet {
 			String virhe = "Kaikkia parametreja ei annettu";
 			virhe(request, response, virhe);
 		}
+	}
+
+	// Tuotteen poisto ostoskorista (tällä hetkellä vain pizzat)
+	protected void poistaTuote(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Sessionhallintaa
+		HttpSession sessio = request.getSession(true);
+
+		// Haetaan ostoskori
+		HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
+		ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
+
+		String index = request.getParameter("index");
+		String json = request.getParameter("json");
+
+		Apuri apuri = new Apuri();
+
+		if (index != null) {
+			if (apuri.validoiInt(index, 10) == true) {
+				int indexint = 9999;
+				try {
+					indexint = Integer.parseInt(index);
+				} catch (Exception ex) {
+					System.out.println("Virhe tuotteen poistossa ostoskorista - " + ex);
+				}
+				if (ostoskoriPizzat.size() >= indexint) {
+					String nimi = ostoskoriPizzat.get(indexint).getNimi();
+					ostoskoriPizzat.remove(indexint);
+					ostoskori.put("pizzat", ostoskoriPizzat);
+					sessio.setAttribute("ostoskori", ostoskori);
+					if (json != null) {
+						HashMap<String, String> vastaus = new HashMap<>();
+						vastaus.put("success", nimi + " poistettu ostoskorista");
+						jsonVastaus(request, response, vastaus);
+					} else {
+						request.setAttribute("success", nimi + " poistettu ostoskorista");
+						naytaSivu(request, response);
+					}
+
+				} else {
+					String virhe = "Virheellinen ID poistettavalle tuotteelle";
+					virhe(request, response, virhe);
+				}
+
+			} else {
+				String virhe = "Virheellinen ID poistettavalle tuotteelle";
+				virhe(request, response, virhe);
+			}
+		} else {
+			String virhe = "Virheellinen ID poistettavalle tuotteelle";
+			virhe(request, response, virhe);
+		}
+
 	}
 
 	// Perus .jsp sivun näyttäminen
@@ -275,13 +332,13 @@ public class Ostoskori extends HttpServlet {
 			pizzaobjekti.put("indeksi", i);
 			pizzatJson.add(pizzaobjekti);
 		}
-		
+
 		// Encoding ja printtaus
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
 		out.print(pizzatJson);
-		
+
 	}
 }
