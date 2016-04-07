@@ -67,6 +67,9 @@ public class Ostoskori extends HttpServlet {
 			if (action.equals("lisaa")) {
 				lisaaTuote(request, response);
 			}
+			else if (action.equals("tyhjenna")) {
+				tyhjennaOstoskori(request, response);
+			}
 			else {
 				String virhe = "Tuntematon action";
 				virhe(request, response, virhe);
@@ -195,6 +198,32 @@ public class Ostoskori extends HttpServlet {
 			naytaSivu(request, response);
 		}
 	}
+	
+	protected void tyhjennaOstoskori(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		// Sessionhallintaa
+		HttpSession sessio = request.getSession(true);
+		
+		// Luodaan tyhjät oliot ostoskorille
+		HashMap<String, ArrayList> ostoskori = new HashMap<>();
+		ArrayList<Pizza> ostoskoriPizzat = new ArrayList<>();
+		ostoskori.put("pizzat", ostoskoriPizzat);
+		
+		// Asetetaan tyhjät oliot sessiolle
+		sessio.setAttribute("ostoskori", ostoskori);
+		String json = request.getParameter("json");
+		if (json != null) {
+			HashMap<String, String> vastaus = new HashMap<>();
+			vastaus.put("success", "Ostoskori tyhjennetty!");
+			jsonVastaus(request, response, vastaus);
+		}
+		else {
+			request.setAttribute("success", "Ostoskori tyhjennetty!");
+			doGet(request, response);
+		}
+		
+	}
 
 	// Hakee ostoskorin sisällön, jos sisältöä ei ole, luo ostoskorin
 	protected HashMap<String, ArrayList> haeOstoskori(HttpServletRequest request, HttpServletResponse response)
@@ -215,7 +244,6 @@ public class Ostoskori extends HttpServlet {
 			ostoskori = new HashMap<>();
 		} else {
 			try {
-				System.out.println("Yritetään noutaa ostoskoriPizzat ostoskorista");
 				if (ostoskori.get("pizzat") != null) {
 					ostoskoriPizzat = ostoskori.get("pizzat");
 				} else {

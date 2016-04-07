@@ -68,8 +68,10 @@
 				<div class="row">
 				<div class="col s12 right-align">
 				<br>
-				<button class="btn waves-effect waves-light red lighten-2" type="button">Tyhjennä</button> 
+				<form method="post">
+				<button class="btn waves-effect waves-light red lighten-2" name="action" value="tyhjenna">Tyhjennä</button> 
 				<button class="btn waves-effect waves-light" type="button">Tilaa</button>
+				</form>
 				</div>
 				</div>
 			</c:otherwise>
