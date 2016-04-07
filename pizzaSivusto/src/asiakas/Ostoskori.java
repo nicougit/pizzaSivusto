@@ -43,16 +43,20 @@ public class Ostoskori extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
+		// Sessionhallintaa
+		HttpSession sessio = request.getSession(true);
+
 		String ostoskoriJsonina = request.getParameter("ostoskoriJsonina");
 
 		if (ostoskoriJsonina != null) {
-
+			ostoskoriJsonina(request, response);
 		} else {
 			naytaSivu(request, response);
 		}
 
 	}
-	
+
+	// Varsinaisten toimintojen käsittely
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -61,31 +65,29 @@ public class Ostoskori extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
+		// Sessionhallintaa
+		HttpSession sessio = request.getSession(true);
+
 		String action = request.getParameter("action");
-		
-		if (action != null){
+
+		if (action != null) {
 			if (action.equals("lisaa")) {
 				lisaaTuote(request, response);
-			}
-			else if (action.equals("tyhjenna")) {
+			} else if (action.equals("tyhjenna")) {
 				tyhjennaOstoskori(request, response);
-			}
-			else {
+			} else {
 				String virhe = "Tuntematon action";
 				virhe(request, response, virhe);
 			}
-		}
-		else {
+		} else {
 			doGet(request, response);
 		}
-		
+
 	}
 
+	// Tuotteen lisäys ostoskoriin
 	protected void lisaaTuote(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		response.setCharacterEncoding("UTF-8");
-		request.setCharacterEncoding("UTF-8");
 
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
@@ -136,19 +138,14 @@ public class Ostoskori extends HttpServlet {
 		}
 	}
 
+	// Perus .jsp sivun näyttäminen
 	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		response.setCharacterEncoding("UTF-8");
-		request.setCharacterEncoding("UTF-8");
-
-		// Sessionhallintaa
-		HttpSession sessio = request.getSession(true);
 
 		// Haetaan ostoskori
 		HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
 		ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
-		
+
 		// RequestDispatcher
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/ostoskori.jsp");
 
@@ -156,11 +153,9 @@ public class Ostoskori extends HttpServlet {
 		rd.forward(request, response);
 	}
 
+	// Success- ja virheilmoitusten välitys JavaScriptille JSON-muodossa
 	protected void jsonVastaus(HttpServletRequest request, HttpServletResponse response,
 			HashMap<String, String> vastaus) throws ServletException, IOException {
-
-		response.setCharacterEncoding("UTF-8");
-		request.setCharacterEncoding("UTF-8");
 
 		JSONArray jsonarray = new JSONArray();
 		JSONObject jsonvastaus = new JSONObject();
@@ -198,18 +193,19 @@ public class Ostoskori extends HttpServlet {
 			naytaSivu(request, response);
 		}
 	}
-	
+
+	// Ostoskorin tyhjennys
 	protected void tyhjennaOstoskori(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		// Sessionhallintaa
 		HttpSession sessio = request.getSession(true);
-		
+
 		// Luodaan tyhjät oliot ostoskorille
 		HashMap<String, ArrayList> ostoskori = new HashMap<>();
 		ArrayList<Pizza> ostoskoriPizzat = new ArrayList<>();
 		ostoskori.put("pizzat", ostoskoriPizzat);
-		
+
 		// Asetetaan tyhjät oliot sessiolle
 		sessio.setAttribute("ostoskori", ostoskori);
 		String json = request.getParameter("json");
@@ -217,12 +213,11 @@ public class Ostoskori extends HttpServlet {
 			HashMap<String, String> vastaus = new HashMap<>();
 			vastaus.put("success", "Ostoskori tyhjennetty!");
 			jsonVastaus(request, response, vastaus);
-		}
-		else {
+		} else {
 			request.setAttribute("success", "Ostoskori tyhjennetty!");
 			doGet(request, response);
 		}
-		
+
 	}
 
 	// Hakee ostoskorin sisällön, jos sisältöä ei ole, luo ostoskorin
@@ -257,5 +252,36 @@ public class Ostoskori extends HttpServlet {
 		ostoskori.put("pizzat", ostoskoriPizzat);
 
 		return ostoskori;
+	}
+
+	// Ostoskorin palautus Javascriptille JSON-muodossa
+	protected void ostoskoriJsonina(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Haetaan ostoskori
+		HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
+		ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
+
+		// Json Array
+		JSONArray pizzatJson = new JSONArray();
+
+		for (int i = 0; i < ostoskoriPizzat.size(); i++) {
+			Pizza pizza = ostoskoriPizzat.get(i);
+			JSONObject pizzaobjekti = new JSONObject();
+			JSONArray taytearray = new JSONArray();
+			pizzaobjekti.put("id", pizza.getId());
+			pizzaobjekti.put("nimi", pizza.getNimi());
+			pizzaobjekti.put("hinta", pizza.getHinta());
+			pizzaobjekti.put("indeksi", i);
+			pizzatJson.add(pizzaobjekti);
+		}
+		
+		// Encoding ja printtaus
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+		out.print(pizzatJson);
+		
 	}
 }

@@ -36,7 +36,7 @@
 			<c:set var="yhteishinta" value="0"></c:set>
 				<table class="striped">
 					<thead>
-						<tr>
+						<tr class="strong-id">
 							<td>Nimi</td>
 							<td>Hinta</td>
 							<td></td>
@@ -69,8 +69,8 @@
 				<div class="col s12 right-align">
 				<br>
 				<form method="post">
-				<button class="btn waves-effect waves-light red lighten-2" name="action" value="tyhjenna">Tyhjennä</button> 
-				<button class="btn waves-effect waves-light" type="button">Tilaa</button>
+				<button class="btn waves-effect waves-light orange lighten-1" name="action" value="tyhjenna"><i class="material-icons left">clear</i>Tyhjennä</button> 
+				<button class="btn waves-effect waves-light" type="button"><i class="material-icons left">shopping_cart</i>Tilaa</button>
 				</form>
 				</div>
 				</div>

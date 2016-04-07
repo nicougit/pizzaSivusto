@@ -177,3 +177,10 @@ nav {
 .menu-title {
 	font-size: 40pt;
 }
+
+/* Ostoskori */
+.ostoskori-yhteishinta {
+	background: none !important;
+	border-top: 1px solid rgb(208,208,208);
+	font-weight: bold;
+}

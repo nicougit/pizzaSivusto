@@ -12,7 +12,6 @@
 <link href='https://fonts.googleapis.com/css?family=Martel:200'
 	rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Raleway:200italic' rel='stylesheet' type='text/css'>
-<script src="js/pizzat.js" type="text/javascript"></script>
 <script>
 // Törkeesti intternetistä 99% kopioitu skripti
 // Scrollaa smoothisti pizza / juomat nappeja klikatessa
@@ -42,7 +41,7 @@ $(function() {
 			hitaalla nostatuksella. Päällä tomaattikastiketta, joka on
 			valmistettu salaisella sukureseptillä. Kokonaisuuden kruunaa aito
 			oikea mozzarella. Lisäksi käytämme pizzoissamme vain tuoreita ja
-			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta.</p>
+			laadukkaita raaka-aineita, tarkoin valituilta tuottajilta.<br>
 	</div>
 	<div class="row" id="main-content">
 		<c:choose>

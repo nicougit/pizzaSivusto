@@ -17,6 +17,7 @@
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="${url }/js/materialize.js"></script>
+<script src="js/ostoskori.js" type="text/javascript"></script>
 <script type="text/javascript">
 	var naytaVirhe = function(viesti) {
 		$(document).ready(function() {
