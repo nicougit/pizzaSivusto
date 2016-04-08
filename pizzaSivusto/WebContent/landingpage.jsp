@@ -41,9 +41,11 @@
 			<p class="flow-text">Tähän karttakuva</p>
 		</div>
 	</div>
+	</div>
 	<div class="center-align pienifontti footeri">
 	<br>
 	By Reptile Mafia 2016
+	<br><br>
 	</div>
 	</body>
 </html>
