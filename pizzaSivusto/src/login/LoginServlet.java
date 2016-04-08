@@ -246,8 +246,20 @@ public class LoginServlet extends HttpServlet {
 
 		// Katsotaan onko käyttäjä kirjautuneena sisään
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			
+			// Otetaan ostoskori talteen
+			Object ostoskori = sessio.getAttribute("ostoskori");
+			
+			// Poistetaan käyttäjä ja invalidoidaan sessio
 			sessio.removeAttribute("kayttaja");
 			sessio.invalidate();
+			
+			// Luodaan heti uusi sessio ja siirretään ostoskori sille
+			sessio = request.getSession(true);
+			if (ostoskori != null ) {
+				sessio.setAttribute("ostoskori", ostoskori);
+			}
+			
 			request.setAttribute("success", "Olet kirjautunut ulos onnistuneesti!");
 
 			String rdPath = "WEB-INF/login.jsp";
