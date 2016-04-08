@@ -6,7 +6,7 @@ CREATE TABLE Tayte (
     tayte_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     nimi VARCHAR(20),
     saatavilla CHAR(1)
-);
+)Engine=InnoDB;
 
 // Pizza-taulu
 CREATE TABLE Pizza (
@@ -14,7 +14,7 @@ CREATE TABLE Pizza (
     nimi VARCHAR(30) NOT NULL,
     hinta DECIMAL(5,2) NOT NULL,
     poistomerkinta DATE
-);
+)Engine=InnoDB;
 
 // PizzanTayte-taulu
 CREATE TABLE PizzanTayte (
@@ -23,7 +23,7 @@ CREATE TABLE PizzanTayte (
     PRIMARY KEY (pizza_id, tayte_id),
     FOREIGN KEY (pizza_id) REFERENCES Pizza(pizza_id),
     FOREIGN KEY (tayte_id) REFERENCES Tayte(tayte_id)
-);
+)Engine=InnoDB;
 
 // Kayttaja-taulu
 CREATE TABLE Kayttaja (
@@ -35,4 +35,4 @@ CREATE TABLE Kayttaja (
 	suola CHAR(12) NOT NULL,
 	salasana CHAR(88) NOT NULL,
 	tyyppi VARCHAR(12) NOT NULL DEFAULT 'user'
-);
+)Engine=InnoDB;
