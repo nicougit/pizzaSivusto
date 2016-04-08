@@ -70,7 +70,7 @@ $(function() {
 						</span>
 						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
 						<br>
-						<button class="btn waves-effect waves-light" type="button" onClick="lisaaOstoskoriin(${pizza.id},'pizza')">Lisää
+						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(${pizza.id},'pizza')">Lisää
 							ostoskoriin</button>
 						<br> <br>
 						<div class="divider"></div>

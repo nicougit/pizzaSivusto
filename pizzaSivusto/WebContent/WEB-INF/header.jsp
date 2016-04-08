@@ -106,31 +106,30 @@
 	<div id="ostoskorimodal" class="modal">
 		<div class="modal-content center-align">
 			<h4>Ostoskori</h4>
-			<span id="ostoskori-yhteismaara"></span>
-			<table id="ostoskori-table" class="striped">
+			<h5 class="ostoskori-yhteismaara"></h5>
+			<table class="ostoskori-table striped">
 				<thead>
 					<tr>
 						<th>Tuotteen nimi</th>
-						<th>Hinta</th>
+						<th></th>
+						<th class="center">Hinta</th>
 					</tr>
 				</thead>
-				<tbody id="ostoskori-tbody">
+				<tbody class="ostoskori-tbody">
 				</tbody>
 			</table>
-			<br>
 			<div class="row">
 				<div class="input-field col s12">
 					<a href="#!"
 						class="modal-action modal-close waves-effect waves-light btn red lighten-2 left"
 						id="ostoskori-sulkunappi">Sulje</a>
 					<button
-						class="btn waves-effect waves-light orange lighten-1 center"
-						type="button" id="ostoskori-tyhjennysnappi"
-						onClick="tyhjennaOstoskori()">
+						class="btn waves-effect waves-light orange lighten-1 center ostoskori-tyhjennysnappi"
+						type="button" onClick="tyhjennaOstoskori()">
 						<i class="material-icons left">clear</i>Tyhjennä
 					</button>
-					<a class="btn waves-effect waves-light right"
-						id="ostoskori-tilausnappi" href="<c:url value='/ostoskori'/>"><i
+					<a class="btn waves-effect waves-light right ostoskori-tilausnappi"
+						href="<c:url value='/ostoskori'/>"><i
 						class="material-icons left">shopping_cart</i>Tilaamaan</a>
 				</div>
 			</div>

@@ -199,14 +199,9 @@ public class Ostoskori extends HttpServlet {
 	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		// Haetaan ostoskori
-		HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
-		ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
-
 		// RequestDispatcher
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/ostoskori.jsp");
 
-		request.setAttribute("pizzat", ostoskoriPizzat);
 		rd.forward(request, response);
 	}
 
