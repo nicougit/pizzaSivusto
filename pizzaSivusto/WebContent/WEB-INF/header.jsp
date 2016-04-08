@@ -13,6 +13,11 @@
 
 				<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
 			</c:if>
+			<c:if test="${kayttaja.tyyppi == 'staff' }">
+
+				<li><a href="<c:url value='/avoimet_tilaukset'/>">Avoimet
+						tilaukset</a></li>
+			</c:if>
 			<li class="divider"></li>
 			<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu
 					ulos</a></li>
@@ -56,6 +61,11 @@
 							<c:if
 								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
 								<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
+							</c:if>
+							<c:if test="${kayttaja.tyyppi == 'staff' }">
+
+								<li><a href="<c:url value='/avoimet_tilaukset'/>">Avoimet
+										tilaukset</a></li>
 							</c:if>
 							<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu
 									ulos</a></li>
