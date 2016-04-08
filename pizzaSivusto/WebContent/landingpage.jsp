@@ -29,22 +29,21 @@
 	<br>
 	<div class="row" id="main-content">
 		<div class="col s12 l4 center-align">
-			<h2>Bingo</h2>
-			<p class="flow-text">Lorem ipsum dolor sit amet, consectetur
-				adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+			<h2>Aukioloajat</h2>
+			<p class="flow-text">Arkisin 10 - 21 <br>Lauantaisin 10 - 22<br>Sunnuntaisin 12 - 21</p>
 		</div>
 		<div class="col s12 l4 center-align">
-			<h2>Bango</h2>
-			<p class="flow-text">At vero eos et accusamus et iusto odio
-				dignissimos ducimus qui blanditiis praesentium voluptatum deleniti</p>
+			<h2>Yhteystiedot</h2>
+			<p class="flow-text">Raatihuoneenkatu 6<br> 13100 Hämeenlinna<br><br>Puhelin 023 231 2342</p>
 		</div>
 		<div class="col s12 l4 center-align">
-			<h2>Bongo</h2>
-			<p class="flow-text">Nam libero tempore, cum soluta nobis est
-				eligendi optio cumque nihil impedit quo minus id quod maxime placeat
-				facere possimus</p>
+			<h2>Kartta</h2>
+			<p class="flow-text">Tähän karttakuva</p>
 		</div>
 	</div>
-	<jsp:include page="WEB-INF/footer.jsp"></jsp:include>
-</body>
+	<div class="center-align pienifontti footeri">
+	<br>
+	By Reptile Mafia 2016
+	</div>
+	</body>
 </html>
