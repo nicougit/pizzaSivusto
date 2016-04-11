@@ -63,7 +63,7 @@ var lisaaOstoskoriin = function(id, tyyppi) {
             }
 
             function haeOstoskori() {
-              return $.get(pathi, {"ostoskoriJsonina": "true"}).done(
+              return $.ajax({ url: pathi, type: "GET", async: false, cache: false, data: {"ostoskoriJsonina": "true"}}).done(
                 function(json) {
                 }).fail(
                   function(jqxhr, textStatus, error) {
