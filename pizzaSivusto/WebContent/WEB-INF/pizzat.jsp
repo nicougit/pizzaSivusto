@@ -58,19 +58,20 @@ $(function() {
 							<fmt:formatNumber type="number" minFractionDigits="2"
 								maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 						</c:set>
-						<h3 class="menu-pizzaname">${pizza.nimi }
+						<h3 class="menu-pizzaname"><c:out value="${pizza.nimi }"></c:out>
 							<span class="menu-pizzahinta">${fn:replace(pizzahinta, ".", ",") }
 								€</span>
 						</h3>
 						<span class="menu-pizzataytteet"> <c:forEach
 								items="${pizza.taytteet }" var="tayte" varStatus="status">
-							${tayte.nimi }<c:if
+								<c:out value="${tayte.nimi }"></c:out>
+							<c:if
 									test="${fn:length(pizza.taytteet) > status.count }">, </c:if>
 							</c:forEach>
 						</span>
-						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
+						<p class="menu-pizzakuvaus">"<c:out value="${pizza.kuvaus }"></c:out>"</p>
 						<br>
-						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(${pizza.id},'pizza')">Lisää
+						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(<c:out value="${pizza.id}"></c:out>,'pizza')">Lisää
 							ostoskoriin</button>
 						<br> <br>
 						<div class="divider"></div>
@@ -81,25 +82,26 @@ $(function() {
 				<h2 id="juomat" class="menu-pizzaname menu-title">Juomat</h2>
 				<p class="menu-pizzataytteet center-align">Lisäämme juomat valikoimaamme myöhemmin! Toistaiseksi näytetään täytesisältönä pizzat uudelleen.</p>
 				<br>
-				<c:forEach items="${pizzat}" var="pizza">
+						<c:forEach items="${pizzat}" var="pizza">
 					<div class="center-align">
 						<c:set var="pizzahinta">
 							<fmt:formatNumber type="number" minFractionDigits="2"
 								maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 						</c:set>
-						<h3 class="menu-pizzaname">${pizza.nimi }
+						<h3 class="menu-pizzaname"><c:out value="${pizza.nimi }"></c:out>
 							<span class="menu-pizzahinta">${fn:replace(pizzahinta, ".", ",") }
 								€</span>
 						</h3>
 						<span class="menu-pizzataytteet"> <c:forEach
 								items="${pizza.taytteet }" var="tayte" varStatus="status">
-							${tayte.nimi }<c:if
+								<c:out value="${tayte.nimi }"></c:out>
+							<c:if
 									test="${fn:length(pizza.taytteet) > status.count }">, </c:if>
 							</c:forEach>
 						</span>
-						<p class="menu-pizzakuvaus">"${pizza.kuvaus }"</p>
+						<p class="menu-pizzakuvaus">"<c:out value="${pizza.kuvaus }"></c:out>"</p>
 						<br>
-						<button class="btn waves-effect waves-light" type="button">Lisää
+						<button class="btn waves-effect waves-light ostoskorinappi" type="button">Lisää
 							ostoskoriin</button>
 						<br> <br>
 						<div class="divider"></div>

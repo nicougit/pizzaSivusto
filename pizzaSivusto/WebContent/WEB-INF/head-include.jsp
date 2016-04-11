@@ -21,6 +21,7 @@
 <script type="text/javascript">
 	var naytaVirhe = function(viesti) {
 		$(document).ready(function() {
+			viesti = $("<div />").text(viesti).html()
 			Materialize.toast(viesti, 3000, 'red lighten-2');
 			Materialize.toast();
 		});
@@ -28,6 +29,7 @@
 	
 	var naytaSuccess = function(viesti) {
 		$(document).ready(function() {
+			viesti = $("<div />").text(viesti).html()
 			Materialize.toast(viesti, 3000, 'green darken-1');
 			Materialize.toast();
 		});
@@ -49,16 +51,14 @@
 <c:if test="${not empty success }">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			Materialize.toast('${success}', 3000, 'green darken-1');
-			Materialize.toast();
+			naytaSuccess("${viesti}");
 		});
 	</script>
 </c:if>
 <c:if test="${not empty virhe }">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			Materialize.toast('${virhe}', 3000, 'red lighten-2');
-			Materialize.toast();
+			naytaVirhe("${viesti}");
 		});
 	</script>
 </c:if>

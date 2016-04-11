@@ -41,7 +41,7 @@
 				<c:choose>
 					<c:when test="${not empty kayttaja }">
 						<li><a class="dropdown-button" href="#!"
-							data-activates="user-dropdowni"> ${kayttaja.tunnus } <i
+							data-activates="user-dropdowni"><c:out value="${kayttaja.tunnus }"></c:out> <i
 								class="material-icons right">arrow_drop_down</i></a></li>
 					</c:when>
 					<c:otherwise>
@@ -56,7 +56,7 @@
 						class="navbar-yhteishinta right"></span></a> <c:choose>
 						<c:when test="${not empty kayttaja }">
 							<li class="divider"></li>
-							<li><a href="#!">${kayttaja.tunnus }</a></li>
+							<li><a href="#!"><c:out value="${kayttaja.tunnus }"></c:out></a></li>
 							<li><a href="#!">Tilaushistoria</a></li>
 							<c:if
 								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">

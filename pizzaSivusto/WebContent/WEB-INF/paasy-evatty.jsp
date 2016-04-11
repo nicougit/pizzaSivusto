@@ -16,7 +16,7 @@
 	<p class="flow-text">
 			<c:choose>
 				<c:when test="${not empty kayttaja }">
-					Sinulla ei ole oikeutta tälle sivulle. Käyttäjätasosi on ${kayttaja.tyyppi }.
+					Sinulla ei ole oikeutta tälle sivulle. Käyttäjätasosi on <c:out value="${kayttaja.tyyppi }"></c:out>.
 				</c:when>
 				<c:otherwise>
 					Sinulla ei ole oikeutta tälle sivulle. Et ole kirjautunut sisään.

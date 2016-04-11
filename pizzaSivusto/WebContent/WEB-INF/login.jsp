@@ -129,9 +129,9 @@
 							<tbody>
 								<c:forEach items="${kayttajat}" var="kayttaja">
 									<tr>
-										<td class="strong-id">${kayttaja.id }.</td>
-										<td>${kayttaja.tunnus }</td>
-										<td class="hide-on-small-only">${kayttaja.tyyppi }</td>
+										<td class="strong-id"><c:out value="${kayttaja.id }"></c:out>.</td>
+										<td><c:out value="${kayttaja.tunnus }"></c:out></td>
+										<td class="hide-on-small-only"><c:out value="${kayttaja.tyyppi }"></c:out></td>
 									</tr>
 								</c:forEach>
 							</tbody>

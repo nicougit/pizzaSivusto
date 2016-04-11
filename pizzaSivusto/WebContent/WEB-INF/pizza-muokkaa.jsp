@@ -15,8 +15,8 @@
 	<jsp:include page="header.jsp"></jsp:include>
 
 <div class="row headertext">
-				<h1>${pizza.nimi }</h1>
-				<p class="flow-text">${pizza.kuvaus }</p>
+				<h1><c:out value="${pizza.nimi }"></c:out></h1>
+				<p class="flow-text"><c:out value="${pizza.kuvaus }"></c:out></p>
 </div>
 	<div class="row" id="main-content">
 		<form action="hallinta" method="post">
@@ -27,23 +27,23 @@
 						<div class="row">
 							<div class="input-field col s4 m2 l2">
 								<input type="text" name="pizzaid" id="pizzaid"
-									value="${pizza.id }" disabled> <label for="pizzaid">Pizzan
+									value="<c:out value="${pizza.id }"></c:out>" disabled> <label for="pizzaid">Pizzan
 									ID</label>
 							</div>
 							<div class="input-field col s8 m7 l7">
-								<input type="hidden" name=pizzaid value="${pizza.id }">
+								<input type="hidden" name=pizzaid value="<c:out value="${pizza.id }"></c:out>">
 								<input type="text" name="pizzanimi" id="pizzanimi"
-									autocomplete="off" value="${pizza.nimi }"> <label
+									autocomplete="off" value="<c:out value="${pizza.nimi }"></c:out>"> <label
 									for="pizzanimi">Pizzan nimi</label>
 							</div>
 							<div class="input-field col s12 m3 l3">
 								<input type="number" step="0.05" name="pizzahinta"
 									class="validate" id="pizzahinta" min="0" autocomplete="off"
-									value="${pizza.hinta }"> <label for="pizzahinta"
+									value="<c:out value="${pizza.hinta }"></c:out>"> <label for="pizzahinta"
 									data-error="Virhe">Pizzan hinta</label>
 							</div>
 							<div class="input-field col s12">
-								<textarea class="materialize-textarea" name="pizzakuvaus" id="pizzakuvaus" length="255">${pizza.kuvaus }</textarea>
+								<textarea class="materialize-textarea" name="pizzakuvaus" id="pizzakuvaus" length="255"><c:out value="${pizza.kuvaus }"></c:out></textarea>
 								<label for="pizzakuvaus">Pizzan kuvaus</label>
 							</div>
 						</div>
@@ -59,9 +59,9 @@
 									</c:forEach>
 									<div class="col s6 m4 l3 taytediv">
 										<input type="checkbox" id="${tayte.id }" name="pizzatayte"
-											value="${tayte.id }"
+											value="<c:out value="${tayte.id }"></c:out>"
 											<c:if test="${ontayte == 1 }"> checked</c:if>><label
-											for="${tayte.id }"<c:if test="${tayte.saatavilla == false }"> class="errori-light"</c:if>>${tayte.nimi }</label>
+											for="<c:out value="${tayte.id }"></c:out>"<c:if test="${tayte.saatavilla == false }"> class="errori-light"</c:if>><c:out value="${tayte.nimi }"></c:out></label>
 									</div>
 									<c:set var="ontayte" value="0"></c:set>
 								</c:forEach>

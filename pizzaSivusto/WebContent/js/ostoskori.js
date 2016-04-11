@@ -41,6 +41,10 @@ var lisaaOstoskoriin = function(id, tyyppi) {
             naytaVirhe("Pizzan poistaminen ostoskorista ei onnistunut")
           });
         }
+    
+    var escape = function(stringi) {
+    	return $("<div />").text(stringi).html();
+    }
 
         var tyhjennaOstoskori = function() {
           $.post(pathi, {action: "tyhjenna", json: "true"}).done(
@@ -85,7 +89,7 @@ var lisaaOstoskoriin = function(id, tyyppi) {
                     var yhteishinta = 0;
                     if (tuotteita > 0) {
                       ostoskori.map(function(o, i) {
-                        ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + o.nimi + "</td><td class=\"right-align\"><a href=\"#!\" class=\"ostoskori-poistonappi\" onClick=\"poistaOstoskorista(" + o.indeksi + ")\"><i class=\"material-icons tiny\">clear</i></a></td><td class=\"center-align\">" + formatoiHinta(o.hinta) + "</td></tr>";
+                        ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + escape(o.nimi) + "</td><td class=\"right-align\"><a href=\"#!\" class=\"ostoskori-poistonappi\" onClick=\"poistaOstoskorista(" + escape(o.indeksi) + ")\"><i class=\"material-icons tiny\">clear</i></a></td><td class=\"center-align\">" + escape(formatoiHinta(o.hinta)) + "</td></tr>";
                         yhteishinta += o.hinta;
                       });
                       yhteishinta = formatoiHinta(yhteishinta);

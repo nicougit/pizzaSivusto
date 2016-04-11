@@ -15,7 +15,7 @@
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 	<div class="row headertext">
-	<h1>${tayte.nimi }</h1>
+	<h1><c:out value="${tayte.nimi }"></c:out></h1>
 	</div>
 	<div class="row" id="main-content">
 		<div class="col s12 m12 l5">
@@ -25,11 +25,11 @@
 					<div class="input-field col s12">
 						<input type="text" name="tayteid" id="tayteid"
 							value="${tayte.id }" disabled> <label for="tayteid">Täytteen
-							ID</label> <input type="hidden" name="tayteid" value="${tayte.id }">
+							ID</label> <input type="hidden" name="tayteid" value="<c:out value="${tayte.id }"></c:out>">
 					</div>
 					<div class="input-field col s12">
 						<input type="text" name="taytenimi" id="taytenimi"
-							autocomplete="off" value="${tayte.nimi }"> <label
+							autocomplete="off" value="<c:out value="${tayte.nimi }"></c:out>"> <label
 							for="taytenimi">Täytteen nimi</label>
 					</div>
 				</div>
@@ -68,7 +68,7 @@
 								<div class="modal-content center-align">
 									<h4>Oletko varma?</h4>
 									<p class="center-align">
-										Täyte '${tayte.nimi }' poistetaan tietokannasta pysyvästi.
+										Täyte '<c:out value="${tayte.nimi }"></c:out>' poistetaan tietokannasta pysyvästi.
 										<c:if test="${fn:length(pizzat) == 1 }">
 											<br>
 											<br>${fn:length(pizzat) } Pizza käyttää edelleen tätä täytettä. Täyte poistuu tältä pizzalta.
@@ -80,13 +80,13 @@
 										</c:if>
 										<c:if test="${not empty pizzat }">
 											<c:forEach items="${pizzat }" var="pizza">
-											${pizza.nimi }<br>
+											<c:out value="${pizza.nimi }"></c:out><br>
 											</c:forEach>
 										</c:if>
 									</p>
 									<br> <a href="#!"
 										class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
-									<a href="?poista-tayte=${tayte.id }"
+									<a href="?poista-tayte=<c:out value="${tayte.id }"></c:out>"
 										class="modal-action waves-effect waves-light btn"><i
 										class="material-icons left">delete</i>Poista</a>
 								</div>
@@ -121,7 +121,7 @@
 							<c:forEach items="${pizzat}" var="pizza">
 								<tr
 									<c:if test="${pizza.poistomerkinta != null }"> class="red lighten-5"</c:if>>
-									<td>${pizza.nimi }<c:if
+									<td><c:out value="${pizza.nimi }"></c:out><c:if
 											test="${pizza.poistomerkinta != null }">
 											<span class="pienifontti right hide-on-small-only">Poistettu
 												<fmt:parseDate value="${pizza.poistomerkinta}"
