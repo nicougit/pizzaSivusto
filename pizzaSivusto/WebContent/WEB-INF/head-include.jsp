@@ -51,14 +51,14 @@
 <c:if test="${not empty success }">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			naytaSuccess("${viesti}");
+			naytaSuccess("${success }");
 		});
 	</script>
 </c:if>
 <c:if test="${not empty virhe }">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			naytaVirhe("${viesti}");
+			naytaSuccess("${virhe }");
 		});
 	</script>
 </c:if>
