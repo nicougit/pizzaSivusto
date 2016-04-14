@@ -126,6 +126,9 @@ public class LoginServlet extends HttpServlet {
 
 		if (kayttajanimi != null && salasana != null && etunimi != null && sukunimi != null) {
 			Apuri apuri = new Apuri();
+			
+			// Email lowercaseen
+			kayttajanimi = kayttajanimi.toLowerCase();
 
 			System.out.println("Yritetään rekisteröidä käyttäjä:");
 			System.out.println(kayttajanimi + " - " + etunimi + " " + sukunimi + " - " + puhelinnro
@@ -202,7 +205,10 @@ public class LoginServlet extends HttpServlet {
 		if (kayttajanimi != null && salasana != null) {
 			System.out.println("Kirjautumisyritys - tunnus: " + kayttajanimi + " - salasanan pituus: " + salasana.length() + " merkkiä");
 
-			// Validoidaan käyttäjänimi (estetään ainakin injektiot)
+			// Käyttäjänimi lowercaseen
+			kayttajanimi = kayttajanimi.toLowerCase();
+			
+			// Validoidaan käyttäjänimi
 			Apuri apuri = new Apuri();
 			Boolean validity = apuri.validoiEmail(kayttajanimi);
 			System.out.println("Email validity: " + validity);
