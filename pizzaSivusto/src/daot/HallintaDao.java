@@ -797,5 +797,33 @@ public class HallintaDao {
 		}
 
 	}
+	
+	public ArrayList<String> haePizzatJoillaTayte(String id) {
+		ArrayList<String> pizzat = new ArrayList<>();
+		
+		// Yhteyden määritys
+				Yhteys yhteys = new Yhteys();
+				Kysely kysely = new Kysely(yhteys.getYhteys());
+
+				String sql = "SELECT DISTINCT nimi FROM PizzanTayte JOIN Pizza USING(pizza_id) WHERE tayte_id = ?";
+				ArrayList<String> parametrit = new ArrayList<>();
+				parametrit.add(id);
+
+				// Suoritetaan kysely
+				kysely.suoritaYksiKyselyParam(sql, parametrit);
+				ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+				// Iteraattorin luonti
+				Iterator iteraattori = kysely.getTulokset().iterator();
+
+				// Tulosten läpi käynti
+				while (iteraattori.hasNext()) {
+					HashMap resultit = (HashMap) iteraattori.next();
+					String pizza = (String) resultit.get("nimi");
+					pizzat.add(pizza);
+				}
+		
+		return pizzat;
+	}
 
 }

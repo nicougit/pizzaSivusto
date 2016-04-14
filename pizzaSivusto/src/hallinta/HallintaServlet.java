@@ -56,6 +56,8 @@ public class HallintaServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
+		String json = request.getParameter("json");
+
 		// Katsotaan oikeudet
 		HttpSession sessio = request.getSession(false);
 
@@ -72,7 +74,7 @@ public class HallintaServlet extends HttpServlet {
 				String pizzaPalauta = request.getParameter("pizza-palauta");
 				String poistaPizzat = request.getParameter("poista-pizzat");
 				String poistaTayte = request.getParameter("poista-tayte");
-
+				String pizzatTaytteella = request.getParameter("pizzat-taytteella");
 				String pizzatJsonina = request.getParameter("pizzatJsonina");
 
 				// Apuri validointiin
@@ -121,25 +123,33 @@ public class HallintaServlet extends HttpServlet {
 					} else {
 						naytaSivu(request, response);
 					}
-				} else if (poistaTayte != null) {
-					if (kayttaja.getTyyppi().equals("admin")) {
-						poistaTayte(request, response);
-					} else if (kayttaja.getTyyppi().equals("staff")) {
-						String virhe = "Vain admin voi poistaa täytteen lopullisesti";
+				} else if (pizzatJsonina != null) {
+					pizzatJsonina(request, response);
+				} else if (pizzatTaytteella != null) {
+					pizzatTaytteella(request, response);
+				} else {
+					if (json != null) {
+						String virhe = "Virheellinen JSON pyyntö";
 						virhe(request, response, virhe);
 					} else {
 						naytaSivu(request, response);
 					}
-				} else if (pizzatJsonina != null) {
-					pizzatJsonina(request, response);
-				} else {
-					naytaSivu(request, response);
 				}
+			} else {
+				if (json != null) {
+					String virhe = "Pääsy evätty! Sinulla pitää olla staff- tai admin-tunnukset!";
+					virhe(request, response, virhe);
+				} else {
+					paasyEvatty(request, response);
+				}
+			}
+		} else {
+			if (json != null) {
+				String virhe = "Pääsy evätty! Et ole kirjautunut sisään!";
+				virhe(request, response, virhe);
 			} else {
 				paasyEvatty(request, response);
 			}
-		} else {
-			paasyEvatty(request, response);
 		}
 
 	}
@@ -208,24 +218,57 @@ public class HallintaServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
 
-		String action = request.getParameter("action");
+		String json = request.getParameter("json");
 
-		if (action != null && action.equals("lisaapizza")) {
-			lisaaPizza(request, response);
-		} else if (action != null && action.equals("paivitapizza")) {
-			paivitaPizza(request, response);
-		} else if (action != null && action.equals("lisaatayte")) {
-			lisaaTayte(request, response);
-		} else if (action != null && action.equals("paivitatayte")) {
-			paivitaTayte(request, response);
-		} else if (action != null && action.equals("haepizzat")) {
-			pizzatJsonina(request, response);
-		} else if (action != null && action.equals("haetaytteet")) {
-			taytteetJsonina(request, response);
+		// Katsotaan oikeudet
+		HttpSession sessio = request.getSession(false);
+
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+			if (kayttaja.getTyyppi().equals("admin") || kayttaja.getTyyppi().equals("staff")) {
+
+				String action = request.getParameter("action");
+
+				if (action != null && action.equals("lisaapizza")) {
+					lisaaPizza(request, response);
+				} else if (action != null && action.equals("paivitapizza")) {
+					paivitaPizza(request, response);
+				} else if (action != null && action.equals("lisaatayte")) {
+					lisaaTayte(request, response);
+				} else if (action != null && action.equals("paivitatayte")) {
+					paivitaTayte(request, response);
+				} else if (action != null && action.equals("haepizzat")) {
+					pizzatJsonina(request, response);
+				} else if (action != null && action.equals("haetaytteet")) {
+					taytteetJsonina(request, response);
+				} else if (action != null && action.equals("poistatayte")) {
+					if (kayttaja.getTyyppi().equals("admin")) {
+						poistaTayte(request, response);
+					} else if (kayttaja.getTyyppi().equals("staff")) {
+						String virhe = "Vain admin voi poistaa täytteen lopullisesti";
+						virhe(request, response, virhe);
+					} else {
+						naytaSivu(request, response);
+					}
+				} else {
+					naytaSivu(request, response);
+				}
+			} else {
+				if (json != null) {
+					String virhe = "Pääsy evätty! Sinulla pitää olla staff- tai admin-tunnukset!";
+					virhe(request, response, virhe);
+				} else {
+					paasyEvatty(request, response);
+				}
+			}
 		} else {
-			naytaSivu(request, response);
+			if (json != null) {
+				String virhe = "Pääsy evätty! Et ole kirjautunut sisään!";
+				virhe(request, response, virhe);
+			} else {
+				paasyEvatty(request, response);
+			}
 		}
-
 	}
 
 	public void paivitaPizza(HttpServletRequest request, HttpServletResponse response)
@@ -600,7 +643,8 @@ public class HallintaServlet extends HttpServlet {
 	public void poistaTayte(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String poistaTayte = request.getParameter("poista-tayte");
+		String poistaTayte = request.getParameter("id");
+		String json = request.getParameter("json");
 
 		// Validoidaan input
 		Apuri apuri = new Apuri();
@@ -610,21 +654,24 @@ public class HallintaServlet extends HttpServlet {
 			virhe(request, response, virhe);
 		} else {
 			System.out.println("Yritetään poistaa täytettä ID: " + poistaTayte);
-
 			HallintaDao dao = new HallintaDao();
 
 			HashMap<String, String> vastaus = dao.poistaTayte(poistaTayte);
-			if (vastaus.get("virhe") != null) {
-				String virhe = vastaus.get("virhe");
-				request.setAttribute("virhe", virhe);
-				taytteenMuokkaus(request, response, poistaTayte);
-			} else if (vastaus.get("success") != null) {
-				String success = vastaus.get("success");
-				request.setAttribute("success", success);
-				naytaSivu(request, response);
+			if (json != null) {
+				jsonVastaus(request, response, vastaus);
 			} else {
-				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
-				naytaSivu(request, response);
+				if (vastaus.get("virhe") != null) {
+					String virhe = vastaus.get("virhe");
+					request.setAttribute("virhe", virhe);
+					taytteenMuokkaus(request, response, poistaTayte);
+				} else if (vastaus.get("success") != null) {
+					String success = vastaus.get("success");
+					request.setAttribute("success", success);
+					naytaSivu(request, response);
+				} else {
+					request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+					naytaSivu(request, response);
+				}
 			}
 
 		}
@@ -719,6 +766,38 @@ public class HallintaServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		out.print(pizzatJson);
+	}
+
+	protected void pizzatTaytteella(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String tayteid = request.getParameter("pizzat-taytteella");
+		String json = request.getParameter("json");
+
+		Apuri apuri = new Apuri();
+
+		if (tayteid != null && apuri.validoiInt(tayteid, 11) == true) {
+			// Pizzojen haku
+			HallintaDao dao = new HallintaDao();
+			ArrayList<String> pizzat = dao.haePizzatJoillaTayte(tayteid);
+
+			// Json Array
+			JSONArray pizzatJson = new JSONArray();
+
+			for (int i = 0; i < pizzat.size(); i++) {
+				JSONObject pizzaobjekti = new JSONObject();
+				pizzaobjekti.put("nimi", pizzat.get(i));
+				pizzatJson.add(pizzaobjekti);
+			}
+
+			// Encoding ja printtaus
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/json");
+
+			PrintWriter out = response.getWriter();
+			out.print(pizzatJson);
+		}
+
 	}
 
 	protected void taytteetJsonina(HttpServletRequest request, HttpServletResponse response)

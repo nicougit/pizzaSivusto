@@ -113,10 +113,48 @@ var TaytteenLisays = React.createClass({
 	}
 });
 
+// Tiettyä täytettä käyttävät pizzat
+var TaytettaKayttavatPizzat = React.createClass({
+	render: function() {
+		if (this.props.pizzat.length == 0) {
+		return (
+			<div className="col s12">
+			<h5>Yksikään pizza ei käytä tätä täytettä</h5>
+			</div>
+		);
+		}
+		else {
+			return (
+				<div className="col s12">
+				<h5>Tätä täytettä käyttävät pizzat</h5>
+				<ul className="collection">
+				{this.props.pizzat.map((o, i) => <li className="collection-item center-align" key={"rivi" + i}>{o.nimi}</li>)}
+				</ul>
+				</div>
+			);
+		}
+	}
+});
+
 // Täytteen muokkaus formi
 var TaytteenMuokkaus = React.createClass({
 	getInitialState: function() {
-		return ({taytenimi: this.props.tayte.nimi, taytesaatavilla: this.props.tayte.saatavilla });
+		return ({taytenimi: this.props.tayte.nimi, taytesaatavilla: this.props.tayte.saatavilla, pizzalista: [] });
+	},
+	componentDidMount: function() {
+		this.haePizzat();
+	},
+	haePizzat: function() {
+		$.get("hallinta", {"pizzat-taytteella": this.props.tayte.id, "json": "true"}).done(
+			function(json) {
+				this.setState({pizzalista: json});
+			}.bind(this)).fail(
+				function(jqxhr, textStatus, error) {
+					var errori = textStatus + ", " + error;
+					console.log("Faili: " + errori);
+					console.log(JSON.stringify(json));
+					naytaVirhe("Virhe javascriptissa!")
+				});
 	},
 	paivitanimi: function(e) {
 		this.setState({taytenimi: e.target.value }, function() { this.paivitanappi() });
@@ -131,7 +169,7 @@ var TaytteenMuokkaus = React.createClass({
 	},
 	componentWillReceiveProps: function(propsit) {
 		if (propsit.tayte) {
-			this.setState({taytenimi: propsit.tayte.nimi, taytesaatavilla: propsit.tayte.saatavilla});
+			this.setState({taytenimi: propsit.tayte.nimi, taytesaatavilla: propsit.tayte.saatavilla}, function() { this.haePizzat() });
 		}
 	},
 	vaihdasaatavuus: function(e) {
@@ -151,10 +189,18 @@ var TaytteenMuokkaus = React.createClass({
 		var submitdata = [{name: "action", value: "paivitatayte"}, {name: "tayteid", value: this.props.tayte.id}, {name: "taytenimi", value: this.state.taytenimi}, {name: "taytesaatavilla", value: saatavuus}, {name: "json", value: "true"}];
 		this.props.lahetaPaivitys(submitdata);
 	},
+	avaaModal: function() {
+		$("#taytepoistomodal").openModal();
+	},
+	poistaTayte: function() {
+		var submitdata = [{name: "action", value:"poistatayte"}, {name: "id", value: this.props.tayte.id}, {name: "json", value: "true"}];
+		this.props.lahetaPaivitys(submitdata);
+		$("#taytepoistomodal").closeModal();
+	},
 	render: function() {
 		return (
 			<div className="col s12 m12 l5 push-l7" id="taytem">
-			<h2>Muokkaa täytettä</h2>
+			<h2>Muokkaa täytettä<a onClick={this.avaaModal } href="#!" className="taytteenpoisto"><i className="material-icons">delete</i></a></h2>
 			<h3>{this.props.tayte.nimi }</h3>
 			<div className="row">
 			<form id="tayteformi">
@@ -185,9 +231,14 @@ var TaytteenMuokkaus = React.createClass({
 			<button className="btn waves-effect waves-light btn-large right"
 			type="button" id="paivitatayte" onClick={this.lahetaPaivitys }><i className="material-icons left">done</i>Päivitä</button>
 			</div>
-			<div className="col s12 center-align pienifontti">
-			<br /><br />
-			Täytteen poisto toistaiseksi vielä <a href={"?tayte-edit=" + this.props.tayte.id}>täältä</a>
+			<TaytettaKayttavatPizzat pizzat={this.state.pizzalista} />
+			<div id="taytepoistomodal" className="modal">
+			<div className="modal-content center-align">
+			<h4>Oletko varma?</h4>
+			<p className="center-align">Täyte '{this.props.tayte.nimi}' poistetaan pysyvästi</p>
+			<br />
+			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaTayte } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
+			</div>
 			</div>
 			</div>
 			</form>
@@ -272,7 +323,7 @@ var Pizzalista = React.createClass({
 			<div className="modal-content center-align">
 			<h4>Oletko varma?</h4>
 			<p>Poistettavaksi merkityt pizzat ({this.props.poistettavia }kpl) poistetaan tietokannasta pysyvästi.</p>
-			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
+			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
 			</div>
 			</div>
 			</div>
@@ -576,23 +627,37 @@ var PizzanLisays = React.createClass({
 														else {
 															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
 														}
+														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa ja {this.state.taytteet.length } täytettä!</p>;
+														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>;
+														var taytelista = <Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>;
+														var pizzanlisays = <PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>;
+														if (this.state.pizzat.length < 1 && this.state.taytteet.length < 1) {
+															headerteksti = <p className="flow-text">Listalla ei ole yhtään pizzaa eikä täytettä, tai niitä ei saatu noudettua tietokannasta</p>;
+														}
+														if (this.state.pizzat.length < 1) {
+															pizzalista = <div className="center-align errori">Listalla ei ole yhtään pizzaa, tai niitä ei saatu noudettua tietokannasta.</div>;
+														}
+														if (this.state.taytteet.length < 1) {
+															taytelista = <div className="center-align errori col s12 m12 l6 pull-l5">Listalla ei ole yhtään täytettä, tai niitä ei saatu noudettua tietokannasta.</div>;
+															pizzanlisays = <div className="center-align errori col s12">Täytteitä ei ole, tai niitä ei saatu noudettua tietokannasta. Yritä lisätä täytteet ensin.</div>;
+														}
 														return(
 															<div>
 															<div className="row headertext">
 															<h1>Hallinta</h1>
-															<p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa ja {this.state.taytteet.length } täytettä!</p>
+															{headerteksti}
 															</div>
 															<div id="main-content">
 															<Navigaatio />
 															<div className="row" id="pizza-h">
-															<Pizzalista pizzat={this.state.pizzat } kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>
+															{pizzalista}
 															</div>
 															<div className="row" id="pizza-l">
-															<PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>
+															{pizzanlisays}
 															</div>
 															<div className="row" id="tayte-h">
 															{taytetoiminto}
-															<Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>
+															{taytelista}
 															</div>
 															</div>
 															</div>
