@@ -58,7 +58,7 @@
 <c:if test="${not empty virhe }">
 	<script type="text/javascript">
 		$(document).ready(function() {
-			naytaSuccess("${virhe }");
+			naytaVirhe("${virhe }");
 		});
 	</script>
 </c:if>

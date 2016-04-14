@@ -112,10 +112,24 @@ public class HallintaServlet extends HttpServlet {
 					poistaPizza(request, response);
 				} else if (pizzaPalauta != null && apuri.validoiInt(pizzaPalauta, 11) == true) {
 					palautaPizza(request, response);
-				} else if (kayttaja.getTyyppi().equals("admin") && poistaPizzat != null) {
-					poistaMerkityt(request, response);
-				} else if (kayttaja.getTyyppi().equals("admin") && poistaTayte != null) {
-					poistaTayte(request, response);
+				} else if (poistaPizzat != null) {
+					if (kayttaja.getTyyppi().equals("admin")) {
+						poistaMerkityt(request, response);
+					} else if (kayttaja.getTyyppi().equals("staff")) {
+						String virhe = "Vain admin voi poistaa pizzat lopullisesti";
+						virhe(request, response, virhe);
+					} else {
+						naytaSivu(request, response);
+					}
+				} else if (poistaTayte != null) {
+					if (kayttaja.getTyyppi().equals("admin")) {
+						poistaTayte(request, response);
+					} else if (kayttaja.getTyyppi().equals("staff")) {
+						String virhe = "Vain admin voi poistaa täytteen lopullisesti";
+						virhe(request, response, virhe);
+					} else {
+						naytaSivu(request, response);
+					}
 				} else if (pizzatJsonina != null) {
 					pizzatJsonina(request, response);
 				} else {
