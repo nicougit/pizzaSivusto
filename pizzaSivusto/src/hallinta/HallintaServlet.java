@@ -281,18 +281,12 @@ public class HallintaServlet extends HttpServlet {
 		String pizzahinta = request.getParameter("pizzahinta").replace(",", ".");
 		String[] taytetaulu = request.getParameterValues("pizzatayte");
 
-		System.out.println("Käyttäjä yrittää muokata pizzaa, katsotaan onko vaadittavat tiedot syötetty.");
-
 		if (pizzaid != null && pizzanimi != null && pizzakuvaus != null && pizzahinta != null && taytetaulu != null) {
-
-			System.out.println("Yritetään muokata pizzaa attribuuteilla:");
-			System.out.println("ID: " + pizzaid + " - Nimi: " + pizzanimi + " - Kuvaus: " + pizzakuvaus + " - Hinta: "
-					+ pizzahinta + " - Täytteitä " + taytetaulu.length + "kpl.");
 
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
 
-			if (apuri.validoiString(pizzanimi, "-", 30) != true) {
+			if (apuri.validoiString(pizzanimi, "-", 50) != true) {
 				String virhe = "Muokattavan pizzan nimi on virheellinen!";
 				virhe(request, response, virhe);
 			} else {
@@ -493,7 +487,7 @@ public class HallintaServlet extends HttpServlet {
 		Apuri apuri = new Apuri();
 
 		if (tayteId != null && tayteNimi != null && tayteSaatavilla != null) {
-			if (apuri.validoiInt(tayteId, 11) == true && apuri.validoiString(tayteNimi, " -", 20) == true) {
+			if (apuri.validoiInt(tayteId, 11) == true && apuri.validoiString(tayteNimi, " -", 50) == true) {
 				if (tayteSaatavilla.equals("0")) {
 					tayteSaatavilla = "E";
 				} else if (tayteSaatavilla.equals("1")) {
@@ -692,14 +686,14 @@ public class HallintaServlet extends HttpServlet {
 		// Dao
 		HallintaDao dao = new HallintaDao();
 
-		if (tayteNimi != null && apuri.validoiString(tayteNimi, " -", 20) == true && tayteSaatavilla != null) {
+		if (tayteNimi != null && apuri.validoiString(tayteNimi, " -", 50) == true && tayteSaatavilla != null) {
 
 			if (tayteSaatavilla.equals("0")) {
 				tayteSaatavilla = "E";
 			} else if (tayteSaatavilla.equals("1")) {
 				tayteSaatavilla = "K";
 			} else {
-				String virhe = "Lisättävän täytteen saatavuustiedoissa oli virheitä.";
+				String virhe = "Virheellinen saatavuus";
 				virhe(request, response, virhe);
 			}
 
@@ -708,24 +702,24 @@ public class HallintaServlet extends HttpServlet {
 
 				// Katsotaan, onnistuuko lisäys
 				HashMap<String, String> vastaus = dao.lisaaTayte(tayteNimi, tayteSaatavilla);
-				if (vastaus.get("virhe") != null) {
-					String virhe = vastaus.get("virhe");
-					request.setAttribute("virhe", virhe);
-				} else if (vastaus.get("success") != null) {
-					String success = vastaus.get("success");
-					request.setAttribute("success", success);
-				} else {
-					request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
-				}
 				if (json != null) {
 					jsonVastaus(request, response, vastaus);
 				} else {
+					if (vastaus.get("virhe") != null) {
+						String virhe = vastaus.get("virhe");
+						request.setAttribute("virhe", virhe);
+					} else if (vastaus.get("success") != null) {
+						String success = vastaus.get("success");
+						request.setAttribute("success", success);
+					} else {
+						request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+					}
 					naytaSivu(request, response);
 				}
 			}
 
 		} else {
-			String virhe = "Lisättävän täytteen tiedoissa oli virheitä.";
+			String virhe = "Täytteen nimi on virheellinen";
 			virhe(request, response, virhe);
 		}
 	}

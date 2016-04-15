@@ -9,10 +9,11 @@ var Tayte = React.createClass({
 		var tyyli = {};
 		if (this.props.saatavilla == true) {
 			saatavilla = "Saatavilla";
+			tyyli = {"className": "taulukkorivi"}
 		}
 		else {
 			saatavilla = "Ei saatavilla";
-			tyyli = {"className": "red lighten-5"};
+			tyyli = {"className": "taulukkorivi red lighten-5"};
 		}
 		return (
 			<tr {... tyyli}>
@@ -266,11 +267,11 @@ var Pizza = React.createClass({
 				taytteet+= ", ";
 			}
 		}
-		var poistomerkitty = {};
+		var poistomerkitty = {"className": "taulukkorivi"};
 		var muokkaanappi = <a className="waves-effect waves-light btn tooltipped" href={"?pizza-edit=" + this.props.id } data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a>;
 		var poistonappi = "";
 		if (this.props.poistomerkinta != null) {
-			poistomerkitty = {"className": "red lighten-5"};
+			poistomerkitty = {"className": "taulukkorivi red lighten-5"};
 			poistonappi = <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.pizzanPalautus } data-position="right" data-delay="500" data-tooltip="Palauta"> <i className="material-icons large">visibility_off</i></button>;
 		}
 		else {
