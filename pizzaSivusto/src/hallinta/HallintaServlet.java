@@ -75,9 +75,10 @@ public class HallintaServlet extends HttpServlet {
 				String pizzaPoista = request.getParameter("pizza-poista");
 				String pizzaPalauta = request.getParameter("pizza-palauta");
 				String poistaPizzat = request.getParameter("poista-pizzat");
-				String poistaTayte = request.getParameter("poista-tayte");
 				String pizzatTaytteella = request
 						.getParameter("pizzat-taytteella");
+				String juomaPoista = request.getParameter("juoma-poista");
+				String juomaPalauta = request.getParameter("juoma-palauta");
 				String kaikkiJsonina = request.getParameter("kaikkiJsonina");
 
 				// Apuri validointiin
@@ -124,6 +125,12 @@ public class HallintaServlet extends HttpServlet {
 				} else if (pizzaPalauta != null
 						&& apuri.validoiInt(pizzaPalauta, 11) == true) {
 					palautaPizza(request, response);
+				} else if (juomaPalauta != null
+						&& apuri.validoiInt(juomaPalauta, 11)) {
+					palautaJuoma(request, response);
+				} else if (juomaPoista != null
+						&& apuri.validoiInt(juomaPoista, 11)) {
+					poistaJuoma(request, response);
 				} else if (poistaPizzat != null) {
 					if (kayttaja.getTyyppi().equals("admin")) {
 						poistaMerkityt(request, response);
@@ -598,6 +605,44 @@ public class HallintaServlet extends HttpServlet {
 
 	}
 
+	public void poistaJuoma(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		String poistajuoma = request.getParameter("juoma-poista");
+		String json = request.getParameter("json");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(poistajuoma, 11) == false) {
+			String virhe = "Poistettavan juoman ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään poistaa juomaa ID: " + poistajuoma);
+
+			HallintaDao dao = new HallintaDao();
+
+			HashMap<String, String> vastaus = dao.poistaJuoma(poistajuoma);
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
+			} else {
+				request.setAttribute("virhe",
+						"Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+			}
+			if (json != null) {
+				jsonVastaus(request, response, vastaus);
+			} else {
+				naytaSivu(request, response);
+			}
+
+		}
+
+	}
+
 	public void palautaPizza(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -616,6 +661,45 @@ public class HallintaServlet extends HttpServlet {
 			HallintaDao dao = new HallintaDao();
 
 			HashMap<String, String> vastaus = dao.palautaPizza(palautapizza);
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
+			} else {
+				request.setAttribute("virhe",
+						"Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+			}
+			if (json != null) {
+				jsonVastaus(request, response, vastaus);
+			} else {
+				naytaSivu(request, response);
+			}
+
+		}
+
+	}
+
+	public void palautaJuoma(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		String palautajuoma = request.getParameter("juoma-palauta");
+		String json = request.getParameter("json");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (apuri.validoiInt(palautajuoma, 11) == false) {
+			String virhe = "Palautettavan juoman ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out
+					.println("Yritetään palauttaa juomaa ID: " + palautajuoma);
+
+			HallintaDao dao = new HallintaDao();
+
+			HashMap<String, String> vastaus = dao.palautaJuoma(palautajuoma);
 			if (vastaus.get("virhe") != null) {
 				String virhe = vastaus.get("virhe");
 				request.setAttribute("virhe", virhe);

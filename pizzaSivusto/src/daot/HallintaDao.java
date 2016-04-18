@@ -67,29 +67,30 @@ public class HallintaDao {
 			} else if (tayteSaatavilla.equals("E")) {
 				tayte.setSaatavilla(false);
 			} else {
-				System.out.println("Tuntematon saatavilla-arvo: " + tayteSaatavilla + " - Asetetaan false.");
+				System.out.println("Tuntematon saatavilla-arvo: "
+						+ tayteSaatavilla + " - Asetetaan false.");
 				tayte.setSaatavilla(false);
 			}
-			
-			
+
 			// Katsotaan, onko pizza jo listalla
 			// Jos on, lisätään siihen täyte
 			// Jos ei, luodaan uusi pizza
 			boolean pizzaloyty = false;
-			
+
 			for (int i = 0; i < pizzat.size(); i++) {
 				if (pizzat.get(i).getId() == idKanta) {
 					ArrayList<Tayte> taytteet = pizzat.get(i).getTaytteet();
 					taytteet.add(tayte);
 					pizzat.get(i).setTaytteet(taytteet);
 					pizzaloyty = true;
-				}				
+				}
 			}
-			
+
 			if (pizzaloyty == false) {
 				ArrayList<Tayte> taytteet = new ArrayList<>();
 				taytteet.add(tayte);
-				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null, kuvausKanta);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta,
+						taytteet, poistoKanta, null, kuvausKanta);
 				pizzat.add(pizza);
 			}
 		}
@@ -116,7 +117,8 @@ public class HallintaDao {
 
 		// Katsotaan, onko täytettä olemassa
 		if (kysely.montaRivia(sql, parametrit) != 1) {
-			System.out.println("Virhe! Täytettä ei ole tietokannassa, tai duplicate id");
+			System.out
+					.println("Virhe! Täytettä ei ole tietokannassa, tai duplicate id");
 			return tayte;
 		}
 
@@ -142,12 +144,13 @@ public class HallintaDao {
 			} else if (saatavilla.equals("E")) {
 				tayte.setSaatavilla(false);
 			} else {
-				System.out.println("Tuntematon saatavilla-arvo: " + saatavilla + " - Asetetaan false.");
+				System.out.println("Tuntematon saatavilla-arvo: " + saatavilla
+						+ " - Asetetaan false.");
 				tayte.setSaatavilla(false);
 			}
 
-			System.out.println(
-					"Olion tiedot: " + tayte.getId() + " - " + tayte.getNimi() + " - " + tayte.getSaatavilla());
+			System.out.println("Olion tiedot: " + tayte.getId() + " - "
+					+ tayte.getNimi() + " - " + tayte.getSaatavilla());
 
 		}
 
@@ -170,7 +173,8 @@ public class HallintaDao {
 		Pizza pizza = new Pizza();
 
 		if (kysely.montaRivia(sql, parametrit) < 1) {
-			System.out.println("Virhe! Muokattavaksi haluttua pizzaa ei ole tietokannassa.");
+			System.out
+					.println("Virhe! Muokattavaksi haluttua pizzaa ei ole tietokannassa.");
 			return pizza;
 		}
 
@@ -213,14 +217,16 @@ public class HallintaDao {
 			} else if (tayteSaatavilla.equals("E")) {
 				tayte.setSaatavilla(false);
 			} else {
-				System.out.println("Tuntematon saatavilla-arvo: " + tayteSaatavilla + " - Asetetaan false.");
+				System.out.println("Tuntematon saatavilla-arvo: "
+						+ tayteSaatavilla + " - Asetetaan false.");
 				tayte.setSaatavilla(false);
 			}
 
 			if (looppeja == 0) {
 				ArrayList<Tayte> taytelista = new ArrayList<>();
 				taytelista.add(tayte);
-				pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytelista, poistoKanta, null, kuvausKanta);
+				pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytelista,
+						poistoKanta, null, kuvausKanta);
 			} else {
 				ArrayList<Tayte> taytelista = pizza.getTaytteet();
 				taytelista.add(tayte);
@@ -276,8 +282,9 @@ public class HallintaDao {
 			} else if (saatavillaKanta.equals("E")) {
 				tayte.setSaatavilla(false);
 			} else {
-				System.out.println("Täytteellä ID" + idKanta + " (" + nimikanta + ") virheellinen saatavuus: '"
-						+ saatavillaKanta + "', asetetaan false");
+				System.out.println("Täytteellä ID" + idKanta + " (" + nimikanta
+						+ ") virheellinen saatavuus: '" + saatavillaKanta
+						+ "', asetetaan false");
 				tayte.setSaatavilla(false);
 			}
 
@@ -292,7 +299,8 @@ public class HallintaDao {
 
 	}
 
-	public HashMap<String, String> lisaaPizza(String nimi, String kuvaus, String hinta, String[] taytteet) {
+	public HashMap<String, String> lisaaPizza(String nimi, String kuvaus,
+			String hinta, String[] taytteet) {
 
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -343,7 +351,8 @@ public class HallintaDao {
 		parametrit.add(kuvaus);
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
-		int pizzasuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int pizzasuccess = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
 
 		System.out.println("Pizzan lisäys kantaan palautti: " + pizzasuccess);
 
@@ -370,9 +379,11 @@ public class HallintaDao {
 		// Palauttaa onnistuneiden määrän, pitäisi olla sama kuin täytteiden
 		// määrä
 		// Pienempi arvo = error
-		int taytesuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int taytesuccess = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
 
-		System.out.println("Täytteiden määrä = " + taytteet.length + ", lisäys kantaan palautti: " + taytesuccess);
+		System.out.println("Täytteiden määrä = " + taytteet.length
+				+ ", lisäys kantaan palautti: " + taytesuccess);
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
@@ -390,7 +401,8 @@ public class HallintaDao {
 
 	}
 
-	public HashMap<String, String> paivitaTayte(String id, String nimi, String saatavilla) {
+	public HashMap<String, String> paivitaTayte(String id, String nimi,
+			String saatavilla) {
 
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -450,7 +462,8 @@ public class HallintaDao {
 		}
 	}
 
-	public HashMap<String, String> paivitaPizza(String id, String nimi, String kuvaus, String hinta, String[] taytteet) {
+	public HashMap<String, String> paivitaPizza(String id, String nimi,
+			String kuvaus, String hinta, String[] taytteet) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
@@ -507,7 +520,8 @@ public class HallintaDao {
 		parametrit.add(id);
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
-		int pizzasuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int pizzasuccess = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
 
 		System.out.println("Pizzan päivitys kantaan palautti: " + pizzasuccess);
 
@@ -515,9 +529,11 @@ public class HallintaDao {
 		sql = "DELETE FROM PizzanTayte WHERE pizza_id = ?";
 		parametrit.clear();
 		parametrit.add(id);
-		int deletesuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int deletesuccess = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
 
-		System.out.println("Vanhojen täytteiden poisto palautti " + deletesuccess);
+		System.out.println("Vanhojen täytteiden poisto palautti "
+				+ deletesuccess);
 
 		// Lisätään uudet täytteet
 		sql = "INSERT INTO PizzanTayte VALUES ((SELECT pizza_id FROM Pizza WHERE nimi = ?), ?)";
@@ -536,9 +552,11 @@ public class HallintaDao {
 		// Palauttaa onnistuneiden määrän, pitäisi olla sama kuin täytteiden
 		// määrä
 		// Pienempi arvo = error
-		int taytesuccess = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		int taytesuccess = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
 
-		System.out.println("Täytteiden määrä = " + taytteet.length + ", lisäys kantaan palautti: " + taytesuccess);
+		System.out.println("Täytteiden määrä = " + taytteet.length
+				+ ", lisäys kantaan palautti: " + taytesuccess);
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
@@ -564,6 +582,7 @@ public class HallintaDao {
 		if (yhteys.getYhteys() == null) {
 			String virhe = "Tietokantayhteyttä ei saatu avattua";
 			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
 			return vastaus;
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
@@ -599,6 +618,50 @@ public class HallintaDao {
 
 	}
 
+	public HashMap<String, String> poistaJuoma(String id) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		// Määritellään lause ja parametrit
+		String sql = "SELECT juoma_id FROM Juoma WHERE juoma_id = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(id);
+
+		if (kysely.montaRivia(sql, parametrit) < 1) {
+			String virhe = "Poistettavaa juomaa ei löydy tietokannasta";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+		// Määritellään lause ja poistetaan pizza
+		sql = "UPDATE Juoma SET poistomerkinta = NOW() WHERE juoma_id = ?";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		if (rivit != 1) {
+			String virhe = "Juoman poistomerkinnän lisääminen tietokantaan ei onnistunut";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		} else {
+			String success = "Juoma merkitty poistetuksi!";
+			vastaus.put("success", success);
+			return vastaus;
+		}
+
+	}
+
 	public HashMap<String, String> palautaPizza(String id) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -607,6 +670,7 @@ public class HallintaDao {
 		if (yhteys.getYhteys() == null) {
 			String virhe = "Tietokantayhteyttä ei saatu avattua";
 			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
 			return vastaus;
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
@@ -637,6 +701,49 @@ public class HallintaDao {
 		yhteys.suljeYhteys();
 
 		vastaus.put("success", "Pizza palautettu onnistuneesti");
+		return vastaus;
+	}
+
+	public HashMap<String, String> palautaJuoma(String id) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		// Määritellään lause ja parametrit
+		String sql = "SELECT juoma_id FROM Juoma WHERE juoma_id = ? AND poistomerkinta IS NOT NULL";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(id);
+
+		if (kysely.montaRivia(sql, parametrit) < 1) {
+			String virhe = "Juomaa ei ole, tai sillä ei ole poistomerkintää";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+		// Määritellään lause ja palautetaan pizza
+		sql = "UPDATE Juoma SET poistomerkinta = null WHERE juoma_id = ?";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit != 1) {
+			String virhe = "Juoman palauttaminen tietokannassa ei onnistunut";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		vastaus.put("success", "Juoma palautettu onnistuneesti");
 		return vastaus;
 	}
 
@@ -682,7 +789,7 @@ public class HallintaDao {
 		}
 
 	}
-	
+
 	public HashMap<String, String> poistaMerkityt() {
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -697,7 +804,7 @@ public class HallintaDao {
 
 		// Katsotaan poistomerkittyjen pizzojen määrä
 		String sql = "SELECT pizza_id FROM Pizza WHERE poistomerkinta IS NOT NULL";
-		
+
 		int rivimaara = kysely.montaRivia(sql, new ArrayList<>());
 
 		if (rivimaara < 1) {
@@ -709,14 +816,15 @@ public class HallintaDao {
 		// Poistetaan ensin PizzanTäytteet
 		sql = "DELETE pt FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) WHERE poistomerkinta IS NOT NULL";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
-		
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql,
+				new ArrayList<>());
+
 		if (rivit < 1) {
 			String error = "Pizzan täytteiden poistaminen ei onnistunut";
 			vastaus.put("error", error);
 			return vastaus;
 		}
-		
+
 		// Poistetaan pizzat
 		sql = "DELETE FROM Pizza WHERE poistomerkinta IS NOT NULL";
 		rivit = paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
@@ -726,23 +834,23 @@ public class HallintaDao {
 
 		// Palautetaan tulokset
 		if (rivit > 0 && rivimaara == 1) {
-			String success = "Tietokannasta poistettiin " + rivimaara + " pizza";
+			String success = "Tietokannasta poistettiin " + rivimaara
+					+ " pizza";
 			vastaus.put("success", success);
 			return vastaus;
-		} 
-		else if (rivit > 0 && rivimaara > 1 ) {
-			String success = "Tietokannasta poistettiin " + rivimaara + " pizzaa";
+		} else if (rivit > 0 && rivimaara > 1) {
+			String success = "Tietokannasta poistettiin " + rivimaara
+					+ " pizzaa";
 			vastaus.put("success", success);
 			return vastaus;
-		}
-		else {
+		} else {
 			String error = "Tietokannasta poistaessa tapahtui virhe";
 			vastaus.put("error", error);
 			return vastaus;
 		}
 
 	}
-	
+
 	public HashMap<String, String> poistaTayte(String id) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -765,20 +873,21 @@ public class HallintaDao {
 			vastaus.put("virhe", virhe);
 			return vastaus;
 		}
-		
-		// Tarkistetaan, että poistettava täyte ei ole minkään pizzan ainoa täyte
+
+		// Tarkistetaan, että poistettava täyte ei ole minkään pizzan ainoa
+		// täyte
 		sql = "SELECT pizza_id, tayte_id, COUNT(tayte_id) AS taytteita FROM PizzanTayte GROUP BY pizza_id HAVING taytteita = 1 AND tayte_id = ?";
 		if (kysely.montaRivia(sql, parametrit) > 0) {
 			String virhe = "Täyte on jonkun pizzan ainoa täyte";
 			vastaus.put("virhe", virhe);
 			return vastaus;
 		}
-		
+
 		// Poistetaan ensin viittaukset PizzanTaytteet-taulusta
 		sql = "DELETE FROM PizzanTayte WHERE tayte_id = ?";
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 		paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
-		
+
 		// Poistetaan itse täyte
 		sql = "DELETE FROM Tayte WHERE tayte_id = ?";
 		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
@@ -798,35 +907,35 @@ public class HallintaDao {
 		}
 
 	}
-	
+
 	public ArrayList<String> haePizzatJoillaTayte(String id) {
 		ArrayList<String> pizzat = new ArrayList<>();
-		
+
 		// Yhteyden määritys
-				Yhteys yhteys = new Yhteys();
-				Kysely kysely = new Kysely(yhteys.getYhteys());
+		Yhteys yhteys = new Yhteys();
+		Kysely kysely = new Kysely(yhteys.getYhteys());
 
-				String sql = "SELECT DISTINCT nimi FROM PizzanTayte JOIN Pizza USING(pizza_id) WHERE tayte_id = ?";
-				ArrayList<String> parametrit = new ArrayList<>();
-				parametrit.add(id);
+		String sql = "SELECT DISTINCT nimi FROM PizzanTayte JOIN Pizza USING(pizza_id) WHERE tayte_id = ?";
+		ArrayList<String> parametrit = new ArrayList<>();
+		parametrit.add(id);
 
-				// Suoritetaan kysely
-				kysely.suoritaYksiKyselyParam(sql, parametrit);
-				ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+		// Suoritetaan kysely
+		kysely.suoritaYksiKyselyParam(sql, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
 
-				// Iteraattorin luonti
-				Iterator iteraattori = kysely.getTulokset().iterator();
+		// Iteraattorin luonti
+		Iterator iteraattori = kysely.getTulokset().iterator();
 
-				// Tulosten läpi käynti
-				while (iteraattori.hasNext()) {
-					HashMap resultit = (HashMap) iteraattori.next();
-					String pizza = (String) resultit.get("nimi");
-					pizzat.add(pizza);
-				}
-		
+		// Tulosten läpi käynti
+		while (iteraattori.hasNext()) {
+			HashMap resultit = (HashMap) iteraattori.next();
+			String pizza = (String) resultit.get("nimi");
+			pizzat.add(pizza);
+		}
+
 		return pizzat;
 	}
-	
+
 	public ArrayList<Juoma> haeKaikkiJuomat() {
 		ArrayList<Juoma> juomat = new ArrayList<>();
 
@@ -861,23 +970,23 @@ public class HallintaDao {
 			double hintaKanta = Double.parseDouble(hintaString);
 			double kokoKanta = Double.parseDouble(kokoString);
 			boolean saatavilla = false;
-			
+
 			if (poistoKanta != null && poistoKanta.equals("null")) {
 				poistoKanta = null;
 			}
-			
+
 			if (saatavillaKanta.equals("K")) {
 				saatavilla = true;
-			}
-			else if (saatavillaKanta.equals("E")) {
+			} else if (saatavillaKanta.equals("E")) {
 				saatavilla = false;
+			} else {
+				System.out.println("Virheellinen 'saatavilla' arvo ("
+						+ saatavillaKanta + ") täytteellä ID" + idString);
 			}
-			else {
-				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") täytteellä ID" + idString);
-			}
-			
-			Juoma juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta, kuvausKanta, poistoKanta, saatavilla);
-			juomat.add(juoma);			
+
+			Juoma juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta,
+					kuvausKanta, poistoKanta, saatavilla);
+			juomat.add(juoma);
 		}
 
 		// Yhteyden sulkeminen

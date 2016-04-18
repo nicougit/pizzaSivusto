@@ -680,7 +680,7 @@ var PizzanLisays = React.createClass({
 														else {
 															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
 														}
-														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa ja {this.state.taytteet.length } täytettä!</p>;
+														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa, {this.state.taytteet.length } täytettä ja {this.state.juomat.length} juomaa!</p>;
 														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>;
 														var taytelista = <Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>;
 														var pizzanlisays = <PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>;
