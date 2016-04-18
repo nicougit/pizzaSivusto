@@ -321,7 +321,7 @@ var Juoma = React.createClass({
 		return (
 			<tr {... poistomerkitty}>
 			<td>{this.props.nimi }</td>
-			<td className="hide-on-small-only">{this.props.koko }</td>
+			<td className="hide-on-small-only">{parseFloat(this.props.koko).toFixed(2).replace(".",",") }l</td>
 			<td className="hide-on-small-only">{saatavilla}</td>
 			<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2).replace(".",",") } €</td>
 			<td className="right-align">{muokkaanappi } {poistonappi }</td>
@@ -567,18 +567,20 @@ var PizzanLisays = React.createClass({
 							<input type="number" className="validate" min="0" step="0.05" name="juomahinta" id="juomahinta" value={this.state.juomahinta } onChange={this.paivitahinta }/>
 							<label htmlFor="juomahinta" data-error="Virhe">Juoman hinta</label>
 							</div>
-							<div className="input-field col s12 m6 l6">
+							<div className="input-field col s12 m9 l9">
 							<textarea className="materialize-textarea" name="pizzakuvaus" id="juomakuvaus" length="255" value={this.state.juomakuvaus } onChange={this.paivitakuvaus }></textarea>
 							<label htmlFor="juomakuvaus">Juoman kuvaus</label>
 							</div>
 							<div className="input-field col s12 m3 l3">
+							<label>Saatavuus</label><br />
 							<input name="juomasaatavilla" type="radio" id="juomasaatavilla" value="1" checked={this.state.juomasaatavilla === true} onChange={this.paivitasaatavilla} />
 							<label htmlFor="juomasaatavilla">Saatavilla</label>
 							<br />
 							<input name="juomasaatavilla" type="radio" id="juomaeisaatavilla" value="0" checked={this.state.juomasaatavilla === false} onChange={this.paivitasaatavilla} />
 							<label htmlFor="juomaeisaatavilla">Ei saatavilla</label>
 							</div>
-							<div className="col s12 m3 l3 center-align">
+							<div className="col s12 m12 l12">
+							<br />
 							<button className="btn waves-effect waves-light btn-large" id="submitjuoma" type="button" onClick={this.props.lisaaJuoma }>Lisää juoma</button>
 							</div>
 							</div>

@@ -313,8 +313,10 @@ public class Ostoskori extends HttpServlet {
 		// Luodaan tyhjät oliot ostoskorille
 		HashMap<String, ArrayList> ostoskori = new HashMap<>();
 		ArrayList<Pizza> ostoskoriPizzat = new ArrayList<>();
+		ArrayList<Juoma> ostoskoriJuomat = new ArrayList<>();
 		ostoskori.put("pizzat", ostoskoriPizzat);
-
+		ostoskori.put("juomat", ostoskoriJuomat);
+		
 		// Asetetaan tyhjät oliot sessiolle
 		sessio.setAttribute("ostoskori", ostoskori);
 		String json = request.getParameter("json");
