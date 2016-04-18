@@ -21,7 +21,6 @@ import org.json.simple.JSONObject;
 import apuluokka.Apuri;
 import daot.AsiakasDao;
 import daot.HallintaDao;
-import bean.Ostos;
 import bean.Pizza;
 import bean.Tayte;
 
