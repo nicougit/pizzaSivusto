@@ -95,7 +95,7 @@ $(function() {
 								maxFractionDigits="2" value="${juoma.koko }"></fmt:formatNumber> l</span>
 						<p class="menu-pizzakuvaus">"<c:out value="${juoma.kuvaus }"></c:out>"</p>
 						<br>
-						<button class="btn waves-effect waves-light ostoskorinappi" type="button">Lisää
+						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(<c:out value="${juoma.id}"></c:out>,'juoma')">Lisää
 							ostoskoriin</button>
 						<br> <br>
 						<div class="divider"></div>

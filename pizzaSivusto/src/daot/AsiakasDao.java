@@ -171,10 +171,80 @@ public class AsiakasDao {
 
 	}
 	
+	public Juoma haeYksiJuoma(String id) {
+		Juoma juoma = new Juoma();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			yhteys.suljeYhteys();
+			return null;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		String sql = "SELECT juoma_id, nimi, hinta, koko, kuvaus, saatavilla, poistomerkinta FROM Juoma WHERE saatavilla = 'K' AND poistomerkinta IS NULL AND juoma_id = ?";
+		ArrayList<String> parametrit = new ArrayList<>();
+		parametrit.add(id);
+
+		if (kysely.montaRivia(sql, parametrit) < 1) {
+			System.out.println("Ostoskoriin lisättävää juomaa ei ole tietokannassa, tai se ei ole saatavilla.");
+			yhteys.suljeYhteys();
+			return juoma;
+		}
+
+		kysely.suoritaYksiKyselyParam(sql, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		// Iteraattorin luonti
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		int looppeja = 0;
+		ArrayList<String> taytteet = new ArrayList<>();
+
+		while (iteraattori.hasNext()) {
+			HashMap juomaMappi = (HashMap) iteraattori.next();
+			String idString = (String) juomaMappi.get("juoma_id");
+			String nimikanta = (String) juomaMappi.get("nimi");
+			String hintaString = (String) juomaMappi.get("hinta");
+			String kokoString = (String) juomaMappi.get("koko");
+			String kuvausKanta = (String) juomaMappi.get("kuvaus");
+			String saatavillaKanta = (String) juomaMappi.get("saatavilla");
+			String poistoKanta = (String) juomaMappi.get("poistomerkinta");
+			int idKanta = Integer.parseInt(idString);
+			double hintaKanta = Double.parseDouble(hintaString);
+			double kokoKanta = Double.parseDouble(kokoString);
+			boolean saatavilla = false;
+			
+			if (poistoKanta != null && poistoKanta.equals("null")) {
+				poistoKanta = null;
+			}
+			
+			if (saatavillaKanta.equals("K")) {
+				saatavilla = true;
+			}
+			else if (saatavillaKanta.equals("E")) {
+				saatavilla = false;
+			}
+			else {
+				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") täytteellä " + idString);
+			}
+			
+			juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta, kuvausKanta, poistoKanta, saatavilla);
+			
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Pizzojen palautus
+		return juoma;
+
+	}
+	
 	public ArrayList<Juoma> haeKaikkiJuomat() {
 		ArrayList<Juoma> juomat = new ArrayList<>();
 
-		// Yhteyden m��ritys
+		// Yhteyden m��ritys
 		Yhteys yhteys = new Yhteys();
 		if (yhteys.getYhteys() == null) {
 			yhteys.suljeYhteys();
@@ -217,7 +287,7 @@ public class AsiakasDao {
 				saatavilla = false;
 			}
 			else {
-				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") t�ytteell� ID" + idString);
+				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") täytteellä " + idString);
 			}
 			
 			Juoma juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta, kuvausKanta, poistoKanta, saatavilla);

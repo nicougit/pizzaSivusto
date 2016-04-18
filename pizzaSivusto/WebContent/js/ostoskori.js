@@ -41,7 +41,7 @@ var lisaaOstoskoriin = function(id, tyyppi) {
             naytaVirhe("Pizzan poistaminen ostoskorista ei onnistunut")
           });
         }
-    
+
     var escape = function(stringi) {
     	return $("<div />").text(stringi).html();
     }
@@ -69,6 +69,7 @@ var lisaaOstoskoriin = function(id, tyyppi) {
             function haeOstoskori() {
               return $.ajax({ url: pathi, type: "GET", async: false, cache: false, data: {"ostoskoriJsonina": "true"}}).done(
                 function(json) {
+                  console.log("Haettiin ostoskori, pizzoja " + json.pizzat.length + "kpl ja juomia " + json.juomat.length + "kpl")
                 }).fail(
                   function(jqxhr, textStatus, error) {
                     var errori = textStatus + ", " + error;
@@ -84,11 +85,16 @@ var lisaaOstoskoriin = function(id, tyyppi) {
 
                 var printtaaOstoskori = function() {
                   $.when(haeOstoskori()).done(function(ostoskori) {
-                    var tuotteita = ostoskori.length;
+                    var tuotteita = ostoskori.pizzat.length + ostoskori.juomat.length;
                     var ostoskoririvit = "";
                     var yhteishinta = 0;
                     if (tuotteita > 0) {
-                      ostoskori.map(function(o, i) {
+                      ostoskori.pizzat.map(function(o, i) {
+                        ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + escape(o.nimi) + "</td><td class=\"right-align\"><a href=\"#!\" class=\"ostoskori-poistonappi\" onClick=\"poistaOstoskorista(" + escape(o.indeksi) + ")\"><i class=\"material-icons tiny\">clear</i></a></td><td class=\"center-align\">" + escape(formatoiHinta(o.hinta)) + "</td></tr>";
+                        yhteishinta += o.hinta;
+                      });
+
+                      ostoskori.juomat.map(function(o, i) {
                         ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + escape(o.nimi) + "</td><td class=\"right-align\"><a href=\"#!\" class=\"ostoskori-poistonappi\" onClick=\"poistaOstoskorista(" + escape(o.indeksi) + ")\"><i class=\"material-icons tiny\">clear</i></a></td><td class=\"center-align\">" + escape(formatoiHinta(o.hinta)) + "</td></tr>";
                         yhteishinta += o.hinta;
                       });
