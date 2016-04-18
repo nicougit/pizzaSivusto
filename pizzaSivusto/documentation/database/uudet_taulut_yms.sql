@@ -57,11 +57,15 @@ CREATE TABLE Tilaus (
 tilaus_id INT AUTO_INCREMENT NOT NULL,
 kayttaja_id INT NOT NULL,
 tilaushetki DATE NOT NULL,
-kokonaishinta DECIMAL(7,2) NOT NULL,
-lisatiedot VARCHAR(255),
+toimitustapa VARCHAR(50) NOT NULL,
 toimitusosoite VARCHAR(50),
 postinro CHAR(5),
 postitmp VARCHAR(50),
+toimitusaika DATE,
+lisatiedot VARCHAR(255),
+kokonaishinta DECIMAL(7,2) NOT NULL,
+maksutapa VARCHAR(50) NOT NULL,
+maksutilanne CHAR(1),
 PRIMARY KEY (tilaus_id),
 FOREIGN KEY (kayttaja_id) REFERENCES Kayttaja(id)
 )Engine=InnoDB;
