@@ -15,7 +15,7 @@ CREATE TABLE Juoma (
 juoma_id INT AUTO_INCREMENT NOT NULL,
 nimi VARCHAR(50) NOT NULL,
 hinta DECIMAL(5,2) NOT NULL,
-koko VARCHAR(20) NOT NULL,
+koko DECIMAL(5,2) NOT NULL,
 kuvaus VARCHAR(255),
 saatavilla CHAR(1),
 poistomerkinta DATE,
@@ -23,11 +23,11 @@ PRIMARY KEY (juoma_id)
 )Engine=InnoDB;
 
 // Juomat
-INSERT INTO Juoma VALUES (null, 'Sitruunalimonaadi', '3,00', '0,33 l', 'Laitilan Sitruunasooda', 'K', null);
-INSERT INTO Juoma VALUES (null, 'Veriappelsiinilimonaadi', '3,00', '0,33 l', 'Laitilan Messina', 'K', null);
-INSERT INTO Juoma VALUES (null, 'Kolalimonaadi', '3,00', '0,33 l', 'Laitilan Rio Cola', 'K', null);
-INSERT INTO Juoma VALUES (null, 'Vadelmalimonaadi', '3,00',  '0,33 l', 'Laitilan Herra Hakkaraisen vadelmalimonaadi', 'K', null);
-INSERT INTO Juoma VALUES (null, 'Pöytävesi', '3,00', '0,33 l', 'Laitilan Pore, kevyesti hiilihapotettu', 'K', null);
+INSERT INTO Juoma VALUES (null, 'Sitruunalimonaadi', '3.00', '0.33', 'Laitilan Sitruunasooda', 'K', null);
+INSERT INTO Juoma VALUES (null, 'Veriappelsiinilimonaadi', '3.00', '0.33', 'Laitilan Messina', 'K', null);
+INSERT INTO Juoma VALUES (null, 'Kolalimonaadi', '3.00', '0.33', 'Laitilan Rio Cola', 'K', null);
+INSERT INTO Juoma VALUES (null, 'Vadelmalimonaadi', '3.00',  '0.33', 'Laitilan Herra Hakkaraisen vadelmalimonaadi', 'K', null);
+INSERT INTO Juoma VALUES (null, 'Pöytävesi', '3.00', '0.33', 'Laitilan Pore, kevyesti hiilihapotettu', 'K', null);
 
 // SuosikkiPizza-taulu
 // Huom! Asiakas voi tallentaa suosikkipizzansa muistiin.
