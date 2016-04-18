@@ -206,6 +206,8 @@ public class LoginServlet extends HttpServlet {
 		
 		if (sijainti.equals("/pizzaSivusto/WEB-INF/pizzat.jsp")){
 			osoite = "/pizza";
+		} else if(sijainti.equals("/pizzaSivusto/WEB-INF/ostoskori.jsp")) {
+			osoite = "/ostoskori";
 		} else {
 			osoite = "landingpage.jsp";
 		}
