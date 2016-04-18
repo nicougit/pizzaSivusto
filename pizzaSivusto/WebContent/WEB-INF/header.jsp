@@ -34,7 +34,11 @@
 					<li><a href="#pizzat">Pizzat</a></li>
 					<li><a href="#juomat">Juomat</a></li>
 				</c:if>
-				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
+				<c:if
+					test="${pageContext.request.requestURI ne '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
+					<li><a href="<c:url value='/pizza'/>">Menu</a></li>
+				</c:if>
+				
 				<li><a class="modal-trigger" href="#ostoskorimodal"><i
 						class="material-icons left">shopping_cart</i> Ostoskori<span
 						class="navbar-yhteishinta pienifontti"></span></a></li>
