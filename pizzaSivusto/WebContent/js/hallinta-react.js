@@ -142,8 +142,12 @@ var TaytteenMuokkaus = React.createClass({
 	getInitialState: function() {
 		return ({taytenimi: this.props.tayte.nimi, taytesaatavilla: this.props.tayte.saatavilla, pizzalista: [] });
 	},
+	scrollaaKohdalle: function() {
+		$('html, body').animate({scrollTop: $("#taytem").offset().top - 50}, 500);
+	},
 	componentDidMount: function() {
 		this.haePizzat();
+		this.scrollaaKohdalle();
 	},
 	haePizzat: function() {
 		$.get("hallinta", {"pizzat-taytteella": this.props.tayte.id, "json": "true"}).done(
@@ -171,6 +175,7 @@ var TaytteenMuokkaus = React.createClass({
 	componentWillReceiveProps: function(propsit) {
 		if (propsit.tayte) {
 			this.setState({taytenimi: propsit.tayte.nimi, taytesaatavilla: propsit.tayte.saatavilla}, function() { this.haePizzat() });
+			this.scrollaaKohdalle();
 		}
 	},
 	vaihdasaatavuus: function(e) {
