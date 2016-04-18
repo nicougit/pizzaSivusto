@@ -293,6 +293,43 @@ var Pizza = React.createClass({
 	}
 });
 
+// Palauttaa yksittäisen juomataulukon rivin
+var Juoma = React.createClass({
+	juomanPoisto: function() {
+		var id = this.props.id;
+		this.props.kasittelePizza({"juoma-poista": id, "json": "true" });
+	},
+	juomanPalautus: function() {
+		var id = this.props.id;
+		this.props.kasittelePizza({"juoma-palauta": id, "json": "true" });
+	},
+	render: function() {
+		var poistomerkitty = {"className": "taulukkorivi"};
+		var muokkaanappi = <a className="waves-effect waves-light btn tooltipped" href="#!" data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a>;
+		var poistonappi = "";
+		var saatavilla = "Ei";
+		if (this.props.saatavilla != null) {
+			saatavilla = "Kyllä"
+		}
+		if (this.props.poistomerkinta != null) {
+			poistomerkitty = {"className": "taulukkorivi red lighten-5"};
+			poistonappi = <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.juomanPalautus } data-position="right" data-delay="500" data-tooltip="Palauta"> <i className="material-icons large">visibility_off</i></button>;
+		}
+		else {
+			poistonappi = <button className="waves-effect waves-light btn red lighten-2 tooltipped" type="button" onClick={this.juomanPoisto } data-position="right" data-delay="500" data-tooltip="Poista"> <i className="material-icons large">delete</i></button>;
+		}
+		return (
+			<tr {... poistomerkitty}>
+			<td>{this.props.nimi }</td>
+			<td className="hide-on-small-only">{this.props.koko }</td>
+			<td className="hide-on-small-only">{saatavilla}</td>
+			<td className="hide-on-small-only">{parseFloat(this.props.hinta).toFixed(2).replace(".",",") } €</td>
+			<td className="right-align">{muokkaanappi } {poistonappi }</td>
+			</tr>
+		);
+	}
+});
+
 // Palauttaa taulukon kaikista pizzoista
 var Pizzalista = React.createClass({
 	avaaModal: function() {
@@ -309,6 +346,9 @@ var Pizzalista = React.createClass({
 		}
 		return (
 			<div className="col s12">
+			<div className="row">
+			<div className="col s12">
+			<h2>Pizzat</h2>
 			<table className="bordered">
 			<thead>
 			<tr>
@@ -331,6 +371,26 @@ var Pizzalista = React.createClass({
 			<p>Poistettavaksi merkityt pizzat ({this.props.poistettavia }kpl) poistetaan tietokannasta pysyvästi.</p>
 			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
 			</div>
+			</div>
+			</div>
+			</div>
+			<div className="col s12">
+			<h2>Juomat</h2>
+			<table className="bordered">
+			<thead>
+			<tr>
+			<th>Nimi</th>
+			<th className="hide-on-small-only">Koko</th>
+			<th className="hide-on-small-only">Saatavilla</th>
+			<th className="hide-on-small-only">Hinta</th>
+			<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			{this.props.juomat.map((o, i) => <Juoma key={o.id} id={o.id} nimi={o.nimi} hinta={o.hinta } poistomerkinta={o.poistomerkinta} kasittelePizza={this.props.kasittelePizza } koko={o.koko} saatavilla={o.saatavilla} />)}
+			</tbody>
+			</table>
+			<br />
 			</div>
 			</div>
 			</div>
@@ -451,9 +511,9 @@ var PizzanLisays = React.createClass({
 					<div className="row hide-on-small-only">
 					<div className="col s12 m12 l10 offset-l1">
 					<ul className="tabs">
-					<li className="tab col s12"><a href="#pizza-h" className="active">Pizzojen
+					<li className="tab col s12"><a href="#pizza-h" className="active">Tuotteiden
 					hallinta</a></li>
-					<li className="tab col s12"><a href="#pizza-l">Pizzan lisäys</a></li>
+					<li className="tab col s12"><a href="#pizza-l">Tuotteen lisäys</a></li>
 					<li className="tab col s12"><a href="#tayte-h">Täytteiden
 					hallinta</a></li>
 					</ul>
@@ -621,7 +681,7 @@ var PizzanLisays = React.createClass({
 															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
 														}
 														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa ja {this.state.taytteet.length } täytettä!</p>;
-														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>;
+														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>;
 														var taytelista = <Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>;
 														var pizzanlisays = <PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>;
 														if (this.state.pizzat.length < 1 && this.state.taytteet.length < 1) {
