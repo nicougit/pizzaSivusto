@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bean.Juoma;
 import bean.Pizza;
 import bean.Tayte;
 import daot.AsiakasDao;
@@ -46,11 +47,13 @@ public class PizzaServlet extends HttpServlet {
 		// RequestDispatcher
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/pizzat.jsp");
 
-		// Pizzojen ja täytteiden haku
+		// Pizzojen ja juomien haku
 		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat();
+		ArrayList<Juoma> juomat = dao.haeKaikkiJuomat();
 
 
 		request.setAttribute("pizzat", pizzat);
+		request.setAttribute("juomat", juomat);
 		rd.forward(request, response);
 	}
 

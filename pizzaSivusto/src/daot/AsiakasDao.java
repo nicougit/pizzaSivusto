@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import bean.Juoma;
 import bean.Pizza;
 import bean.Tayte;
 import tietokanta.Kysely;
@@ -167,6 +168,67 @@ public class AsiakasDao {
 
 		// Pizzojen palautus
 		return pizza;
+
+	}
+	
+	public ArrayList<Juoma> haeKaikkiJuomat() {
+		ArrayList<Juoma> juomat = new ArrayList<>();
+
+		// Yhteyden m‰‰ritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			yhteys.suljeYhteys();
+			return juomat;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		ArrayList<String> parametrit = new ArrayList<>();
+
+		String sql = "SELECT juoma_id, nimi, hinta, koko, kuvaus, saatavilla, poistomerkinta FROM Juoma WHERE saatavilla = 'K' AND poistomerkinta IS NULL ORDER BY hinta ASC";
+
+		kysely.suoritaKysely(sql);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		// Iteraattorin luonti
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		while (iteraattori.hasNext()) {
+			HashMap juomaMappi = (HashMap) iteraattori.next();
+			String idString = (String) juomaMappi.get("juoma_id");
+			String nimikanta = (String) juomaMappi.get("nimi");
+			String hintaString = (String) juomaMappi.get("hinta");
+			String kokoString = (String) juomaMappi.get("koko");
+			String kuvausKanta = (String) juomaMappi.get("kuvaus");
+			String saatavillaKanta = (String) juomaMappi.get("saatavilla");
+			String poistoKanta = (String) juomaMappi.get("poistomerkinta");
+			int idKanta = Integer.parseInt(idString);
+			double hintaKanta = Double.parseDouble(hintaString);
+			double kokoKanta = Double.parseDouble(kokoString);
+			boolean saatavilla = false;
+			
+			if (poistoKanta != null && poistoKanta.equals("null")) {
+				poistoKanta = null;
+			}
+			
+			if (saatavillaKanta.equals("K")) {
+				saatavilla = true;
+			}
+			else if (saatavillaKanta.equals("E")) {
+				saatavilla = false;
+			}
+			else {
+				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") t‰ytteell‰ ID" + idString);
+			}
+			
+			Juoma juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta, kuvausKanta, poistoKanta, saatavilla);
+			juomat.add(juoma);			
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Pizzojen palautus
+		return juomat;
 
 	}
 

@@ -82,24 +82,19 @@ $(function() {
 				<h2 id="juomat" class="menu-pizzaname menu-title">Juomat</h2>
 				<p class="menu-pizzataytteet center-align">Lisäämme juomat valikoimaamme myöhemmin! Toistaiseksi näytetään täytesisältönä pizzat uudelleen.</p>
 				<br>
-						<c:forEach items="${pizzat}" var="pizza">
+						<c:forEach items="${juomat}" var="juoma">
 					<div class="center-align">
-						<c:set var="pizzahinta">
+						<c:set var="juomahinta">
 							<fmt:formatNumber type="number" minFractionDigits="2"
-								maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
+								maxFractionDigits="2" value="${juoma.hinta }"></fmt:formatNumber>
 						</c:set>
-						<h3 class="menu-pizzaname"><c:out value="${pizza.nimi }"></c:out>
-							<span class="menu-pizzahinta">${fn:replace(pizzahinta, ".", ",") }
+						<h3 class="menu-pizzaname"><c:out value="${juoma.nimi }"></c:out>
+							<span class="menu-pizzahinta">${fn:replace(juomahinta, ".", ",") }
 								€</span>
 						</h3>
-						<span class="menu-pizzataytteet"> <c:forEach
-								items="${pizza.taytteet }" var="tayte" varStatus="status">
-								<c:out value="${tayte.nimi }"></c:out>
-							<c:if
-									test="${fn:length(pizza.taytteet) > status.count }">, </c:if>
-							</c:forEach>
-						</span>
-						<p class="menu-pizzakuvaus">"<c:out value="${pizza.kuvaus }"></c:out>"</p>
+						<span class="menu-pizzataytteet"><fmt:formatNumber type="number" minFractionDigits="2"
+								maxFractionDigits="2" value="${juoma.koko }"></fmt:formatNumber> l</span>
+						<p class="menu-pizzakuvaus">"<c:out value="${juoma.kuvaus }"></c:out>"</p>
 						<br>
 						<button class="btn waves-effect waves-light ostoskorinappi" type="button">Lisää
 							ostoskoriin</button>
