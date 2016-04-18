@@ -35,7 +35,7 @@
 					<li><a href="#juomat">Juomat</a></li>
 				</c:if>
 				<c:if
-					test="${pageContext.request.requestURI ne '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
+					test="${pageContext.request.requestURI != '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
 					<li><a href="<c:url value='/pizza'/>">Menu</a></li>
 				</c:if>
 				
