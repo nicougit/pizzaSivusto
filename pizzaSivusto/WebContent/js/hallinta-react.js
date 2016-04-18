@@ -474,28 +474,27 @@ var PizzanLisays = React.createClass({
 		// Hallintasivun renderointi ja funktiot
 		var Hallintasivu = React.createClass({
 			getInitialState: function() {
-				return { pizzat: [], taytteet: [], poistettavat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null, muokattavaTayte: {} };
+				return { pizzat: [], taytteet: [], juomat: [], poistettavat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null, muokattavaTayte: {} };
 			},
 			componentDidMount: function() {
-				this.haePizzat();
-				this.haeTaytteet();
+				this.haeData();
 				$('ul.tabs').tabs();
 			},
-			haePizzat: function() {
-				return $.post("hallinta", {action: "haepizzat"}).done(
+			haeData: function() {
+				return $.post("hallinta", {action: "haekaikki"}).done(
 					function(json) {
-						console.log("Haettiin pizzat, pituus " + json.length);
+						console.log("Datat haettu - Pizzat: " + json.pizzat.length + "kpl, Täytteet: " + json.taytteet.length + "kpl, Juomat: " + json.juomat.length + "kpl");
 						var poistettavat = 0;
-						for (var i = 0; i < json.length; i++) {
-							if (json[i].poistomerkinta != null) {
+						for (var i = 0; i < json.pizzat.length; i++) {
+							if (json.pizzat[i].poistomerkinta != null) {
 								poistettavat++;
 							}
 						}
-						this.setState({ pizzat: json, poistettavat: poistettavat })
+						this.setState({ pizzat: json.pizzat, taytteet: json.taytteet, juomat: json.juomat, poistettavat: poistettavat })
 					}.bind(this)).fail(
 						function(jqxhr, textStatus, error) {
 							var errori = textStatus + ", " + error;
-							console.log("Error pizzoja hakiessa: " + errori);
+							console.log("Error dataa hakiessa: " + errori);
 						});
 					},
 					kasittelePizza: function(toiminto) {
@@ -510,7 +509,7 @@ var PizzanLisays = React.createClass({
 								else if (vastaus.success != null) {
 									console.log(vastaus.success);
 									naytaSuccess(vastaus.success);
-									this.haePizzat();
+									this.haeData();
 								}
 								else {
 									console.log(JSON.stringify(json));
@@ -524,17 +523,6 @@ var PizzanLisays = React.createClass({
 									naytaVirhe("Virhe javascriptissa!")
 								});
 							},
-							haeTaytteet: function() {
-								return $.post("hallinta", {action: "haetaytteet"}).done(
-									function(json) {
-										console.log("Haettiin taytteet, pituus " + json.length);
-										this.setState({ taytteet: json })
-									}.bind(this)).fail(
-										function(jqxhr, textStatus, error) {
-											var errori = textStatus + ", " + error;
-											console.log("Error taytteita hakiessa: " + errori);
-										});
-									},
 									lisaaTayte: function() {
 										var submitdata = $("#tayteformi" ).serializeArray();
 										submitdata.push({name: "action", value: "lisaatayte"});
@@ -548,7 +536,7 @@ var PizzanLisays = React.createClass({
 												else if (vastaus.success != null) {
 													naytaSuccess(vastaus.success);
 													this.setState({ tayteLisaysStatus: "success" });
-													this.haeTaytteet();
+													this.haeData();
 												}
 												else {
 													console.log(JSON.stringify(json));
@@ -575,7 +563,7 @@ var PizzanLisays = React.createClass({
 														else if (vastaus.success != null) {
 															naytaSuccess(vastaus.success);
 															this.setState({ pizzaLisaysStatus: "success" });
-															this.haePizzat();
+															this.haeData();
 														}
 														else {
 															console.log(JSON.stringify(json));
@@ -604,8 +592,7 @@ var PizzanLisays = React.createClass({
 																}
 																else if (vastaus.success != null) {
 																	naytaSuccess(vastaus.success);
-																	this.haeTaytteet();
-																	this.haePizzat();
+																	this.haeData();
 																	this.setState({muokattavaTayte: {}});
 																}
 																else {

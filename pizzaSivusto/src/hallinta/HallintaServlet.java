@@ -78,8 +78,7 @@ public class HallintaServlet extends HttpServlet {
 				String poistaTayte = request.getParameter("poista-tayte");
 				String pizzatTaytteella = request
 						.getParameter("pizzat-taytteella");
-				String pizzatJsonina = request.getParameter("pizzatJsonina");
-				String juomatJsonina = request.getParameter("juomatJsonina");
+				String kaikkiJsonina = request.getParameter("kaikkiJsonina");
 
 				// Apuri validointiin
 				Apuri apuri = new Apuri();
@@ -134,12 +133,10 @@ public class HallintaServlet extends HttpServlet {
 					} else {
 						naytaSivu(request, response);
 					}
-				} else if (pizzatJsonina != null) {
-					pizzatJsonina(request, response);
 				} else if (pizzatTaytteella != null) {
 					pizzatTaytteella(request, response);
-				} else if (juomatJsonina != null) {
-					juomatJsonina(request, response);
+				} else if (kaikkiJsonina != null) {
+					kaikkiJsonina(request, response);
 				} else {
 					if (json != null) {
 						String virhe = "Virheellinen JSON pyyntö";
@@ -255,10 +252,8 @@ public class HallintaServlet extends HttpServlet {
 					lisaaTayte(request, response);
 				} else if (action != null && action.equals("paivitatayte")) {
 					paivitaTayte(request, response);
-				} else if (action != null && action.equals("haepizzat")) {
-					pizzatJsonina(request, response);
-				} else if (action != null && action.equals("haetaytteet")) {
-					taytteetJsonina(request, response);
+				} else if (action != null && action.equals("haekaikki")) {
+					kaikkiJsonina(request, response);
 				} else if (action != null && action.equals("poistatayte")) {
 					if (kayttaja.getTyyppi().equals("admin")) {
 						poistaTayte(request, response);
@@ -769,77 +764,6 @@ public class HallintaServlet extends HttpServlet {
 		}
 	}
 
-	protected void pizzatJsonina(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		// Pizzojen haku
-		HallintaDao dao = new HallintaDao();
-		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(0, "");
-
-		// Json Array
-		JSONArray pizzatJson = new JSONArray();
-
-		for (int i = 0; i < pizzat.size(); i++) {
-			Pizza pizza = pizzat.get(i);
-			JSONObject pizzaobjekti = new JSONObject();
-			JSONArray taytearray = new JSONArray();
-			pizzaobjekti.put("id", pizza.getId());
-			pizzaobjekti.put("nimi", pizza.getNimi());
-			pizzaobjekti.put("hinta", pizza.getHinta());
-			pizzaobjekti.put("kuvaus", pizza.getKuvaus());
-			pizzaobjekti.put("poistomerkinta", pizza.getPoistomerkinta());
-			for (int j = 0; j < pizza.getTaytteet().size(); j++) {
-				JSONObject tayteobjekti = new JSONObject();
-				tayteobjekti.put("id", pizza.getTaytteet().get(j).getId());
-				tayteobjekti.put("nimi", pizza.getTaytteet().get(j).getNimi());
-				tayteobjekti.put("saatavilla", pizza.getTaytteet().get(j)
-						.getSaatavilla());
-				taytearray.add(tayteobjekti);
-			}
-			pizzaobjekti.put("taytteet", taytearray);
-			pizzatJson.add(pizzaobjekti);
-		}
-
-		// Encoding ja printtaus
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json");
-
-		PrintWriter out = response.getWriter();
-		out.print(pizzatJson);
-	}
-
-	protected void juomatJsonina(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		// Pizzojen haku
-		HallintaDao dao = new HallintaDao();
-		ArrayList<Juoma> juomat = dao.haeKaikkiJuomat();
-
-		// Json Array
-		JSONArray juomatJson = new JSONArray();
-
-		for (int i = 0; i < juomat.size(); i++) {
-			Juoma juoma = juomat.get(i);
-			JSONObject juomaobjekti = new JSONObject();
-			JSONArray taytearray = new JSONArray();
-			juomaobjekti.put("id", juoma.getId());
-			juomaobjekti.put("nimi", juoma.getNimi());
-			juomaobjekti.put("hinta", juoma.getHinta());
-			juomaobjekti.put("koko", juoma.getKoko());
-			juomaobjekti.put("saatavilla", juoma.getSaatavilla());
-			juomaobjekti.put("kuvaus", juoma.getKuvaus());
-			juomaobjekti.put("poistomerkinta", juoma.getPoistomerkinta());
-			juomatJson.add(juomaobjekti);
-		}
-
-		// Encoding ja printtaus
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json");
-
-		PrintWriter out = response.getWriter();
-		out.print(juomatJson);
-	}
-
 	protected void pizzatTaytteella(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -872,16 +796,40 @@ public class HallintaServlet extends HttpServlet {
 
 	}
 
-	protected void taytteetJsonina(HttpServletRequest request,
+	protected void kaikkiJsonina(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		// Pizzojen haku
+		// Tietojen haku
 		HallintaDao dao = new HallintaDao();
 		ArrayList<Tayte> taytteet = dao.haeKaikkiTaytteet();
+		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat(0, "");
+		ArrayList<Juoma> juomat = dao.haeKaikkiJuomat();
 
-		// Json Array
+		// Pizzojen JSON-array
+		JSONArray pizzatJson = new JSONArray();
+		for (int i = 0; i < pizzat.size(); i++) {
+			Pizza pizza = pizzat.get(i);
+			JSONObject pizzaobjekti = new JSONObject();
+			JSONArray taytearray = new JSONArray();
+			pizzaobjekti.put("id", pizza.getId());
+			pizzaobjekti.put("nimi", pizza.getNimi());
+			pizzaobjekti.put("hinta", pizza.getHinta());
+			pizzaobjekti.put("kuvaus", pizza.getKuvaus());
+			pizzaobjekti.put("poistomerkinta", pizza.getPoistomerkinta());
+			for (int j = 0; j < pizza.getTaytteet().size(); j++) {
+				JSONObject tayteobjekti = new JSONObject();
+				tayteobjekti.put("id", pizza.getTaytteet().get(j).getId());
+				tayteobjekti.put("nimi", pizza.getTaytteet().get(j).getNimi());
+				tayteobjekti.put("saatavilla", pizza.getTaytteet().get(j)
+						.getSaatavilla());
+				taytearray.add(tayteobjekti);
+			}
+			pizzaobjekti.put("taytteet", taytearray);
+			pizzatJson.add(pizzaobjekti);
+		}
+
+		// Täytteiden JSON-array
 		JSONArray taytteetJson = new JSONArray();
-
 		for (int i = 0; i < taytteet.size(); i++) {
 			Tayte tayte = taytteet.get(i);
 			JSONObject tayteobjekti = new JSONObject();
@@ -891,12 +839,34 @@ public class HallintaServlet extends HttpServlet {
 			taytteetJson.add(tayteobjekti);
 		}
 
+		// Juomien JSON-array
+		JSONArray juomatJson = new JSONArray();
+		for (int i = 0; i < juomat.size(); i++) {
+			Juoma juoma = juomat.get(i);
+			JSONObject juomaobjekti = new JSONObject();
+			JSONArray taytearray = new JSONArray();
+			juomaobjekti.put("id", juoma.getId());
+			juomaobjekti.put("nimi", juoma.getNimi());
+			juomaobjekti.put("hinta", juoma.getHinta());
+			juomaobjekti.put("koko", juoma.getKoko());
+			juomaobjekti.put("saatavilla", juoma.getSaatavilla());
+			juomaobjekti.put("kuvaus", juoma.getKuvaus());
+			juomaobjekti.put("poistomerkinta", juoma.getPoistomerkinta());
+			juomatJson.add(juomaobjekti);
+		}
+
+		JSONObject datat = new JSONObject();
+		datat.put("pizzat", pizzatJson);
+		datat.put("taytteet", taytteetJson);
+		datat.put("juomat", juomatJson);
+
 		// Encoding ja printtaus
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
-		out.print(taytteetJson);
+		out.print(datat);
+
 	}
 
 	protected void jsonVastaus(HttpServletRequest request,
