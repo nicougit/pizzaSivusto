@@ -80,7 +80,6 @@ $(function() {
 				</c:forEach>
 
 				<h2 id="juomat" class="menu-pizzaname menu-title">Juomat</h2>
-				<p class="menu-pizzataytteet center-align">Lisäämme juomat valikoimaamme myöhemmin! Toistaiseksi näytetään täytesisältönä pizzat uudelleen.</p>
 				<br>
 						<c:forEach items="${juomat}" var="juoma">
 					<div class="center-align">
