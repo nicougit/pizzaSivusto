@@ -48,6 +48,7 @@ public class LoginServlet extends HttpServlet {
 
 		// Tarkastetaan parametrit
 		String logout = request.getParameter("logout");
+		
 
 		if (logout != null && logout.equals("true")) {
 			kirjauduUlos(request, response);
@@ -200,6 +201,14 @@ public class LoginServlet extends HttpServlet {
 		// Haetaan parametrit
 		String kayttajanimi = request.getParameter("kayttajanimi");
 		String salasana = request.getParameter("salasana");
+		String sijainti = request.getParameter("sijainti");
+		String osoite = "";
+		
+		if (sijainti.equals("/pizzaSivusto/WEB-INF/pizzat.jsp")){
+			osoite = "/pizza";
+		} else {
+			osoite = "landingpage.jsp";
+		}
 
 		// Katsotaan onko parametreja olemassa
 		if (kayttajanimi != null && salasana != null) {
@@ -228,7 +237,8 @@ public class LoginServlet extends HttpServlet {
 
 					request.setAttribute("kayttaja", kayttaja);
 					request.setAttribute("success", "Olet kirjautunut sisään onnistuneesti!");
-					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/loggedin.jsp");
+					RequestDispatcher rd = request.getRequestDispatcher(osoite);
+					
 					rd.forward(request, response);
 				} else {
 					System.out.println("Virheellinen käyttäjätunnus/salasana, redirectataan login sivulle");
@@ -268,7 +278,7 @@ public class LoginServlet extends HttpServlet {
 			
 			request.setAttribute("success", "Olet kirjautunut ulos onnistuneesti!");
 
-			String rdPath = "WEB-INF/login.jsp";
+			String rdPath = "landingpage.jsp";
 			naytaSivu(request, response, rdPath);
 		} else {
 			// Suoritetaan, jos käyttäjä ei ole kirjautunut sisään
@@ -282,7 +292,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		request.setAttribute("virhe", virhe);
 		System.out.println(virhe);
-		String rdPath = "WEB-INF/login.jsp";
+		String rdPath = "landingpage.jsp";
 		naytaSivu(request, response, rdPath);
 	}
 

@@ -79,10 +79,14 @@
 	</nav>
 </div>
 <div class="container" id="main-container">
+
+
 	<c:if test="${empty kayttaja }">
 		<div id="loginmodal" class="modal loginmodaali">
 			<div class="modal-content center-align">
 				<form method="post" action="<c:url value='/login'/>">
+				
+				<input type="hidden" name="sijainti" value="${pageContext.request.requestURI}">
 					<h4>Kirjaudu sisään</h4>
 					<div class="row">
 						<div class="input-field col s12">
