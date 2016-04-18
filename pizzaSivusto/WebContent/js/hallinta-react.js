@@ -503,6 +503,93 @@ var PizzanLisays = React.createClass({
 			}
 		});
 
+		// Juoman lisäysformi
+		var JuomanLisays = React.createClass({
+			getInitialState: function() {
+				return ({juomanimi: "", juomahinta: "", juomakoko: "", juomasaatavilla: true, juomakuvaus: ""});
+			},
+			componentDidMount: function() {
+				$("#submitjuoma").attr("disabled", true);
+			},
+				paivitanimi: function(e) {
+					this.setState({ juomanimi: e.target.value }, function(){ this.paivitanappi() });
+				},
+				paivitahinta: function(e) {
+					this.setState({ juomahinta: e.target.value }, function(){ this.paivitanappi() });
+				},
+				paivitakoko: function(e) {
+					this.setState({ juomakoko: e.target.value }, function(){ this.paivitanappi() });
+				},
+				paivitasaatavilla: function(e) {
+					var value = e.target.value;
+					if (value == 0) {
+						this.setState({juomasaatavilla: false});
+					}
+					else {
+						this.setState({juomasaatavilla: true});
+					}
+				},
+				paivitakuvaus: function(e) {
+					this.setState({ juomakuvaus: e.target.value }, function(){ this.paivitanappi() });
+				},
+				paivitanappi: function() {
+					if (this.state.juomanimi.length > 2 && this.state.juomahinta > 0 && this.state.juomakuvaus.length > 0 && this.state.juomakoko > 0) {
+						$("#submitjuoma").attr("disabled", false);
+					}
+					else {
+						$("#submitjuoma").attr("disabled", true);
+					}
+				},
+				componentWillReceiveProps: function(propsit) {
+					if (propsit.juomaLisaysStatus) {
+						if (propsit.juomaLisaysStatus == "success") {
+							this.setState({juomanimi: "", juomahinta: "", juomakoko: "", juomasaatavilla: true, juomakuvaus: ""}, function() { this.paivitanappi() });
+							}
+						}
+					},
+					render: function() {
+						return (
+							<div className="col s12">
+							<div className="row">
+							<h2>Lisää juoma</h2>
+							<form id="juomanlisaysformi">
+							<div className="col s12 m12 l10 offset-l1">
+							<div className="row">
+							<div className="input-field col s12 m6 l6">
+							<input type="text" name="juomanimi" id="juomanimi" value={this.state.pizzanimi } onChange={this.paivitanimi }/>
+							<label htmlFor="juomanimi">Juoman nimi</label>
+							</div>
+							<div className="input-field col s12 m3 l3">
+							<input type="number" className="validate" min="0" step="0.01" name="juomakoko" id="juomakoko" value={this.state.juomakoko } onChange={this.paivitakoko }/>
+							<label htmlFor="juomakoko" data-error="Virhe">Juoman koko</label>
+							</div>
+							<div className="input-field col s12 m3 l3">
+							<input type="number" className="validate" min="0" step="0.05" name="juomahinta" id="juomahinta" value={this.state.juomahinta } onChange={this.paivitahinta }/>
+							<label htmlFor="juomahinta" data-error="Virhe">Juoman hinta</label>
+							</div>
+							<div className="input-field col s12 m6 l6">
+							<textarea className="materialize-textarea" name="pizzakuvaus" id="juomakuvaus" length="255" value={this.state.juomakuvaus } onChange={this.paivitakuvaus }></textarea>
+							<label htmlFor="juomakuvaus">Juoman kuvaus</label>
+							</div>
+							<div className="input-field col s12 m3 l3">
+							<input name="juomasaatavilla" type="radio" id="juomasaatavilla" value="1" checked={this.state.juomasaatavilla === true} onChange={this.paivitasaatavilla} />
+							<label htmlFor="juomasaatavilla">Saatavilla</label>
+							<br />
+							<input name="juomasaatavilla" type="radio" id="juomaeisaatavilla" value="0" checked={this.state.juomasaatavilla === false} onChange={this.paivitasaatavilla} />
+							<label htmlFor="juomaeisaatavilla">Ei saatavilla</label>
+							</div>
+							<div className="col s12 m3 l3 center-align">
+							<button className="btn waves-effect waves-light btn-large" id="submitjuoma" type="button" onClick={this.props.lisaaJuoma }>Lisää juoma</button>
+							</div>
+							</div>
+							</div>
+							</form>
+							</div>
+							</div>
+						);
+					}
+				});
+
 		// Hallintasivun navigaatio
 		var Navigaatio = React.createClass({
 			render: function() {
@@ -707,6 +794,7 @@ var PizzanLisays = React.createClass({
 															</div>
 															<div className="row" id="pizza-l">
 															{pizzanlisays}
+															<JuomanLisays />
 															</div>
 															<div className="row" id="tayte-h">
 															{taytetoiminto}
