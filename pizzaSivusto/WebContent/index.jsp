@@ -9,7 +9,7 @@
 
 <!-- Tällä sivulla toistaiseksi redirect login-sivulle -->
 
-<c:redirect url="/login"/>
+<c:redirect url="landingpage.jsp"/>
 
 </body>
 </html>
