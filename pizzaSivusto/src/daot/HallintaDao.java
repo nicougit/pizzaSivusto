@@ -36,7 +36,7 @@ public class HallintaDao {
 			parametrit.add(tayteId);
 		}
 
-		sql += " ORDER BY pizza ASC, tayte ASC";
+		sql += " ORDER BY hinta ASC";
 
 		kysely.suoritaYksiKyselyParam(sql, parametrit);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
@@ -396,6 +396,55 @@ public class HallintaDao {
 		} else {
 			String virhe = "Tietokantaan lisätessä tapahtui virhe.";
 			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+	}
+	
+	public HashMap<String, String> lisaaJuoma(String nimi, String koko, String hinta, String kuvaus, String saatavilla) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		// Katsotaan ensin, että saman nimistä täytettä ei ole
+		String sql = "SELECT nimi FROM Juoma WHERE nimi = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(nimi);
+
+		if (kysely.montaRivia(sql, parametrit) > 0) {
+			String virhe = "Saman niminen juoma on jo tietokannassa";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+		// Lisätään täyte
+		sql = "INSERT INTO Juoma VALUES (null, ?, ?, ?, ?, ?, null)";
+		parametrit.add(hinta);
+		parametrit.add(koko);
+		parametrit.add(kuvaus);
+		parametrit.add(saatavilla);
+
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit == 1) {
+			String success = "Juoma lisätty tietokantaan onnistuneesti!";
+			vastaus.put("success", success);
+			yhteys.suljeYhteys();
+			return vastaus;
+		} else {
+			String virhe = "Juomaa lisätessä tietokantaan tapahtui virhe";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
 			return vastaus;
 		}
 
@@ -789,6 +838,8 @@ public class HallintaDao {
 		}
 
 	}
+	
+	
 
 	public HashMap<String, String> poistaMerkityt() {
 		HashMap<String, String> vastaus = new HashMap<>();
@@ -801,46 +852,46 @@ public class HallintaDao {
 			return vastaus;
 		}
 		Kysely kysely = new Kysely(yhteys.getYhteys());
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
 		// Katsotaan poistomerkittyjen pizzojen määrä
 		String sql = "SELECT pizza_id FROM Pizza WHERE poistomerkinta IS NOT NULL";
 
 		int rivimaara = kysely.montaRivia(sql, new ArrayList<>());
+		int rivit = 0;
 
-		if (rivimaara < 1) {
-			String virhe = "Yhdelläkään pizzalla ei ole poistomerkintää";
-			vastaus.put("virhe", virhe);
-			return vastaus;
+		if (rivimaara > 0) {
+			// Poistetaan ensin PizzanTäytteet
+			sql = "DELETE pt FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) WHERE poistomerkinta IS NOT NULL";
+			paivitys.suoritaSqlLause(sql);
+
+			// Poistetaan pizzat
+			sql = "DELETE FROM Pizza WHERE poistomerkinta IS NOT NULL";
+			rivit += paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
 		}
-
-		// Poistetaan ensin PizzanTäytteet
-		sql = "DELETE pt FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) WHERE poistomerkinta IS NOT NULL";
-		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		int rivit = paivitys.suoritaSqlLauseParametreilla(sql,
-				new ArrayList<>());
-
-		if (rivit < 1) {
-			String error = "Pizzan täytteiden poistaminen ei onnistunut";
-			vastaus.put("error", error);
-			return vastaus;
+		
+		// Katsotaan poistomerkittyjen juomien määrä
+		sql = "SELECT juoma_id FROM Juoma WHERE poistomerkinta IS NOT NULL";
+		rivimaara = kysely.montaRivia(sql, new ArrayList<>());
+		
+		if (rivimaara > 0) {
+			// Poistetaan juomat
+			sql = "DELETE FROM Juoma WHERE poistomerkinta IS NOT NULL";
+			rivit += paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
 		}
-
-		// Poistetaan pizzat
-		sql = "DELETE FROM Pizza WHERE poistomerkinta IS NOT NULL";
-		rivit = paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 
 		// Palautetaan tulokset
-		if (rivit > 0 && rivimaara == 1) {
-			String success = "Tietokannasta poistettiin " + rivimaara
-					+ " pizza";
+		if (rivit == 1) {
+			String success = "Tietokannasta poistettiin " + rivit
+					+ " tuote";
 			vastaus.put("success", success);
 			return vastaus;
-		} else if (rivit > 0 && rivimaara > 1) {
-			String success = "Tietokannasta poistettiin " + rivimaara
-					+ " pizzaa";
+		} else if (rivit > 1) {
+			String success = "Tietokannasta poistettiin " + rivit
+					+ " tuotetta";
 			vastaus.put("success", success);
 			return vastaus;
 		} else {
@@ -949,7 +1000,7 @@ public class HallintaDao {
 
 		ArrayList<String> parametrit = new ArrayList<>();
 
-		String sql = "SELECT juoma_id, nimi, hinta, koko, kuvaus, saatavilla, poistomerkinta FROM Juoma ORDER BY nimi ASC";
+		String sql = "SELECT juoma_id, nimi, hinta, koko, kuvaus, saatavilla, poistomerkinta FROM Juoma ORDER BY hinta ASC";
 
 		kysely.suoritaKysely(sql);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();

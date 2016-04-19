@@ -308,7 +308,7 @@ var Juoma = React.createClass({
 		var muokkaanappi = <a className="waves-effect waves-light btn tooltipped" href="#!" data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a>;
 		var poistonappi = "";
 		var saatavilla = "Ei";
-		if (this.props.saatavilla != null) {
+		if (this.props.saatavilla == true) {
 			saatavilla = "Kyllä"
 		}
 		if (this.props.poistomerkinta != null) {
@@ -330,18 +330,18 @@ var Juoma = React.createClass({
 	}
 });
 
-// Palauttaa taulukon kaikista pizzoista
+// Nimestä huolimatta sisältää listan pizzoista sekä juomista
 var Pizzalista = React.createClass({
 	avaaModal: function() {
 		$("#poistomodal").openModal();
 	},
 	poistaValitut: function() {
-		this.props.poistaValitut({ "poista-pizzat": "true", "json": "true" });
+		this.props.poistaValitut({ "poista-merkityt": "true", "json": "true" });
 		$("#poistomodal").closeModal();
 	},
 	render: function() {
 		var nappistatus = {"disabled": "disabled"};
-		if (this.props.poistettavia > 0) {
+		if ((this.props.poistettavatpizzat + this.props.poistettavatjuomat) > 0) {
 			nappistatus = {};
 		}
 		return (
@@ -363,16 +363,6 @@ var Pizzalista = React.createClass({
 			</tbody>
 			</table>
 			<br />
-			<div className="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
-			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista pizzat pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
-			<div id="poistomodal" className="modal">
-			<div className="modal-content center-align">
-			<h4>Oletko varma?</h4>
-			<p>Poistettavaksi merkityt pizzat ({this.props.poistettavia }kpl) poistetaan tietokannasta pysyvästi.</p>
-			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
-			</div>
-			</div>
-			</div>
 			</div>
 			<div className="col s12">
 			<h2>Juomat</h2>
@@ -391,6 +381,16 @@ var Pizzalista = React.createClass({
 			</tbody>
 			</table>
 			<br />
+			<div className="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
+			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista pizzat pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
+			<div id="poistomodal" className="modal">
+			<div className="modal-content center-align">
+			<h4>Oletko varma?</h4>
+			<p>Poistettavaksi merkityt pizzat ({this.props.poistettavatpizzat }kpl) ja juomat ({this.props.poistettavatjuomat}kpl) poistetaan tietokannasta pysyvästi.</p>
+			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
+			</div>
+			</div>
+			</div>
 			</div>
 			</div>
 			</div>
@@ -547,6 +547,21 @@ var PizzanLisays = React.createClass({
 							}
 						}
 					},
+					lisaaJuoma: function() {
+						var saatavuus = 0;
+						if (this.state.juomasaatavilla === true) {
+							saatavuus = 1;
+						}
+						var submitdata = [{name: "action", value: "lisaajuoma"},
+						{name: "juomanimi", value: this.state.juomanimi},
+						{name: "juomakoko", value: this.state.juomakoko},
+						{name: "juomasaatavilla", value: saatavuus},
+						{name: "juomahinta", value: this.state.juomahinta},
+						{name: "juomasaatavilla", value: saatavuus},
+						{name: "juomakuvaus", value: this.state.juomakuvaus},
+						{name: "json", value: "true"}];
+						this.props.lisaaJuoma(submitdata);
+					},
 					render: function() {
 						return (
 							<div className="col s12">
@@ -556,7 +571,7 @@ var PizzanLisays = React.createClass({
 							<div className="col s12 m12 l10 offset-l1">
 							<div className="row">
 							<div className="input-field col s12 m6 l6">
-							<input type="text" name="juomanimi" id="juomanimi" value={this.state.pizzanimi } onChange={this.paivitanimi }/>
+							<input type="text" name="juomanimi" id="juomanimi" value={this.state.juomanimi } onChange={this.paivitanimi }/>
 							<label htmlFor="juomanimi">Juoman nimi</label>
 							</div>
 							<div className="input-field col s12 m3 l3">
@@ -581,7 +596,7 @@ var PizzanLisays = React.createClass({
 							</div>
 							<div className="col s12 m12 l12">
 							<br />
-							<button className="btn waves-effect waves-light btn-large" id="submitjuoma" type="button" onClick={this.props.lisaaJuoma }>Lisää juoma</button>
+							<button className="btn waves-effect waves-light btn-large" id="submitjuoma" type="button" onClick={this.lisaaJuoma }>Lisää juoma</button>
 							</div>
 							</div>
 							</div>
@@ -628,7 +643,7 @@ var PizzanLisays = React.createClass({
 		// Hallintasivun renderointi ja funktiot
 		var Hallintasivu = React.createClass({
 			getInitialState: function() {
-				return { pizzat: [], taytteet: [], juomat: [], poistettavat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null, muokattavaTayte: {} };
+				return { pizzat: [], taytteet: [], juomat: [], poistettavatpizzat: 0, poistettavatjuomat: 0, tayteLisaysStatus: null, pizzaLisaysStatus: null, juomaLisaysStatus: null, muokattavaTayte: {} };
 			},
 			componentDidMount: function() {
 				this.haeData();
@@ -638,13 +653,19 @@ var PizzanLisays = React.createClass({
 				return $.post("hallinta", {action: "haekaikki"}).done(
 					function(json) {
 						console.log("Datat haettu - Pizzat: " + json.pizzat.length + "kpl, Täytteet: " + json.taytteet.length + "kpl, Juomat: " + json.juomat.length + "kpl");
-						var poistettavat = 0;
+						var poistettavatpizzat = 0;
+						var poistettavatjuomat = 0;
 						for (var i = 0; i < json.pizzat.length; i++) {
 							if (json.pizzat[i].poistomerkinta != null) {
-								poistettavat++;
+								poistettavatpizzat++;
 							}
 						}
-						this.setState({ pizzat: json.pizzat, taytteet: json.taytteet, juomat: json.juomat, poistettavat: poistettavat })
+						for (var i = 0; i < json.juomat.length; i++) {
+							if (json.juomat[i].poistomerkinta != null) {
+								poistettavatjuomat++;
+							}
+						}
+						this.setState({ pizzat: json.pizzat, taytteet: json.taytteet, juomat: json.juomat, poistettavatpizzat: poistettavatpizzat, poistettavatjuomat: poistettavatjuomat })
 					}.bind(this)).fail(
 						function(jqxhr, textStatus, error) {
 							var errori = textStatus + ", " + error;
@@ -731,6 +752,30 @@ var PizzanLisays = React.createClass({
 															naytaVirhe("Virhe javascriptissa!")
 														});
 													},
+													lisaaJuoma: function(data) {
+														$.post("hallinta", data).done(
+															function(json) {
+																var vastaus = json[0];
+																if (vastaus.virhe != null) {
+																	naytaVirhe(vastaus.virhe);
+																}
+																else if (vastaus.success != null) {
+																	naytaSuccess(vastaus.success);
+																	this.setState({ juomaLisaysStatus: "success" });
+																	this.haeData();
+																}
+																else {
+																	console.log(JSON.stringify(json));
+																	naytaVirhe("Virhe JSON vastauksessa!")
+																}
+															}.bind(this)).fail(
+																function(jqxhr, textStatus, error) {
+																	var errori = textStatus + ", " + error;
+																	console.log("Faili: " + errori);
+																	console.log(JSON.stringify(json));
+																	naytaVirhe("Virhe javascriptissa!")
+																});
+															},
 													muokkaaTaytetta: function(tayte) {
 														this.setState({muokattavaTayte: tayte});
 													},
@@ -770,7 +815,7 @@ var PizzanLisays = React.createClass({
 															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
 														}
 														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa, {this.state.taytteet.length } täytettä ja {this.state.juomat.length} juomaa!</p>;
-														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavia={this.state.poistettavat }/>;
+														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavatpizzat={this.state.poistettavatpizzat } poistettavatjuomat={this.state.poistettavatjuomat }/>;
 														var taytelista = <Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>;
 														var pizzanlisays = <PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>;
 														if (this.state.pizzat.length < 1 && this.state.taytteet.length < 1) {
@@ -796,7 +841,7 @@ var PizzanLisays = React.createClass({
 															</div>
 															<div className="row" id="pizza-l">
 															{pizzanlisays}
-															<JuomanLisays />
+															<JuomanLisays lisaaJuoma={this.lisaaJuoma} juomaLisaysStatus={this.state.juomaLisaysStatus}/>
 															</div>
 															<div className="row" id="tayte-h">
 															{taytetoiminto}

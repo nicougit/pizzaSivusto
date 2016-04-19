@@ -91,8 +91,10 @@ $(function() {
 							<span class="menu-pizzahinta">${fn:replace(juomahinta, ".", ",") }
 								€</span>
 						</h3>
-						<span class="menu-pizzataytteet"><fmt:formatNumber type="number" minFractionDigits="2"
-								maxFractionDigits="2" value="${juoma.koko }"></fmt:formatNumber> l</span>
+						<span class="menu-pizzataytteet"><c:set var="juomakoko">
+						<fmt:formatNumber type="number" minFractionDigits="0"
+								maxFractionDigits="2" value="${juoma.koko }"></fmt:formatNumber>
+						</c:set>${fn:replace(juomakoko, ".", ",") } l</span>
 						<p class="menu-pizzakuvaus">"<c:out value="${juoma.kuvaus }"></c:out>"</p>
 						<br>
 						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(<c:out value="${juoma.id}"></c:out>,'juoma')">Lisää
