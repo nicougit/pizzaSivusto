@@ -241,6 +241,8 @@ public class HallintaServlet extends HttpServlet {
 					lisaaJuoma(request, response);
 				} else if (action != null && action.equals("paivitapizza")) {
 					paivitaPizza(request, response);
+				} else if (action != null && action.equals("paivitajuoma")) {
+					paivitaJuoma(request, response);
 				} else if (action != null && action.equals("lisaatayte")) {
 					lisaaTayte(request, response);
 				} else if (action != null && action.equals("paivitatayte")) {
@@ -376,6 +378,94 @@ public class HallintaServlet extends HttpServlet {
 
 	}
 
+	public void paivitaJuoma(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Haetaan parametrit
+		String juomaid = request.getParameter("juomaid");
+		String juomanimi = request.getParameter("juomanimi");
+		String juomahinta = request.getParameter("juomahinta").replace(",", ".");
+		String juomakuvaus = request.getParameter("juomakuvaus");
+		String juomakoko = request.getParameter("juomakoko");
+		String juomasaatavilla = request.getParameter("juomasaatavilla");
+		String json = request.getParameter("json");
+
+		if (juomaid != null && juomanimi != null && juomahinta != null && juomakuvaus != null && juomakoko != null
+				&& juomasaatavilla != null) {
+
+			// Entryjen validointia
+			Apuri apuri = new Apuri();
+
+			if (apuri.validoiInt(juomaid, 11) != true) {
+				String virhe = "Muokattavan juoman id on virheellinen";
+				virhe(request, response, virhe);
+			} else {
+				if (apuri.validoiString(juomanimi, "-", 30) != true) {
+					String virhe = "Muokattavan juoman nimi on virheellinen";
+					virhe(request, response, virhe);
+				} else {
+					// Validoidaan hinta
+					if (apuri.validoiDouble(juomahinta, 6) == false) {
+						String virhe = "Muokattavan juoman hinta on virheellinen";
+						virhe(request, response, virhe);
+					} else {
+						// Validoidaan koko
+						if (apuri.validoiDouble(juomakoko, 6) != true) {
+							String virhe = "Juoman koko on virheellinen";
+							virhe(request, response, virhe);
+						} else {
+							if (apuri.validoiKuvaus(juomakuvaus) != true) {
+								String virhe = "Muokattavan juoman kuvaus on virheellinen";
+								virhe(request, response, virhe);
+							} else {
+								if (juomasaatavilla.equals("0") || juomasaatavilla.equals("1")) {
+
+									if (juomasaatavilla.equals("0")) {
+										juomasaatavilla = "E";
+									} else {
+										juomasaatavilla = "K";
+									}
+
+									HallintaDao dao = new HallintaDao();
+
+									// Katsotaan, onnistuuko lisäys
+									HashMap<String, String> vastaus = dao.paivitaJuoma(juomaid, juomanimi, juomakoko,
+											juomahinta, juomakuvaus, juomasaatavilla);
+									if (vastaus.get("virhe") != null) {
+										String virhe = vastaus.get("virhe");
+										request.setAttribute("virhe", virhe);
+									} else if (vastaus.get("success") != null) {
+										String success = vastaus.get("success");
+										request.setAttribute("success", success);
+									} else {
+										request.setAttribute("virhe",
+												"Tietokantaan viedessä tapahtui tuntematon virhe.");
+									}
+									if (json != null) {
+										jsonVastaus(request, response, vastaus);
+									} else {
+										naytaSivu(request, response);
+									}
+
+								} else {
+									String virhe = "Juomalla on virheellinen saatavuus";
+									virhe(request, response, virhe);
+								}
+
+							}
+						}
+					}
+				}
+			}
+		}
+
+		else {
+			String virhe = "Kaikkia vaadittavia tietoja ei syötetty!";
+			virhe(request, response, virhe);
+		}
+
+	}
+
 	public void lisaaPizza(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -488,14 +578,8 @@ public class HallintaServlet extends HttpServlet {
 		String juomasaatavilla = request.getParameter("juomasaatavilla");
 		String json = request.getParameter("json");
 
-		System.out.println("Käyttäjä yrittää lisätä juomaa, katsotaan onko vaadittavat tiedot syötetty.");
-
 		if (juomanimi != null && juomahinta != null && juomakuvaus != null && juomakoko != null
 				&& juomasaatavilla != null) {
-
-			System.out.println("Yritetään lisätä juomaa attribuuteilla:");
-			System.out.println("Nimi: " + juomanimi + " - Hinta: " + juomahinta + " - Kuvaus " + juomakuvaus
-					+ " - Koko " + juomakoko + " - Saatavuus " + juomasaatavilla);
 
 			// Entryjen validointia
 			Apuri apuri = new Apuri();
@@ -789,7 +873,8 @@ public class HallintaServlet extends HttpServlet {
 				jsonVastaus(request, response, vastaus);
 			}
 		} else {
-			System.out.println("Saavuttiin poistaMerkityt-metodiin, mutta poista-merkityt oli '" + poistaMerkityt + "'");
+			System.out
+					.println("Saavuttiin poistaMerkityt-metodiin, mutta poista-merkityt oli '" + poistaMerkityt + "'");
 
 			naytaSivu(request, response);
 		}

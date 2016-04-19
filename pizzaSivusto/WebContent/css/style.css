@@ -145,6 +145,11 @@ h5 {
 	padding: 8px;
 }
 
+.modalsubtitle {
+	margin-top: 10px;
+	margin-bottom: 25px;
+}
+
 /* Landing page map div + iframe */
 .karttacol {
 	overflow: hidden;

@@ -414,7 +414,7 @@ public class HallintaDao {
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
-		// Katsotaan ensin, että saman nimistä täytettä ei ole
+		// Katsotaan ensin, että saman nimistä juomaa ei ole
 		String sql = "SELECT nimi FROM Juoma WHERE nimi = ?";
 		ArrayList<String> parametrit = new ArrayList<String>();
 		parametrit.add(nimi);
@@ -426,7 +426,7 @@ public class HallintaDao {
 			return vastaus;
 		}
 
-		// Lisätään täyte
+		// Lisätään juoma
 		sql = "INSERT INTO Juoma VALUES (null, ?, ?, ?, ?, ?, null)";
 		parametrit.add(hinta);
 		parametrit.add(koko);
@@ -443,6 +443,69 @@ public class HallintaDao {
 			return vastaus;
 		} else {
 			String virhe = "Juomaa lisätessä tietokantaan tapahtui virhe";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+	}
+	
+	public HashMap<String, String> paivitaJuoma(String id, String nimi, String koko, String hinta, String kuvaus, String saatavilla) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		// Katsotaan, että juoma löytyy tietokannasta
+		String sql = "SELECT juoma_id FROM Juoma WHERE juoma_id = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(id);
+
+		if (kysely.montaRivia(sql, parametrit) == 0) {
+			String virhe = "Juomaa ei löydy tietokannasta";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+		// Katsotaan että saman nimistä juomaa ei ole tietokannassa
+		sql = "SELECT nimi FROM Juoma WHERE juoma_id != ? AND nimi = ?";
+		parametrit.add(nimi);
+
+		if (kysely.montaRivia(sql, parametrit) > 0) {
+			String virhe = "Saman niminen juoma on jo tietokannassa";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+		// Päivitetään juoman tiedot
+		sql = "UPDATE Juoma SET nimi = ?, hinta = ?, koko = ?, kuvaus = ?, saatavilla = ? WHERE juoma_id = ?";
+		parametrit.clear();
+		parametrit.add(nimi);
+		parametrit.add(hinta);
+		parametrit.add(koko);
+		parametrit.add(kuvaus);
+		parametrit.add(saatavilla);
+		parametrit.add(id);
+
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit == 1) {
+			String success = "Juoman tiedot päivitetty";
+			vastaus.put("success", success);
+			yhteys.suljeYhteys();
+			return vastaus;
+		} else {
+			String virhe = "Juomaa päivittäess tapahtui virhe";
 			vastaus.put("virhe", virhe);
 			yhteys.suljeYhteys();
 			return vastaus;

@@ -293,6 +293,121 @@ var Pizza = React.createClass({
 	}
 });
 
+// Juoman muokkaus
+var JuomanMuokkaus = React.createClass({
+	getInitialState: function() {
+	return ({juomanimi: this.props.nimi, juomahinta: this.props.hinta, juomakoko: this.props.koko, juomasaatavilla: this.props.saatavilla, juomakuvaus: this.props.kuvaus});
+	},
+	paivitanimi: function(e) {
+		this.setState({ juomanimi: e.target.value }, function(){ this.paivitanappi() });
+	},
+	paivitahinta: function(e) {
+		this.setState({ juomahinta: e.target.value }, function(){ this.paivitanappi() });
+	},
+	paivitakoko: function(e) {
+		this.setState({ juomakoko: e.target.value }, function(){ this.paivitanappi() });
+	},
+	paivitasaatavilla: function(e) {
+		var value = e.target.value;
+		if (value == 0) {
+			this.setState({juomasaatavilla: false});
+		}
+		else {
+			this.setState({juomasaatavilla: true});
+		}
+	},
+	paivitakuvaus: function(e) {
+		this.setState({ juomakuvaus: e.target.value }, function(){ this.paivitanappi() });
+	},
+	paivitanappi: function() {
+		if (this.state.juomanimi.length > 2 && this.state.juomahinta > 0 && this.state.juomakuvaus.length > 0 && this.state.juomakoko > 0) {
+			$("#paivitajuoma").attr("disabled", false);
+		}
+		else {
+			$("#paivitajuoma").attr("disabled", true);
+		}
+	},
+	componentDidMount: function() {
+		this.avaaModal();
+	},
+	componentWillReceiveProps: function(propsit) {
+		if (propsit.id && propsit.nimi && propsit.hinta && propsit.koko && propsit.kuvaus) {
+			this.setState({juomanimi: propsit.nimi, juomahinta: propsit.hinta, juomakoko: propsit.koko, juomasaatavilla: propsit.saatavilla, juomakuvaus: propsit.kuvaus}, function() {
+				this.paivitanappi();
+				this.avaaModal();
+			});
+		}
+	},
+	lahetaPaivitys: function() {
+		console.log("Lähetetään juoman päivitys!");
+		var saatavuus = 0;
+		if (this.state.juomasaatavilla === true) {
+			saatavuus = 1;
+		}
+		var data = [{name: "action", value: "paivitajuoma"},
+		{name: "juomaid", value: this.props.id},
+		{name: "juomanimi", value: this.state.juomanimi},
+		{name: "juomakoko", value: this.state.juomakoko},
+		{name: "juomasaatavilla", value: saatavuus},
+		{name: "juomahinta", value: this.state.juomahinta},
+		{name: "juomasaatavilla", value: saatavuus},
+		{name: "juomakuvaus", value: this.state.juomakuvaus},
+		{name: "json", value: "true"}];
+		this.props.lahetaPaivitys(data);
+		$("#juomamodal").closeModal();
+		this.lopetaMuokkaus();
+	},
+	lopetaMuokkaus: function() {
+		this.props.lopetaMuokkaus();
+	},
+	avaaModal: function() {
+		$("#juomamodal").openModal({complete: this.lopetaMuokkaus});
+	},
+	render: function() {
+		return (
+			<div id="juomamodal" className="modal">
+			<div className="modal-content center-align">
+			<div className="row">
+			<h4>Juoman muokkaus</h4>
+			<h5 className="modalsubtitle">{this.props.nimi}</h5>
+			<form id="juomanmuokkausformi">
+			<div className="col s12 m12 l10 offset-l1">
+			<div className="row">
+			<div className="input-field col s12 m6 l6">
+			<input type="text" name="juomanimi" id="juomanimi" value={this.state.juomanimi } onChange={this.paivitanimi }/>
+			<label htmlFor="juomanimi" className="active">Juoman nimi</label>
+			</div>
+			<div className="input-field col s12 m3 l3">
+			<input type="number" className="validate" min="0" step="0.01" name="juomakoko" id="juomakoko" value={this.state.juomakoko } onChange={this.paivitakoko }/>
+			<label htmlFor="juomakoko" data-error="Virhe" className="active">Juoman koko</label>
+			</div>
+			<div className="input-field col s12 m3 l3">
+			<input type="number" className="validate" min="0" step="0.05" name="juomahinta" id="juomahinta" value={this.state.juomahinta } onChange={this.paivitahinta }/>
+			<label htmlFor="juomahinta" data-error="Virhe" className="active">Juoman hinta</label>
+			</div>
+			<div className="input-field col s12 m9 l9">
+			<textarea className="materialize-textarea" name="pizzakuvaus" id="juomakuvaus" length="255" value={this.state.juomakuvaus } onChange={this.paivitakuvaus }></textarea>
+			<label htmlFor="juomakuvaus" className="active">Juoman kuvaus</label>
+			</div>
+			<div className="input-field col s12 m3 l3 left-align">
+			<label>Saatavuus</label><br />
+			<input name="juomasaatavilla" type="radio" id="juomasaatavilla" value="1" checked={this.state.juomasaatavilla === true} onChange={this.paivitasaatavilla} />
+			<label htmlFor="juomasaatavilla">Saatavilla</label>
+			<br />
+			<input name="juomasaatavilla" type="radio" id="juomaeisaatavilla" value="0" checked={this.state.juomasaatavilla === false} onChange={this.paivitasaatavilla} />
+			<label htmlFor="juomaeisaatavilla">Ei saatavilla</label>
+			</div>
+			</div>
+			</div>
+			</form>
+			</div>
+			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.lahetaPaivitys } id="paivitajuoma" type="button" className="modal-action waves-effect waves-light btn">Tallenna</button>
+			</div>
+			</div>
+		);
+	}
+});
+
 // Palauttaa yksittäisen juomataulukon rivin
 var Juoma = React.createClass({
 	juomanPoisto: function() {
@@ -303,13 +418,19 @@ var Juoma = React.createClass({
 		var id = this.props.id;
 		this.props.kasittelePizza({"juoma-palauta": id, "json": "true" });
 	},
+	muokkaaJuomaa: function() {
+		this.props.muokkaaJuomaa(this.props.id);
+	},
+	lahetaPaivitys: function(data) {
+		this.props.kasittelePizza(data);
+	},
 	render: function() {
 		var poistomerkitty = {"className": "taulukkorivi"};
-		var muokkaanappi = <a className="waves-effect waves-light btn tooltipped" href="#!" data-position="left" data-delay="500" data-tooltip="Muokkaa"><i className="material-icons">edit</i></a>;
+		var muokkaanappi = <button className="waves-effect waves-light btn tooltipped" data-position="left" data-delay="500" data-tooltip="Muokkaa" onClick={this.muokkaaJuomaa}><i className="material-icons">edit</i></button>;
 		var poistonappi = "";
-		var saatavilla = "Ei";
+		var saatavilla = <span className="errori">Ei</span>;
 		if (this.props.saatavilla == true) {
-			saatavilla = "Kyllä"
+			saatavilla = <span>Kyllä</span>;
 		}
 		if (this.props.poistomerkinta != null) {
 			poistomerkitty = {"className": "taulukkorivi red lighten-5"};
@@ -332,6 +453,9 @@ var Juoma = React.createClass({
 
 // Nimestä huolimatta sisältää listan pizzoista sekä juomista
 var Pizzalista = React.createClass({
+	getInitialState: function() {
+		return({muokattavajuoma: 0});
+	},
 	avaaModal: function() {
 		$("#poistomodal").openModal();
 	},
@@ -339,10 +463,27 @@ var Pizzalista = React.createClass({
 		this.props.poistaValitut({ "poista-merkityt": "true", "json": "true" });
 		$("#poistomodal").closeModal();
 	},
+	muokkaaJuomaa: function(id) {
+		if (isNaN(id) === false) {
+			this.setState({muokattavajuoma: id});
+		}
+	},
+	lopetaMuokkaus: function() {
+		this.setState({muokattavajuoma: 0});
+	},
 	render: function() {
 		var nappistatus = {"disabled": "disabled"};
 		if ((this.props.poistettavatpizzat + this.props.poistettavatjuomat) > 0) {
 			nappistatus = {};
+		}
+		var juomanMuokkaus = "";
+		if (this.state.muokattavajuoma > 0) {
+		for (var i = 0; i < this.props.juomat.length; i++) {
+			if (this.props.juomat[i].id == this.state.muokattavajuoma) {
+				var juoma = this.props.juomat[i];
+				var juomanMuokkaus = <JuomanMuokkaus id={juoma.id} nimi={juoma.nimi} hinta={juoma.hinta} saatavilla={juoma.saatavilla} koko={juoma.koko} kuvaus={juoma.kuvaus} lopetaMuokkaus={this.lopetaMuokkaus} lahetaPaivitys={this.props.muokkaaJuomaa}/>;
+			}
+		}
 		}
 		return (
 			<div className="col s12">
@@ -377,7 +518,7 @@ var Pizzalista = React.createClass({
 			</tr>
 			</thead>
 			<tbody>
-			{this.props.juomat.map((o, i) => <Juoma key={o.id} id={o.id} nimi={o.nimi} hinta={o.hinta } poistomerkinta={o.poistomerkinta} kasittelePizza={this.props.kasittelePizza } koko={o.koko} saatavilla={o.saatavilla} />)}
+			{this.props.juomat.map((o, i) => <Juoma key={o.id} id={o.id} nimi={o.nimi} hinta={o.hinta } poistomerkinta={o.poistomerkinta} kasittelePizza={this.props.kasittelePizza } koko={o.koko} saatavilla={o.saatavilla} kuvaus={o.kuvaus} muokkaaJuomaa={this.muokkaaJuomaa}/>)}
 			</tbody>
 			</table>
 			<br />
@@ -390,6 +531,7 @@ var Pizzalista = React.createClass({
 			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
 			</div>
 			</div>
+			{juomanMuokkaus}
 			</div>
 			</div>
 			</div>
@@ -673,7 +815,6 @@ var PizzanLisays = React.createClass({
 						});
 					},
 					kasittelePizza: function(toiminto) {
-						console.log("Käsitellään: " + JSON.stringify(toiminto));
 						$.get("hallinta", toiminto).done(
 							function(json) {
 								var vastaus = json[0];
@@ -815,7 +956,7 @@ var PizzanLisays = React.createClass({
 															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
 														}
 														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa, {this.state.taytteet.length } täytettä ja {this.state.juomat.length} juomaa!</p>;
-														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavatpizzat={this.state.poistettavatpizzat } poistettavatjuomat={this.state.poistettavatjuomat }/>;
+														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavatpizzat={this.state.poistettavatpizzat } poistettavatjuomat={this.state.poistettavatjuomat } muokkaaJuomaa={this.lisaaJuoma}/>;
 														var taytelista = <Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>;
 														var pizzanlisays = <PizzanLisays taytteet={this.state.taytteet } lisaaPizza={this.lisaaPizza } pizzaLisaysStatus={this.state.pizzaLisaysStatus }/>;
 														if (this.state.pizzat.length < 1 && this.state.taytteet.length < 1) {
