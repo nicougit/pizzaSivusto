@@ -147,7 +147,7 @@
 						<i class="material-icons left">clear</i>Tyhjennä
 					</button>
 					<a class="btn waves-effect waves-light right ostoskori-tilausnappi"
-						href="<c:url value='/ostoskori'/>"><i
+						href="<c:url value='/tilaus'/>"><i
 						class="material-icons left">shopping_cart</i>Tilaamaan</a>
 				</div>
 			</div>
