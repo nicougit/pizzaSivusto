@@ -71,6 +71,7 @@ $(function() {
 						</span>
 						<p class="menu-pizzakuvaus">"<c:out value="${pizza.kuvaus }"></c:out>"</p>
 						<br>
+						<c:if test="${not empty kayttaja}"><button class="btn waves-effect waves-light ostoskorinappi" type="button"><i class="material-icons">star</i></button></c:if>
 						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(<c:out value="${pizza.id}"></c:out>,'pizza')">Lisää
 							ostoskoriin</button>
 						<br> <br>
