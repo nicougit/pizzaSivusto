@@ -7,16 +7,22 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Castello &#233; Fiori - Ostoskori</title>
+<title>Castello &#233; Fiori - Tilaus</title>
 <jsp:include page="head-include.jsp"></jsp:include>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 	<div class="headertext">
-		<h1>Ostoskori</h1>
-		<p class="flow-text ostoskori-yhteismaara"></p>
+		<h1>Tilausjärjestelmä beta v01</h1>
 	</div>
 	<div class="row" id="main-content">
+
+		<div>
+			<p>
+				<b><c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi } ${kayttaja.puhelin } ${kayttaja.tunnus }"></c:out></b>				
+			<p>
+		</div>
+		
 		<table class="ostoskori-table striped">
 			<thead>
 				<tr>
@@ -29,18 +35,6 @@
 			</tbody>
 		</table>
 		<br>
-		<div class="row">
-			<div class="col s12 right-align ostoskorinapit">
-				<button
-					class="btn waves-effect waves-light orange lighten-1 ostoskori-tyhjennysnappi"
-					type="button" onClick="tyhjennaOstoskori()">
-					<i class="material-icons left">clear</i>Tyhjennä
-				</button> 
-				<a class="btn waves-effect waves-light ostoskori-tilausnappi"
-					href="<c:url value='/tilaus'/>"><i
-					class="material-icons left">shopping_cart</i>Tilaamaan</a>
-			</div>
-		</div>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>
