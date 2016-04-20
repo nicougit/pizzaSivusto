@@ -19,7 +19,7 @@ var Tayte = React.createClass({
 			<tr {... tyyli}>
 			<td>{this.props.nimi }</td>
 			<td>{saatavilla }</td>
-			<td><button className="waves-effect waves-light btn tooltipped right" onClick={this.muokkaaTaytetta }><i className="material-icons">edit</i></button></td>
+			<td><button className="waves-effect waves-light btn tooltipped right" onClick={this.muokkaaTaytetta }  data-position="right" data-delay="500" data-tooltip="Muokkaa täytettä"><i className="material-icons">edit</i></button></td>
 			</tr>
 		);
 	}
@@ -368,7 +368,7 @@ var JuomanMuokkaus = React.createClass({
 			<div id="juomamodal" className="modal">
 			<div className="modal-content center-align">
 			<div className="row">
-			<h4>Juoman muokkaus</h4>
+			<h4>Muokkaa juomaa</h4>
 			<h5 className="modalsubtitle">{this.props.nimi}</h5>
 			<form id="juomanmuokkausformi">
 			<div className="col s12 m12 l10 offset-l1">
@@ -456,6 +456,9 @@ var Pizzalista = React.createClass({
 	getInitialState: function() {
 		return({muokattavajuoma: 0});
 	},
+	componentDidMount: function() {
+		$('.tooltipped').tooltip({delay: 500});
+	},
 	avaaModal: function() {
 		$("#poistomodal").openModal();
 	},
@@ -523,7 +526,7 @@ var Pizzalista = React.createClass({
 			</table>
 			<br />
 			<div className="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
-			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista pizzat pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
+			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista merkityt tuotteet pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
 			<div id="poistomodal" className="modal">
 			<div className="modal-content center-align">
 			<h4>Oletko varma?</h4>
@@ -759,7 +762,7 @@ var PizzanLisays = React.createClass({
 					<ul className="tabs">
 					<li className="tab col s12"><a href="#pizza-h" className="active">Tuotteiden
 					hallinta</a></li>
-					<li className="tab col s12"><a href="#pizza-l">Tuotteen lisäys</a></li>
+					<li className="tab col s12"><a href="#pizza-l">Tuotteiden lisäys</a></li>
 					<li className="tab col s12"><a href="#tayte-h">Täytteiden
 					hallinta</a></li>
 					</ul>
