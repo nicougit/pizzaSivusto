@@ -19,7 +19,7 @@
 
 		<div>
 			<p>
-				<b><c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out></b>				
+				<b><c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi } ${kayttaja.puhelin } ${kayttaja.tunnus }"></c:out></b>				
 			<p>
 		</div>
 		
