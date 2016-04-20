@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mysql.fabric.xmlrpc.base.Array;
+
 import apuluokka.Apuri;
 import apuluokka.DeployAsetukset;
 import bean.Kayttaja;
@@ -199,18 +201,28 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Haetaan parametrit
+		String reffi = request.getHeader("referer");
+		System.out.println(reffi);
+		
+		String loppuosa = reffi.substring(reffi.lastIndexOf('/')+1);
+		System.out.println(loppuosa);
+		
+		HashMap osoitteet = new HashMap<String, String>();
+		
+		osoitteet.put("pizza", "/pizza");
+		osoitteet.put("ostoskori", "/ostoskori");
+		
+		
+		String osoite = "landingpage.jsp";
+		
+		if (osoitteet.containsKey(loppuosa)) {
+		
+		 osoite = (String)osoitteet.get(loppuosa);
+		}
+		
 		String kayttajanimi = request.getParameter("kayttajanimi");
 		String salasana = request.getParameter("salasana");
-		String sijainti = request.getParameter("sijainti");
-		String osoite = "";
-		
-		if (sijainti.equals("/pizzaSivusto/WEB-INF/pizzat.jsp")){
-			osoite = "/pizza";
-		} else if(sijainti.equals("/pizzaSivusto/WEB-INF/ostoskori.jsp")) {
-			osoite = "/ostoskori";
-		} else {
-			osoite = "landingpage.jsp";
-		}
+
 
 		// Katsotaan onko parametreja olemassa
 		if (kayttajanimi != null && salasana != null) {
@@ -239,6 +251,7 @@ public class LoginServlet extends HttpServlet {
 
 					request.setAttribute("kayttaja", kayttaja);
 					request.setAttribute("success", "Olet kirjautunut sisään onnistuneesti!");
+					
 					RequestDispatcher rd = request.getRequestDispatcher(osoite);
 					
 					rd.forward(request, response);
