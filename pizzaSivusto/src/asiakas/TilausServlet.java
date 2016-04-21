@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import bean.Kayttaja;
+import daot.AsiakasDao;
+import daot.KayttajaDao;
+
 @WebServlet(name = "tilaus", urlPatterns = { "/tilaus" })
 
 public class TilausServlet extends HttpServlet {
@@ -22,9 +26,26 @@ public class TilausServlet extends HttpServlet {
 	    
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			
-			HttpSession sessio = request.getSession(true);
+			HttpSession sessio = request.getSession(false);
 					
 			if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+				// Päivitetään käyttäjän osoitteet, siltä varalta että on lisätty uusia sisäänkirjautumisen jälkeen
+				KayttajaDao kayttajadao = new KayttajaDao();
+				
+				try {
+					// Haetaan käyttäjä sessiosta
+					Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+					
+					// Päivitetään osoitelista
+					kayttaja.setOsoitteet(kayttajadao.haeOsoitteet(String.valueOf(kayttaja.getId())));
+					
+					// Korvataan session vanha käyttäjä uudella, jossa päivitetyt osoitteet!
+					sessio.setAttribute("kayttaja", kayttaja);
+				} catch (Exception ex) {
+					System.out.println("Käyttäjää castatessa virhe tilausservletissä!");
+				}
+				
+				// Ohjaus tilaussivulle
 				String rdPath = "WEB-INF/tilaus.jsp";
 				naytaSivu(request, response, rdPath);
 			} else {

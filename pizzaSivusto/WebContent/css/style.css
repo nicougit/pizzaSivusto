@@ -162,6 +162,17 @@ h5 {
 	margin-right: auto;
 }
 
+/* Tilaussivu */
+.tilaustitle {
+	font-size: 12pt;
+	font-weight: bold;
+	text-align: inherit;
+}
+
+.osoitelabel {
+	color: #000;
+}
+
 /* Navbar tyylit */
 nav {
 	background: rgba(0, 0, 0, 0.6);

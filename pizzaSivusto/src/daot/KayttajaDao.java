@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import bean.Kayttaja;
+import bean.Osoite;
 import login.KayttajaLista;
 import login.Tiiviste;
 import tietokanta.Kysely;
@@ -91,6 +92,36 @@ public class KayttajaDao {
 				kayttaja.setPuhelin(puhelinKanta);
 				kayttaja.setTyyppi(tyyppiKanta);
 			}
+			
+			// Haetaan käyttäjän osoitteet
+			
+			sqlkysely = "SELECT osoite_id, toimitusosoite, postinro, postitmp FROM Toimitusosoite WHERE kayttaja_id = ?";
+			parametrit.clear();
+			parametrit.add(String.valueOf(kayttaja.getId()));
+
+			kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
+			tulokset = kysely.getTulokset();
+
+			iteraattori = kysely.getTulokset().iterator();
+			
+			ArrayList<Osoite> osoitteet = new ArrayList<>();
+
+			while (iteraattori.hasNext()) {
+				HashMap osoiteMappi = (HashMap) iteraattori.next();
+				String idString = (String) osoiteMappi.get("osoite_id");
+				String osoiteStr = (String) osoiteMappi.get("toimitusosoite");
+				String postinro = (String) osoiteMappi.get("postinro");
+				String postitmp = (String) osoiteMappi.get("postitmp");
+				int idKanta = Integer.parseInt(idString);
+
+				// Olio
+				Osoite osoite = new Osoite(idKanta, osoiteStr, postinro, postitmp);
+				osoitteet.add(osoite);
+			}
+			
+			if (osoitteet.size() > 0) {
+				kayttaja.setOsoitteet(osoitteet);
+			}
 
 			// Yhteyden sulkeminen
 			yhteys.suljeYhteys();
@@ -98,6 +129,49 @@ public class KayttajaDao {
 			// Käyttäjän palautus
 			return kayttaja;
 		}
+	}
+	
+	public ArrayList<Osoite> haeOsoitteet(String kayttajaid) {
+		ArrayList<Osoite> osoitteet = new ArrayList<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		
+		if (yhteys.getYhteys() == null) {
+			return osoitteet;
+		}
+		
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		
+		ArrayList<String> parametrit = new ArrayList<>();
+		
+		// Haetaan käyttäjän osoitteet
+		String sqlkysely = "SELECT osoite_id, toimitusosoite, postinro, postitmp FROM Toimitusosoite WHERE kayttaja_id = ?";
+		parametrit.clear();
+		parametrit.add(kayttajaid);
+
+		kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		while (iteraattori.hasNext()) {
+			HashMap osoiteMappi = (HashMap) iteraattori.next();
+			String idString = (String) osoiteMappi.get("osoite_id");
+			String osoiteStr = (String) osoiteMappi.get("toimitusosoite");
+			String postinro = (String) osoiteMappi.get("postinro");
+			String postitmp = (String) osoiteMappi.get("postitmp");
+			int idKanta = Integer.parseInt(idString);
+
+			// Olio
+			Osoite osoite = new Osoite(idKanta, osoiteStr, postinro, postitmp);
+			osoitteet.add(osoite);
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+		
+		return osoitteet;
 	}
 
 	public HashMap<String, String> luoKayttaja(String kayttajatunnus, String salasana, String etunimi, String sukunimi,

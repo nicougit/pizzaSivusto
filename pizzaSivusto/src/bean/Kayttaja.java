@@ -1,5 +1,7 @@
 package bean;
 
+import java.util.ArrayList;
+
 // Beani käyttäjälle
 
 public class Kayttaja {
@@ -9,13 +11,15 @@ public class Kayttaja {
 	private String sukunimi;
 	private String puhelin;
 	private String tyyppi;
+	private ArrayList<Osoite> osoitteet;
 
 	public Kayttaja() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Kayttaja(int id, String tunnus, String etunimi, String sukunimi, String puhelin, String tyyppi) {
+	public Kayttaja(int id, String tunnus, String etunimi, String sukunimi, String puhelin, String tyyppi,
+			ArrayList<Osoite> osoitteet) {
 		super();
 		this.id = id;
 		this.tunnus = tunnus;
@@ -23,6 +27,7 @@ public class Kayttaja {
 		this.sukunimi = sukunimi;
 		this.puhelin = puhelin;
 		this.tyyppi = tyyppi;
+		this.osoitteet = osoitteet;
 	}
 
 	public int getId() {
@@ -73,10 +78,20 @@ public class Kayttaja {
 		this.tyyppi = tyyppi;
 	}
 
+	public ArrayList<Osoite> getOsoitteet() {
+		return osoitteet;
+	}
+
+	public void setOsoitteet(ArrayList<Osoite> osoitteet) {
+		this.osoitteet = osoitteet;
+	}
+
 	@Override
 	public String toString() {
 		return "Kayttaja [id=" + id + ", tunnus=" + tunnus + ", etunimi=" + etunimi + ", sukunimi=" + sukunimi
-				+ ", puhelin=" + puhelin + ", tyyppi=" + tyyppi + "]";
+				+ ", puhelin=" + puhelin + ", tyyppi=" + tyyppi + ", osoitteet=" + osoitteet + "]";
 	}
+
+	
 
 }
