@@ -34,6 +34,11 @@
 			Materialize.toast();
 		});
 	}
+	
+	var loginModal = function() {
+		$("#loginmodal").openModal({ready: function() { $('#kayttajanimi-modal').focus().select() }});
+	}
+	
 	$(document).ready(function() {
 		$(".button-collapse").sideNav();
 		$('.modal-trigger').leanModal();

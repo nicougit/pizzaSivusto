@@ -49,7 +49,7 @@
 								class="material-icons right">arrow_drop_down</i></a></li>
 					</c:when>
 					<c:otherwise>
-						<li><a class="modal-trigger" href="#loginmodal">Kirjaudu
+						<li><a onClick="loginModal()">Kirjaudu
 								sisään</a></li>
 					</c:otherwise>
 				</c:choose>
