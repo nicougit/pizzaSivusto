@@ -35,10 +35,19 @@
 					class="btn waves-effect waves-light orange lighten-1 ostoskori-tyhjennysnappi"
 					type="button" onClick="tyhjennaOstoskori()">
 					<i class="material-icons left">clear</i>Tyhjennä
-				</button> 
-				<a class="btn waves-effect waves-light ostoskori-tilausnappi"
-					href="<c:url value='/tilaus'/>"><i
-					class="material-icons left">shopping_cart</i>Tilaamaan</a>
+				</button>
+				
+					<c:if test="${not empty kayttaja }">
+					<a class="btn waves-effect waves-light right ostoskori-tilausnappi"
+						href="<c:url value='/tilaus'/>"><i
+						class="material-icons left">shopping_cart</i>Tilaamaan</a>
+					</c:if>
+					<c:if test="${empty kayttaja }">
+					<a class="btn waves-effect waves-light right ostoskori-tilausnappi"
+						href="<c:url value='/login'/>"><i
+						class="material-icons left">shopping_cart</i>Kirjaudu sisään tilataksesi</a>
+					</c:if>
+					
 			</div>
 		</div>
 	</div>

@@ -202,6 +202,7 @@ public class LoginServlet extends HttpServlet {
 
 		// Haetaan parametrit
 		String reffi = request.getHeader("referer");
+		String tilaukseen = request.getHeader("tilaukseen");
 		System.out.println(reffi);
 		
 		String loppuosa = reffi.substring(reffi.lastIndexOf('/')+1);
@@ -212,11 +213,12 @@ public class LoginServlet extends HttpServlet {
 		osoitteet.put("pizza", "/pizza");
 		osoitteet.put("ostoskori", "/ostoskori");
 		
-		
 		String osoite = "landingpage.jsp";
 		
-		if (osoitteet.containsKey(loppuosa)) {
-		
+		if (tilaukseen != null) {
+			osoite = "/tilaus";
+		}
+		else if (osoitteet.containsKey(loppuosa)) {
 		 osoite = (String)osoitteet.get(loppuosa);
 		}
 		
@@ -252,9 +254,14 @@ public class LoginServlet extends HttpServlet {
 					request.setAttribute("kayttaja", kayttaja);
 					request.setAttribute("success", "Olet kirjautunut sisään onnistuneesti!");
 					
-					RequestDispatcher rd = request.getRequestDispatcher(osoite);
+					if (osoite.contains("jsp")) {
+						response.sendRedirect(request.getContextPath());
+					}
+					else {
+						response.sendRedirect(request.getContextPath() + osoite);
+					}
 					
-					rd.forward(request, response);
+					
 				} else {
 					System.out.println("Virheellinen käyttäjätunnus/salasana, redirectataan login sivulle");
 					virhe(request, response, "Virheellinen käyttäjätunnus/salasana!");

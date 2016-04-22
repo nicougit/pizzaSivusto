@@ -50,8 +50,7 @@ public class TilausServlet extends HttpServlet {
 				naytaSivu(request, response, rdPath);
 			} else {
 				// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle				
-				String rdPath = "WEB-INF/login.jsp";
-				naytaSivu(request, response, rdPath);
+				response.sendRedirect("/login");
 			}
 					
 		}
