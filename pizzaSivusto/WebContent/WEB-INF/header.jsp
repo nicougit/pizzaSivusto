@@ -153,7 +153,7 @@
 					</c:if>
 					<c:if test="${empty kayttaja }">
 					<a class="btn waves-effect waves-light right ostoskori-tilausnappi right"
-						href="<c:url value='/login'/>"><i
+						href="<c:url value='/login?tilaukseen=true'/>"><i
 						class="material-icons left">shopping_cart</i>Kirjaudu sisään tilataksesi</a>
 					</c:if>
 				</div>
