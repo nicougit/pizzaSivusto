@@ -398,6 +398,12 @@ public class Ostoskori extends HttpServlet {
 			pizzaobjekti.put("nimi", pizza.getNimi());
 			pizzaobjekti.put("hinta", pizza.getHinta());
 			pizzaobjekti.put("indeksi", indeksi);
+			for (int j = 0; j < pizza.getTaytteet().size(); j++) {
+				JSONObject tayteobjekti = new JSONObject();
+				tayteobjekti.put("tayte", pizza.getTaytteet().get(j).getNimi());
+				taytearray.add(tayteobjekti);
+			}
+			pizzaobjekti.put("taytteet", taytearray);
 			pizzalista.add(pizzaobjekti);
 			indeksi++;
 		}

@@ -90,7 +90,16 @@ var lisaaOstoskoriin = function(id, tyyppi) {
                     var yhteishinta = 0;
                     if (tuotteita > 0) {
                       ostoskori.pizzat.map(function(o, i) {
-                        ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + escape(o.nimi) + "</td><td class=\"right-align\"><a href=\"#!\" class=\"ostoskori-poistonappi\" onClick=\"poistaOstoskorista(" + escape(o.indeksi) + ")\"><i class=\"material-icons tiny\">clear</i></a></td><td class=\"center-align\">" + escape(formatoiHinta(o.hinta)) + "</td></tr>";
+                        var taytteet = "<span class=\"pienifontti\">(";
+                        o.taytteet.map(function(p, j) {
+                          var taytesisalto = escape(p.tayte);
+                          if (j+1 < o.taytteet.length) {
+                            taytesisalto += ", ";
+                          }
+                          taytteet += taytesisalto;
+                        });
+                        taytteet += ")</span>";
+                        ostoskoririvit += "<tr class=\"ostoskori-rivi\"><td>" + escape(o.nimi) + " " + taytteet + "</td><td class=\"right-align\"><a href=\"#!\" class=\"ostoskori-poistonappi\" onClick=\"poistaOstoskorista(" + escape(o.indeksi) + ")\"><i class=\"material-icons tiny\">clear</i></a></td><td class=\"center-align\">" + escape(formatoiHinta(o.hinta)) + "</td></tr>";
                         yhteishinta += o.hinta;
                       });
 
