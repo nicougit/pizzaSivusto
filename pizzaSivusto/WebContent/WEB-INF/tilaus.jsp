@@ -54,7 +54,16 @@
 	</ul>
 	</c:otherwise>
 	</c:choose>
-	<button class="btn waves-effect waves-light" type="button" onClick="naytaVirhe('Ei tästä vielä mitään tapahdu!')"><i class="material-icons left">add</i>Lisää osoite</button>
+	<a class="btn waves-effect waves-light modal-trigger" href="#osoitemodal"><i class="material-icons left">add</i>Lisää osoite</a>
+		<div id="osoitemodal" class="modal">
+		<div class="modal-content center-align">
+			<h4>Lisää osoite</h4>
+			asdasdasdasd<br><br>
+			
+		<a href="#!" class="modal-action modal-close waves-effect waves-light btn red lighten-2" >Sulje</a>
+		<a class="btn waves-effect waves-light" href="#!"><i class="material-icons left">add</i>Lisää osoite</a>
+		</div>
+	</div>
 	</div>
 	<div class="col s12">
 	<h5 class="tilaustitle">Tilauksen maksutapa</h5>
