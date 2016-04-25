@@ -19,10 +19,10 @@
 	<form>
 	<div class="row">
 	<div class="col s12">
-	<h2>Asiakastiedot</h2>
+	<h2>Tilauksen tiedot</h2>
 	<div class="row">
 	<div class="col s12 m4 l4">
-	<h5 class="tilaustitle">Nimi</h5>
+	<h5 class="tilaustitle">Tilaaja</h5>
 	<c:out value="${kayttaja.etunimi }"></c:out> <c:out value="${kayttaja.sukunimi }"></c:out>
 	</div>
 	<div class="col s12 m4 l4">
@@ -32,6 +32,30 @@
 	<div class="col s12 m4 l4">
 	<h5 class="tilaustitle">Puhelinnumero</h5>
 	<c:out value="${kayttaja.puhelin }"></c:out>
+	</div>
+	<div class="col s12 m4 sl4">
+	<h5 class="tilaustitle">Toimitustapa</h5>
+	<input type="radio" name="tilaustapa" id="kotiinkuljetus" checked>
+	<label for="kotiinkuljetus">Kotiinkuljetus</label><br>
+	<input type="radio" name="tilaustapa" id="nouto">
+	<label for="nouto">Nouto ravintolasta</label><br>
+	<input type="radio" name="tilaustapa" id="paikanpaalla">
+	<label for="paikanpaalla">Ruokailu ravintolassa</label>
+	</div>
+	<div class="col s12 m3 sl3">	
+	<h5 class="tilaustitle">Tilauksen maksutapa</h5>
+	<input type="radio" name="maksutapa" value="0" id="kateinen" checked>
+	<label for="kateinen">Käteinen</label><br>
+	<input type="radio" name="maksutapa" value="1" id="luottokortti">
+	<label for="luottokortti">Luottokortti</label><br>
+	<input type="radio" name="maksutapa" value="2" id="debitkortti">
+	<label for="debitkortti">Debit-kortti</label><br>
+	<input type="radio" name="maksutapa" value="3" id="oravannahat">
+	<label for="oravannahat">Oravannahat</label>
+	</div>
+	<div class="col s12 m5 sl5">
+	<h5 class="tilaustitle">Tilauksen lisätiedot</h5>
+	<textarea id="lisatiedot" class="materialize-textarea" name="lisatiedot" length="250"></textarea>
 	</div>
 	<div class="col s12">
 	<h5 class="tilaustitle">Toimitusosoite</h5>
@@ -54,25 +78,7 @@
 	</ul>
 	</c:otherwise>
 	</c:choose>
-	<a class="btn waves-effect waves-light modal-trigger" href="#osoitemodal"><i class="material-icons left">add</i>Lisää osoite</a>
-	</div>
-	<div class="col s12">
-	<h5 class="tilaustitle">Tilauksen maksutapa</h5>
-	<ul class="collection">
-	<li class="collection-item">
-	<input type="radio" name="maksutapa" value="0" id="kateinen" checked>
-	<label class="osoitelabel" for="kateinen">Käteinen</label>
-	</li><li class="collection-item">
-	<input type="radio" name="maksutapa" value="1" id="luottokortti">
-	<label class="osoitelabel" for="luottokortti">Luottokortti</label>
-	</li><li class="collection-item">
-	<input type="radio" name="maksutapa" value="2" id="debitkortti">
-	<label class="osoitelabel" for="debitkortti">Debit-kortti</label>
-	</li><li class="collection-item">
-	<input type="radio" name="maksutapa" value="3" id="oravannahat">
-	<label class="osoitelabel" for="oravannahat">Oravannahat</label>
-	</li>
-	</ul>
+	<a class="btn waves-effect waves-light modal-trigger right" href="#osoitemodal"><i class="material-icons left">add</i>Lisää osoite</a>
 	</div>
 	</div>
 	</div>
