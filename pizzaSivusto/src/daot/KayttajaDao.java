@@ -95,7 +95,7 @@ public class KayttajaDao {
 			
 			// Haetaan käyttäjän osoitteet
 			
-			sqlkysely = "SELECT osoite_id, toimitusosoite, postinro, postitmp FROM Toimitusosoite WHERE kayttaja_id = ?";
+			sqlkysely = "SELECT osoite_id, toimitusosoite, postinro, postitmp FROM Toimitusosoite WHERE kayttaja_id = ? AND poistomerkinta IS NULL";
 			parametrit.clear();
 			parametrit.add(String.valueOf(kayttaja.getId()));
 
