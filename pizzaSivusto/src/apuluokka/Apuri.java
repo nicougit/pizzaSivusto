@@ -75,5 +75,13 @@ public class Apuri {
 		return matcheri.find();
 	}
 	
+	// Postinumeron validointi
+	// Lähinnä ID validointeja varten
+	public boolean validoiPostinro(String stringi) {
+		Pattern patterni = Pattern.compile("^[\\d+]{5}$");
+		Matcher matcheri = patterni.matcher(stringi);
+		return matcheri.find();
+	}
+	
 }
 

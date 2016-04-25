@@ -18,6 +18,7 @@ var Login = React.createClass({
   },
   componentDidMount: function() {
     this.paivitanappi();
+    $('#kayttajanimi').focus().select()
   },
   render: function() {
     return (

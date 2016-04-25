@@ -64,8 +64,7 @@ $(function() {
 						</h3>
 						<span class="menu-pizzataytteet"> <c:forEach
 								items="${pizza.taytteet }" var="tayte" varStatus="status">
-								<c:out value="${tayte.nimi }"></c:out>
-							<c:if
+								<c:out value="${tayte.nimi }"></c:out><c:if
 									test="${fn:length(pizza.taytteet) > status.count }">, </c:if>
 							</c:forEach>
 						</span>

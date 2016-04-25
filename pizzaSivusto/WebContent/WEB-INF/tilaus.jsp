@@ -41,9 +41,9 @@
 	</c:when>
 	<c:otherwise>
 	<ul class="collection">
-	<c:forEach items="${kayttaja.osoitteet }" var="osoite">
+	<c:forEach items="${kayttaja.osoitteet }" var="osoite" varStatus="status">
     <li class="collection-item">
-      <input type="radio" name="osoitevalinta" id="<c:out value="${osoite.osoiteid }"></c:out>cb" value="<c:out value="${osoite.osoiteid }"></c:out>">
+      <input type="radio" name="osoitevalinta" id="<c:out value="${osoite.osoiteid }"></c:out>cb" value="<c:out value="${osoite.osoiteid }"></c:out>" <c:if test="${status.index == 0 }">checked</c:if>>
       <label class="osoitelabel" for="<c:out value="${osoite.osoiteid }"></c:out>cb">
       <c:out value="${osoite.osoite }"></c:out>, 
       <c:out value="${osoite.postinro }"></c:out> <c:out value="${osoite.postitmp }"></c:out>
@@ -55,15 +55,6 @@
 	</c:otherwise>
 	</c:choose>
 	<a class="btn waves-effect waves-light modal-trigger" href="#osoitemodal"><i class="material-icons left">add</i>Lisää osoite</a>
-		<div id="osoitemodal" class="modal">
-		<div class="modal-content center-align">
-			<h4>Lisää osoite</h4>
-			asdasdasdasd<br><br>
-			
-		<a href="#!" class="modal-action modal-close waves-effect waves-light btn red lighten-2" >Sulje</a>
-		<a class="btn waves-effect waves-light" href="#!"><i class="material-icons left">add</i>Lisää osoite</a>
-		</div>
-	</div>
 	</div>
 	<div class="col s12">
 	<h5 class="tilaustitle">Tilauksen maksutapa</h5>
@@ -101,7 +92,34 @@
 		<br>
 	</div>
 	</div>
+	<button class="btn waves-effect waves-light right" type="button" onClick="naytaVirhe('Tilauksen lähetystä ei vielä tehty')">Lähetä tilaus</button>
+	<br><br>
 	</form>
+			<div id="osoitemodal" class="modal">
+		<form id="osoiteformi" action="tilaus" method="post">
+		<div class="modal-content center-align">
+			<h4>Lisää osoite</h4>
+			<div class="col s12 m12 l10 offset-l1">
+			<div class="row">
+			<div class="input-field col s12 m6 l6">
+			<input type="text" name="lahiosoite" id="lahiosoite">
+			<label for="lahiosoite">Lähiosoite</label>
+			</div>
+			<div class="input-field col s12 m3 l3">
+			<input type="text" name="postinumero" id="postinumero">
+			<label for="postinumero">Postinumero</label>
+			</div>
+			<div class="input-field col s12 m3 l3">
+			<input type="text" name="postitoimipaikka" id="postitoimipaikka">
+			<label for="postitoimipaikka">Postitoimipaikka</label>
+			</div>
+			</div>
+			</div>
+		<a href="#!" class="modal-action modal-close waves-effect waves-light btn red lighten-2" >Sulje</a>
+		<button class="btn waves-effect waves-light" type="submit" name="action" value="lisaaosoite"><i class="material-icons left">add</i>Lisää osoite</button>
+		</div>
+		</form>
+	</div>
 	</div>
 
 	<jsp:include page="footer.jsp"></jsp:include>

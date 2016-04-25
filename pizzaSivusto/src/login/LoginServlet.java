@@ -202,9 +202,6 @@ public class LoginServlet extends HttpServlet {
 
 		// Haetaan parametrit
 		String reffi = request.getHeader("referer");
-		String tilaukseen = request.getHeader("tilaukseen");
-		System.out.println(reffi);
-		
 		String loppuosa = reffi.substring(reffi.lastIndexOf('/')+1);
 		System.out.println(loppuosa);
 		
@@ -213,18 +210,25 @@ public class LoginServlet extends HttpServlet {
 		osoitteet.put("pizza", "/pizza");
 		osoitteet.put("ostoskori", "/ostoskori");
 		
-		String osoite = "landingpage.jsp";
+		String osoite = null;
 		
-		if (tilaukseen != null) {
-			osoite = "/tilaus";
+		String[] parametrit = loppuosa.split("\\?");
+		if (loppuosa.contains("?")) {
+			loppuosa = loppuosa.substring(0, loppuosa.indexOf("?"));
 		}
-		else if (osoitteet.containsKey(loppuosa)) {
+		
+		if (osoitteet.containsKey(loppuosa)) {
 		 osoite = (String)osoitteet.get(loppuosa);
+		}
+		
+		for (int i = 0; i < parametrit.length; i++) {
+			if (parametrit[i].equals("tilaukseen=true")) {
+				osoite = "/tilaus";
+			}
 		}
 		
 		String kayttajanimi = request.getParameter("kayttajanimi");
 		String salasana = request.getParameter("salasana");
-
 
 		// Katsotaan onko parametreja olemassa
 		if (kayttajanimi != null && salasana != null) {
@@ -254,7 +258,7 @@ public class LoginServlet extends HttpServlet {
 					request.setAttribute("kayttaja", kayttaja);
 					request.setAttribute("success", "Olet kirjautunut sisään onnistuneesti!");
 					
-					if (osoite.contains("jsp")) {
+					if (osoite == null) {
 						response.sendRedirect(request.getContextPath());
 					}
 					else {

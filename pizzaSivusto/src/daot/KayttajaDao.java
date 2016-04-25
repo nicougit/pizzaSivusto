@@ -173,6 +173,54 @@ public class KayttajaDao {
 		
 		return osoitteet;
 	}
+	
+	public HashMap<String, String> lisaaOsoite(String kayttajaid, String lahiosoite, String postinumero, String postitoimipaikka) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		// Katsotaan ensin duplicaten varalta
+		String sql = "SELECT toimitusosoite FROM Toimitusosoite WHERE kayttaja_id = ? AND toimitusosoite = ? AND postinro = ? AND postitmp = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(kayttajaid);
+		parametrit.add(lahiosoite);
+		parametrit.add(postinumero);
+		parametrit.add(postitoimipaikka);
+
+		if (kysely.montaRivia(sql, parametrit) > 0) {
+			String virhe = "Osoite on jo sinulla lisättynä";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+		// Lisätään osoite
+		sql = "INSERT INTO Toimitusosoite VALUES (null, ?, ?, ?, ?)";
+
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit == 1) {
+			String success = "Osoite lisätty onnistuneesti!";
+			vastaus.put("success", success);
+			yhteys.suljeYhteys();
+			return vastaus;
+		} else {
+			String virhe = "Osoitetta lisätessä tietokantaan tapahtui virhe";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+	}
 
 	public HashMap<String, String> luoKayttaja(String kayttajatunnus, String salasana, String etunimi, String sukunimi,
 			String puhelinnro) {
