@@ -83,5 +83,12 @@ public class Apuri {
 		return matcheri.find();
 	}
 	
+	// Tilauksessa pizzan mausteiden jne validointiin
+	public boolean validoiPizzatieto(String stringi) {
+		Pattern patterni = Pattern.compile("^[\\d+]{1,11}-[\\w+]{1,100}$");
+		Matcher matcheri = patterni.matcher(stringi);
+		return matcheri.find();
+	}
+	
 }
 

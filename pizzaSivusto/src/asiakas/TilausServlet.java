@@ -1,6 +1,7 @@
 package asiakas;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.RequestDispatcher;
@@ -12,7 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import apuluokka.Apuri;
+import bean.Juoma;
 import bean.Kayttaja;
+import bean.Osoite;
+import bean.Pizza;
+import bean.Tilaus;
 import daot.AsiakasDao;
 import daot.HallintaDao;
 import daot.KayttajaDao;
@@ -31,20 +36,35 @@ public class TilausServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession sessio = request.getSession(false);
-		
 
-		
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
-			
-			if (request.getParameter("poista-osoite") != null) {
-				poistaOsoite(request, response);
-				System.out.println("osoitteen poisto");					
+
+			// Haetaan käyttäjän ostoskori
+			HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
+			ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
+			ArrayList<Juoma> ostoskoriJuomat = ostoskori.get("juomat");
+
+			if ((ostoskoriPizzat.size() + ostoskoriJuomat.size()) < 1) {
+				// Jos käyttäjän ostoskori on tyhjä, ohjataan ostoskoriin
+				// TODO: Pitää miettiä, miten saa redirectin kanssa välitettyä
+				// errorviestin
+				response.sendRedirect(request.getContextPath() + "/ostoskori");
 			} else {
-			naytaSivu(request, response);
+
+				if (request.getParameter("poista-osoite") != null) {
+					poistaOsoite(request, response);
+					System.out.println("osoitteen poisto");
+				} else {
+					naytaSivu(request, response);
+				}
 			}
 		} else {
-			// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle
-			response.sendRedirect("/login");
+			// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle ja
+			// sieltä tilaukseen
+			response.sendRedirect(request.getContextPath() + "/login?tilaukseen=true");
 		}
 
 	}
@@ -52,8 +72,22 @@ public class TilausServlet extends HttpServlet {
 	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilaus.jsp");
-		rd.forward(request, response);
+		// Haetaan käyttäjän ostoskori
+		HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
+		ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
+		ArrayList<Juoma> ostoskoriJuomat = ostoskori.get("juomat");
+
+		if ((ostoskoriPizzat.size() + ostoskoriJuomat.size()) < 1) {
+			// Jos käyttäjän ostoskori on tyhjä, ohjataan ostoskoriin
+			// TODO: Pitää miettiä, miten saa redirectin kanssa välitettyä
+			// errorviestin
+			response.sendRedirect(request.getContextPath() + "/ostoskori");
+		} else {
+			request.setAttribute("ostoskoriPizzat", ostoskoriPizzat);
+			request.setAttribute("ostoskoriJuomat", ostoskoriJuomat);
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilaus.jsp");
+			rd.forward(request, response);
+		}
 
 	}
 
@@ -61,11 +95,16 @@ public class TilausServlet extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession sessio = request.getSession(false);
 
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 
 			String action = request.getParameter("action");
 			if (action != null && action.equals("lisaaosoite")) {
 				lisaaOsoite(request, response);
+			} else if (action != null && action.equals("lahetatilaus")) {
+				lahetaTilaus(request, response);
 			} else {
 				doGet(request, response);
 			}
@@ -74,6 +113,189 @@ public class TilausServlet extends HttpServlet {
 			response.sendRedirect("/login");
 		}
 
+	}
+
+	protected void lahetaTilaus(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		HttpSession sessio = request.getSession(false);
+		Apuri apuri = new Apuri();
+		
+		System.out.println("Käyttäjä haluaa tehdä tilauksen");
+
+		// Haetaan käyttäjän ostoskori
+		HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
+		ArrayList<Pizza> ostoskoriPizzat = ostoskori.get("pizzat");
+		ArrayList<Juoma> ostoskoriJuomat = ostoskori.get("juomat");
+
+		// Haetaan käyttäjä
+		Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+
+		// Haetaan parametrit
+		String tilaustapa = request.getParameter("tilaustapa");
+		String maksutapa = request.getParameter("maksutapa");
+		String lisatiedot = request.getParameter("lisatiedot");
+		String osoitevalinta = request.getParameter("osoitevalinta");
+		String[] pizzatiedot = request.getParameterValues("pizzatieto");
+
+		/*
+		 * Tilaustapa: 0 = kuljetus, 1 = nouto, 2 = ravintolassa Maksutapa: 0 =
+		 * käteinen, 1 = luottokortti, 2 = verkkomaksu
+		 */
+
+		if (tilaustapa != null && maksutapa != null && lisatiedot != null && osoitevalinta != null) {
+
+			if (apuri.validoiInt(tilaustapa, 11) == true && Integer.parseInt(tilaustapa) >= 0
+					&& Integer.parseInt(tilaustapa) < 3) {
+				if (apuri.validoiInt(maksutapa, 11) == true && Integer.parseInt(maksutapa) >= 0
+						&& Integer.parseInt(maksutapa) < 3) {
+					// TODO: Lisätietojen validointi
+					if (lisatiedot != null) {
+						if (apuri.validoiInt(osoitevalinta, 11) == true) {
+							// Osoitteen tarkempi validointi ja haku
+							ArrayList<Osoite> osoitteet = kayttaja.getOsoitteet();
+							Osoite osoite = null;
+							for (int i = 0; i < osoitteet.size(); i++) {
+								if (osoitteet.get(i).getOsoiteid() == Integer.parseInt(osoitevalinta)) {
+									osoite = osoitteet.get(i);
+									i = osoitteet.size();
+								}
+							}
+							if (osoite != null) {
+								Boolean pizzatiedotOk = true;
+								if (pizzatiedot != null) {
+									for (int i = 0; i < pizzatiedot.length; i++) {
+										boolean validointi = apuri.validoiPizzatieto(pizzatiedot[i]);
+										if (!validointi) {
+											System.out.println("Pizzatieto " + (i + 1) + " virheellinen!");
+											System.out.println(pizzatiedot[i]);
+											i = pizzatiedot.length;
+											pizzatiedotOk = false;
+										}
+									}
+								}
+								if (pizzatiedotOk) {
+
+									// Setataan eka pizzatiedoiks falset
+									// Ilman tätä oli probleemia
+									for (int i = 0; i < ostoskoriPizzat.size(); i++) {
+										ostoskoriPizzat.get(i).setOregano(false);
+										ostoskoriPizzat.get(i).setValkosipuli(false);
+										ostoskoriPizzat.get(i).setGluteeniton(false);
+										ostoskoriPizzat.get(i).setVl(false);
+									}
+									// Pizzatietojen parsiminen ja liittäminen
+									// pizzoille
+									if (pizzatiedot != null) {
+										for (int i = 0; i < pizzatiedot.length; i++) {
+											String pizzaindex = pizzatiedot[i].substring(0,
+													pizzatiedot[i].indexOf("-"));
+											String pizzatieto = pizzatiedot[i]
+													.substring(pizzatiedot[i].indexOf("-") + 1);
+											int pizzaindeksi = Integer.parseInt(pizzaindex);
+											if (pizzaindeksi <= ostoskoriPizzat.size()) {
+												if (pizzatieto.equals("oregano")) {
+													ostoskoriPizzat.get(pizzaindeksi).setOregano(true);
+												} else if (pizzatieto.equals("valkosipuli")) {
+													ostoskoriPizzat.get(pizzaindeksi).setValkosipuli(true);
+												} else if (pizzatieto.equals("gluteeniton")) {
+													ostoskoriPizzat.get(pizzaindeksi).setGluteeniton(true);
+												} else if (pizzatieto.equals("vl")) {
+													ostoskoriPizzat.get(pizzaindeksi).setVl(true);
+												} else {
+													System.out.println("Virhe - tuntematon pizzatieto indeksissä "
+															+ pizzaindex + " : " + pizzatieto);
+												}
+											}
+
+										}
+									}
+									
+									System.out.println("Kaikki tilauksen tiedot OK");
+
+									// Tilaustavan parsiminen
+									if (tilaustapa.equals("0")) {
+										tilaustapa = "kuljetus";
+									} else if (tilaustapa.equals("1")) {
+										tilaustapa = "nouto";
+									} else if (tilaustapa.equals("2")) {
+										tilaustapa = "ravintolassa";
+									}
+
+									// Maksutavan parsiminen
+									if (maksutapa.equals("0")) {
+										maksutapa = "kateinen";
+									} else if (maksutapa.equals("1")) {
+										maksutapa = "luottokortti";
+									} else if (maksutapa.equals("2")) {
+										maksutapa = "verkkomaksu";
+									}
+
+									// Lasketaan yhteishinta
+									// Lisätään tähän sit jos tulee kuljetusmaksu tms
+									double kokonaishinta = 0;
+									for (int i = 0; i < ostoskoriPizzat.size(); i++) {
+										kokonaishinta += ostoskoriPizzat.get(i).getHinta();
+									}
+									for (int i = 0; i < ostoskoriJuomat.size(); i++) {
+										kokonaishinta += ostoskoriJuomat.get(i).getHinta();
+									}
+									
+									// Luodaan tilausolio
+									Tilaus tilaus = new Tilaus();
+									tilaus.setToimitustapa(tilaustapa);
+									tilaus.setMaksutapa(maksutapa);
+									tilaus.setPizzat(ostoskoriPizzat);
+									tilaus.setJuomat(ostoskoriJuomat);
+									tilaus.setKokonaishinta(kokonaishinta);
+									if (!lisatiedot.equals("")) {
+									tilaus.setLisatiedot(lisatiedot);
+									}
+									if (tilaustapa.equals("kuljetus")) {
+										tilaus.setOsoite(osoite);
+									}
+									
+									// Tilausvahvistuksen näyttö
+									naytaTilausvahvistus(request, response, tilaus);
+									
+								} else {
+									String virhe = "Pizzojen lisätiedoissa oli virheitä";
+									virhe(request, response, virhe);
+								}
+							} else {
+								String virhe = "Osoitetta ei löydy käyttäjältä";
+								virhe(request, response, virhe);
+							}
+
+						} else {
+							String virhe = "Osoitevalinta virheellinen";
+							virhe(request, response, virhe);
+						}
+					} else {
+						// Eclipse sanoo et dead codee, koska validointia ei vielä tehty
+						String virhe = "Lisätiedoissa laittomia merkkejä";
+						virhe(request, response, virhe);
+					}
+
+				} else {
+					String virhe = "Virheellinen maksutapa";
+					virhe(request, response, virhe);
+				}
+
+			} else {
+				String virhe = "Virheellinen tilaustapa";
+				virhe(request, response, virhe);
+			}
+
+		}
+
+	}
+	
+	protected void naytaTilausvahvistus(HttpServletRequest request, HttpServletResponse response, Tilaus tilaus)
+			throws ServletException, IOException {
+		request.setAttribute("tilaus", tilaus);
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilausvahvistus.jsp");
+		rd.forward(request, response);
 	}
 
 	protected void lisaaOsoite(HttpServletRequest request, HttpServletResponse response)
@@ -83,14 +305,14 @@ public class TilausServlet extends HttpServlet {
 		String postitoimipaikka = request.getParameter("postitoimipaikka");
 		String kayttajaid = null;
 		Kayttaja kayttaja = null;
-		
+
 		HttpSession sessio = request.getSession(false);
 
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 			try {
 				kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
 				kayttajaid = String.valueOf(kayttaja.getId());
-			} catch(Exception ex) {
+			} catch (Exception ex) {
 				System.out.println("Virhe käyttäjää castatessa");
 			}
 		}
@@ -99,32 +321,34 @@ public class TilausServlet extends HttpServlet {
 		Apuri apuri = new Apuri();
 
 		if (lahiosoite != null && postinumero != null && postitoimipaikka != null && kayttajaid != null) {
-			if (apuri.validoiString(lahiosoite, " -", 50) == true && apuri.validoiPostinro(postinumero) == true && apuri.validoiString(postitoimipaikka, "-", 50)) {
+			if (apuri.validoiString(lahiosoite, " -", 50) == true && apuri.validoiPostinro(postinumero) == true
+					&& apuri.validoiString(postitoimipaikka, "-", 50)) {
 
 				KayttajaDao dao = new KayttajaDao();
 
 				// Katsotaan, onnistuuko päivitys
-				HashMap<String, String> vastaus = dao.lisaaOsoite(kayttajaid, lahiosoite, postinumero, postitoimipaikka);
+				HashMap<String, String> vastaus = dao.lisaaOsoite(kayttajaid, lahiosoite, postinumero,
+						postitoimipaikka);
 				if (vastaus.get("virhe") != null) {
 					String virhe = vastaus.get("virhe");
 					request.setAttribute("virhe", virhe);
 				} else if (vastaus.get("success") != null) {
 					String success = vastaus.get("success");
 					request.setAttribute("success", success);
-					
+
 					// Päivitetään osoitelista
 					kayttaja.setOsoitteet(dao.haeOsoitteet(String.valueOf(kayttaja.getId())));
-					// Korvataan session vanha käyttäjä uudella, jossa päivitetyt
+					// Korvataan session vanha käyttäjä uudella, jossa
+					// päivitetyt
 					// osoitteet!
 					sessio.setAttribute("kayttaja", kayttaja);
-					
+
 				} else {
 					request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 				}
 
 				doGet(request, response);
-			}
-			else {
+			} else {
 				String virhe = "Osoitetiedoissa oli virheitä";
 				virhe(request, response, virhe);
 			}
@@ -141,56 +365,99 @@ public class TilausServlet extends HttpServlet {
 		request.setAttribute("virhe", virhe);
 		naytaSivu(request, response);
 	}
-	
+
 	public void poistaOsoite(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-			HttpSession sessio = request.getSession(false);
-			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
-			
-			String poistaOsoite = request.getParameter("poista-osoite");
-			
-			// Validoidaan input
-			Apuri apuri = new Apuri();
 
-			if (apuri.validoiInt(poistaOsoite, 11) == false) {
-				String virhe = "Poistettavan osoitteen ID ei ole validi!";
-				virhe(request, response, virhe);
-			} else {
-				System.out.println("Yritetään poistaa osoite ID: " + poistaOsoite);
-				KayttajaDao dao = new KayttajaDao();
+		HttpSession sessio = request.getSession(false);
+		Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
 
-				String kayttajaid = String.valueOf(kayttaja.getId());
-				HashMap<String, String> vastaus = dao.poistaOsoite(kayttajaid, poistaOsoite);
+		String poistaOsoite = request.getParameter("poista-osoite");
 
-					if (vastaus.get("virhe") != null) {
-						String virhe = vastaus.get("virhe");
-						request.setAttribute("virhe", virhe);
-						naytaSivu(request, response);
-					} else if (vastaus.get("success") != null) {
-						String success = vastaus.get("success");
-						request.setAttribute("success", success);
-						
-						try {
+		// Validoidaan input
+		Apuri apuri = new Apuri();
 
-							// Päivitetään osoitelista
-							kayttaja.setOsoitteet(dao.haeOsoitteet(String.valueOf(kayttaja.getId())));
-							// Korvataan session vanha käyttäjä uudella, jossa päivitetyt
-							// osoitteet!
-							sessio.setAttribute("kayttaja", kayttaja);
-						} catch (Exception ex) {
-							System.out.println("Käyttäjää castatessa virhe tilausservletissä!");
-						}
-						
-						naytaSivu(request, response);
-					} else {
-						request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
-						naytaSivu(request, response);
-					
+		if (apuri.validoiInt(poistaOsoite, 11) == false) {
+			String virhe = "Poistettavan osoitteen ID ei ole validi!";
+			virhe(request, response, virhe);
+		} else {
+			System.out.println("Yritetään poistaa osoite ID: " + poistaOsoite);
+			KayttajaDao dao = new KayttajaDao();
+
+			String kayttajaid = String.valueOf(kayttaja.getId());
+			HashMap<String, String> vastaus = dao.poistaOsoite(kayttajaid, poistaOsoite);
+
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+				naytaSivu(request, response);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
+
+				try {
+
+					// Päivitetään osoitelista
+					kayttaja.setOsoitteet(dao.haeOsoitteet(String.valueOf(kayttaja.getId())));
+					// Korvataan session vanha käyttäjä uudella, jossa
+					// päivitetyt
+					// osoitteet!
+					sessio.setAttribute("kayttaja", kayttaja);
+				} catch (Exception ex) {
+					System.out.println("Käyttäjää castatessa virhe tilausservletissä!");
 				}
 
+				naytaSivu(request, response);
+			} else {
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+				naytaSivu(request, response);
+
 			}
-			
+
 		}
+
+	}
+
+	// Hakee ostoskorin sisällön, jos sisältöä ei ole, luo ostoskorin
+	// Huono käytäntö, koska copypastettu sama koodi Ostoskori-servletistä
+	// Katotaan, jos tekis tälle luokan, jotta vois kutsua samaa koodia
+	// molemmista servleteistä
+	protected HashMap<String, ArrayList> haeOstoskori(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Sessionhallintaa
+		HttpSession sessio = request.getSession(true);
+
+		HashMap<String, ArrayList> ostoskori = null;
+		ArrayList<Pizza> ostoskoriPizzat = new ArrayList<>();
+		ArrayList<Juoma> ostoskoriJuomat = new ArrayList<>();
+		try {
+			ostoskori = (HashMap<String, ArrayList>) sessio.getAttribute("ostoskori");
+		} catch (Exception ex) {
+			System.out.println("Virhe ostoskoria hakiessa " + ex);
+		}
+
+		if (ostoskori == null) {
+			ostoskori = new HashMap<>();
+		} else {
+			try {
+				if (ostoskori.get("pizzat") != null && ostoskori.get("juomat") != null) {
+					ostoskoriPizzat = ostoskori.get("pizzat");
+					ostoskoriJuomat = ostoskori.get("juomat");
+				} else {
+					ostoskoriPizzat = new ArrayList<>();
+					ostoskoriJuomat = new ArrayList<>();
+				}
+
+			} catch (Exception ex) {
+				System.out.println("Virhe pizzojen ja juomien noutamisessa ostoskorista " + ex);
+			}
+		}
+
+		ostoskori.put("pizzat", ostoskoriPizzat);
+		ostoskori.put("juomat", ostoskoriJuomat);
+
+		return ostoskori;
+	}
 
 }

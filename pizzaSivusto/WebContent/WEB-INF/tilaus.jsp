@@ -16,7 +16,7 @@
 		<h1>Tilaus</h1>
 	</div>
 	<div class="row" id="main-content">
-	<form>
+	<form method="post" action="tilaus">
 	<div class="row">
 	<div class="col s12">
 	<h2>Tilauksen tiedot</h2>
@@ -35,11 +35,11 @@
 	</div>
 	<div class="col s12 m4 sl4">
 	<h5 class="tilaustitle">Toimitustapa</h5>
-	<input type="radio" name="tilaustapa" id="kotiinkuljetus" checked>
+	<input type="radio" name="tilaustapa" value="0" id="kotiinkuljetus" checked>
 	<label for="kotiinkuljetus">Kotiinkuljetus</label><br>
-	<input type="radio" name="tilaustapa" id="nouto">
+	<input type="radio" name="tilaustapa" value="1" id="nouto">
 	<label for="nouto">Nouto ravintolasta</label><br>
-	<input type="radio" name="tilaustapa" id="paikanpaalla">
+	<input type="radio" name="tilaustapa" value="2" id="paikanpaalla">
 	<label for="paikanpaalla">Ruokailu ravintolassa</label>
 	</div>
 	<div class="col s12 m3 sl3">	
@@ -48,10 +48,8 @@
 	<label for="kateinen">Käteinen</label><br>
 	<input type="radio" name="maksutapa" value="1" id="luottokortti">
 	<label for="luottokortti">Luottokortti</label><br>
-	<input type="radio" name="maksutapa" value="2" id="debitkortti">
-	<label for="debitkortti">Debit-kortti</label><br>
-	<input type="radio" name="maksutapa" value="3" id="oravannahat">
-	<label for="oravannahat">Oravannahat</label>
+	<input type="radio" name="maksutapa" value="2" id="verkkomaksu">
+	<label for="debitkortti">Verkkomaksu</label><br>
 	</div>
 	<div class="col s12 m5 sl5">
 	<h5 class="tilaustitle">Tilauksen lisätiedot</h5>
@@ -84,7 +82,7 @@
 	</div>
 	<div class="col s12">
 		<h2>Tilattavat tuotteet</h2>
-		<table class="ostoskori-table striped">
+		<table class="bordered">
 			<thead>
 				<tr>
 					<th>Tuotteen nimi</th>
@@ -92,13 +90,58 @@
 					<th class="center">Hinta</th>
 				</tr>
 			</thead>
-			<tbody class="ostoskori-tbody">
+			<tbody>
+			<c:set var="yhteishinta" value="0"></c:set>
+			<c:forEach items="${ostoskoriPizzat }" var="pizza" varStatus="status">
+			<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber></c:set>
+			<tr class="tilaus-nobottom">
+			<td>
+			<c:out value="${pizza.nimi }"></c:out>
+			<c:set var="taytteita" value="${fn:length(pizza.taytteet) }"></c:set>
+			<span class="pienifontti">(
+			<c:forEach items="${pizza.taytteet }" var="tayte" varStatus="taytestatus">
+			<c:out value="${tayte.nimi }"></c:out><c:if test="${taytestatus.count < taytteita }">, </c:if>
+			</c:forEach>
+			)</span>
+			</td>
+			<td>
+			</td>
+			<td class="center">${fn:replace(hinta, ".", ",") } €</td>
+			</tr>
+			<tr>
+			<td class="tilaus-tietorivi" colspan="3">
+			<input type="checkbox" name="pizzatieto" id="<c:out value="${status.index }-oregano"></c:out>" value="<c:out value="${status.index }-oregano"></c:out>">
+			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-oregano"></c:out>">Oregano</label>
+			<input type="checkbox" name="pizzatieto" id="<c:out value="${status.index }-valkosipuli"></c:out>" value="<c:out value="${status.index }-valkosipuli"></c:out>">
+			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-valkosipuli"></c:out>">Valkosipuli</label>
+			<input type="checkbox" name="pizzatieto" id="<c:out value="${status.index }-gluteeniton"></c:out>" value="<c:out value="${status.index }-gluteeniton"></c:out>">
+			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-gluteeniton"></c:out>">Gluteeniton</label>
+			<input type="checkbox" name="pizzatieto" id="<c:out value="${status.index }-vl"></c:out>" value="<c:out value="${status.index }-vl"></c:out>">
+			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-vl"></c:out>">Vähälaktoosinen</label>
+			</td>
+			</tr>
+			<c:set var="yhteishinta" value="${yhteishinta + pizza.hinta }"></c:set>
+			</c:forEach>
+			<c:forEach items="${ostoskoriJuomat }" var="juoma">
+			<c:set var="koko" value="${juoma.koko }"></c:set>
+			<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${juoma.hinta }"></fmt:formatNumber></c:set>
+			<td><c:out value="${juoma.nimi }"></c:out> <span class="pienifontti">( ${fn:replace(koko, ".", ",") }l juoma )</span></td>
+			<td></td>
+			<td class="center">${fn:replace(hinta, ".", ",") } €</td>
+			<c:set var="yhteishinta" value="${yhteishinta + juoma.hinta }"></c:set>
+			</c:forEach>
+			<tr class="tilaus-nobottom">
+			<c:set var="yhteishinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${yhteishinta }"></fmt:formatNumber></c:set>
+			<td colspan="2" class="strong-id right-align">Tuotteiden yhteishinta</td>
+			<td class="center strong-id">${fn:replace(yhteishinta, ".", ",") } €</td>
+			</tr>
 			</tbody>
 		</table>
 		<br>
 	</div>
 	</div>
-	<button class="btn waves-effect waves-light right" type="button" onClick="naytaVirhe('Tilauksen lähetystä ei vielä tehty')">Lähetä tilaus</button>
+	<a class="btn waves-effect waves-light left red lighten-2" href="<c:url value='/ostoskori'/>">Palaa ostoskoriin</a>
+	<button class="btn waves-effect waves-light right" type="submit" name="action" value="lahetatilaus">Lähetä tilaus</button>
 	<br><br>
 	</form>
 			<div id="osoitemodal" class="modal">

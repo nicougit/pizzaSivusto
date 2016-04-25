@@ -169,6 +169,18 @@ h5 {
 	text-align: inherit;
 }
 
+.tilaus-tietolabel {
+	margin-right: 20px;
+}
+
+.tilaus-tietorivi {
+	padding-top: 0px;
+}
+
+.tilaus-nobottom {
+	border-bottom: none !important;
+}
+
 .osoitelabel {
 	color: #000;
 }
