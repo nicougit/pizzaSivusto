@@ -8,6 +8,7 @@ import bean.Juoma;
 import bean.Pizza;
 import bean.Tayte;
 import tietokanta.Kysely;
+import tietokanta.Paivitys;
 import tietokanta.Yhteys;
 
 public class AsiakasDao {
@@ -301,5 +302,5 @@ public class AsiakasDao {
 		return juomat;
 
 	}
-
+	
 }

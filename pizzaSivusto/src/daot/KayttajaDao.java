@@ -146,7 +146,7 @@ public class KayttajaDao {
 		ArrayList<String> parametrit = new ArrayList<>();
 		
 		// Haetaan käyttäjän osoitteet
-		String sqlkysely = "SELECT osoite_id, toimitusosoite, postinro, postitmp FROM Toimitusosoite WHERE kayttaja_id = ?";
+		String sqlkysely = "SELECT osoite_id, toimitusosoite, postinro, postitmp FROM Toimitusosoite WHERE kayttaja_id = ? AND poistomerkinta IS NULL";
 		parametrit.clear();
 		parametrit.add(kayttajaid);
 
@@ -188,7 +188,7 @@ public class KayttajaDao {
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
 		// Katsotaan ensin duplicaten varalta
-		String sql = "SELECT toimitusosoite FROM Toimitusosoite WHERE kayttaja_id = ? AND toimitusosoite = ? AND postinro = ? AND postitmp = ?";
+		String sql = "SELECT toimitusosoite FROM Toimitusosoite WHERE kayttaja_id = ? AND toimitusosoite = ? AND postinro = ? AND postitmp = ? AND poistomerkinta IS NULL";
 		ArrayList<String> parametrit = new ArrayList<String>();
 		parametrit.add(kayttajaid);
 		parametrit.add(lahiosoite);
@@ -203,7 +203,7 @@ public class KayttajaDao {
 		}
 
 		// Lisätään osoite
-		sql = "INSERT INTO Toimitusosoite VALUES (null, ?, ?, ?, ?)";
+		sql = "INSERT INTO Toimitusosoite VALUES (null, ?, ?, ?, ?, null)";
 
 		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
 		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
@@ -217,6 +217,53 @@ public class KayttajaDao {
 			String virhe = "Osoitetta lisätessä tietokantaan tapahtui virhe";
 			vastaus.put("virhe", virhe);
 			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+	}
+	
+	public HashMap<String, String> poistaOsoite(String kayttajaid, String poistaOsoite) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		// Katsotaan, onko poistettavaa osoitetta olemassa
+		String sql = "SELECT osoite_id FROM Toimitusosoite WHERE osoite_id = ? AND kayttaja_id = ?";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(poistaOsoite);
+		parametrit.add(kayttajaid);
+
+		if (kysely.montaRivia(sql, parametrit) != 1) {
+			String virhe = "Osoitetta ei ole tietokannassa";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		// Poistetaan itse osoite
+		sql = "UPDATE Toimitusosoite SET poistomerkinta = NOW() WHERE osoite_id = ? AND kayttaja_id = ?";
+		
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Palautetaan tulokset
+		if (rivit == 1) {
+			String success = "Osoite poistettiin käyttäjätiedoista";
+			vastaus.put("success", success);
+			return vastaus;
+		} else {
+			String virhe = "Osoitetta poistaessa tapahtui virhe";
+			vastaus.put("virhe", virhe);
 			return vastaus;
 		}
 

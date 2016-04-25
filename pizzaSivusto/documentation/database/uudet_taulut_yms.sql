@@ -48,6 +48,7 @@ kayttaja_id INT NOT NULL,
 toimitusosoite VARCHAR(50) NOT NULL,
 postinro CHAR(5) NOT NULL,
 postitmp VARCHAR(50) NOT NULL,
+poistomerkinta DATE NULL,
 PRIMARY KEY (osoite_id, kayttaja_id),
 FOREIGN KEY (kayttaja_id) REFERENCES Kayttaja(id)
 )Engine=InnoDB;

@@ -72,7 +72,7 @@
       <c:out value="${osoite.osoite }"></c:out>, 
       <c:out value="${osoite.postinro }"></c:out> <c:out value="${osoite.postitmp }"></c:out>
       </label>
-      <a href="#!" class="secondary-content taytteenpoisto tooltipped" data-position="left" data-delay="500" data-tooltip="Poista osoite"><i class="material-icons">delete</i></a>
+       <a href="?poista-osoite=<c:out value="${osoite.osoiteid }"></c:out>" class="secondary-content taytteenpoisto tooltipped" data-position="left" data-delay="500" data-tooltip="Poista osoite"><i class="material-icons">delete</i></a>
     </li>
 	</c:forEach>
 	</ul>
