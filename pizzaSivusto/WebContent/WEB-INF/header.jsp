@@ -3,6 +3,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="url">${pageContext.request.contextPath}</c:set>
+<c:set var="pizzaurl" value="${url }/WEB-INF/pizzat.jsp"></c:set>
+<c:set var="tilausurl" value="${url }/WEB-INF/tilaus.jsp"></c:set>
+<c:set var="tilausvahvistusurl" value="${url }/WEB-INF/tilausvahvistus.jsp"></c:set>
 <div class="navbar-fixed">
 	<c:if test="${not empty kayttaja }">
 		<ul id="user-dropdowni" class="dropdown-content">
@@ -29,17 +33,24 @@
 			<a href="#" data-activates="mobiili-nav" class="button-collapse"><i
 				class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
-				<c:if
-					test="${pageContext.request.requestURI == '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
+				<c:if test="${pageContext.request.requestURI == pizzaurl }">
 					<li><a href="#pizzat">Pizzat</a></li>
 					<li><a href="#juomat">Juomat</a></li>
 				</c:if>
-				<c:if
-					test="${pageContext.request.requestURI != '/pizzaSivusto/WEB-INF/pizzat.jsp' || pageContext.request.requestURI == '/reptilemafia/WEB-INF/pizzat.jsp'}">
+				<c:if test="${pageContext.request.requestURI != pizzaurl }">
 					<li><a href="<c:url value='/pizza'/>">Menu</a></li>
 				</c:if>
 				
-				<li><a class="modal-trigger" href="#ostoskorimodal"><i
+				<li>
+				<c:choose>
+				<c:when test="${pageContext.request.requestURI != tilausurl && pageContext.request.requestURI != tilausvahvistusurl}">
+				<a class="modal-trigger" href="#ostoskorimodal">
+				</c:when>
+				<c:otherwise>
+				<a href="<c:url value='/ostoskori'/>">
+				</c:otherwise>
+				</c:choose>
+				<i
 						class="material-icons left">shopping_cart</i> Ostoskori<span
 						class="navbar-yhteishinta pienifontti"></span></a></li>
 				<c:choose>
@@ -66,7 +77,7 @@
 								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
 								<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
 							</c:if>
-							<c:if test="${kayttaja.tyyppi == 'staff' }">
+							<c:if test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
 
 								<li><a href="<c:url value='/avoimet_tilaukset'/>">Avoimet
 										tilaukset</a></li>
@@ -89,8 +100,6 @@
 		<div id="loginmodal" class="modal loginmodaali">
 			<div class="modal-content center-align">
 				<form method="post" action="<c:url value='/login'/>">
-				
-				<input type="hidden" name="sijainti" value="${pageContext.request.requestURI}">
 					<h4>Kirjaudu sisään</h4>
 					<div class="row">
 						<div class="input-field col s12">
@@ -111,8 +120,7 @@
 								class="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a>
 							<button class="btn waves-effect waves-light" type="submit"
 								name="action" value="login">Kirjaudu</button>
-							<br> <br> <span class="pienifontti"> Jos et ole
-								vielä jäsen, voit rekisteröityä <a
+							<br> <br> <span class="pienifontti">Jos sinulla ei ole vielä käyttäjätiliä, voit rekisteröityä <a
 								href="<c:url value='/login'/>">täältä</a>.
 							</span>
 						</div>

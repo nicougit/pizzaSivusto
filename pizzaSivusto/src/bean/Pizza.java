@@ -11,10 +11,7 @@ public class Pizza {
 	String poistomerkinta;
 	ArrayList<String> tayteIdt;
 	String kuvaus;
-	Boolean oregano;
-	Boolean valkosipuli;
-	Boolean vl;
-	Boolean gluteeniton;
+	ArrayList<String> lisatiedot;
 
 	public Pizza() {
 		super();
@@ -89,43 +86,19 @@ public class Pizza {
 		this.kuvaus = kuvaus;
 	}
 
-	public Boolean getOregano() {
-		return oregano;
+	public ArrayList<String> getLisatiedot() {
+		return lisatiedot;
 	}
 
-	public void setOregano(Boolean oregano) {
-		this.oregano = oregano;
-	}
-
-	public Boolean getValkosipuli() {
-		return valkosipuli;
-	}
-
-	public void setValkosipuli(Boolean valkosipuli) {
-		this.valkosipuli = valkosipuli;
-	}
-
-	public Boolean getVl() {
-		return vl;
-	}
-
-	public void setVl(Boolean vl) {
-		this.vl = vl;
-	}
-
-	public Boolean getGluteeniton() {
-		return gluteeniton;
-	}
-
-	public void setGluteeniton(Boolean gluteeniton) {
-		this.gluteeniton = gluteeniton;
+	public void setLisatiedot(ArrayList<String> lisatiedot) {
+		this.lisatiedot = lisatiedot;
 	}
 
 	@Override
 	public String toString() {
 		return "Pizza [id=" + id + ", nimi=" + nimi + ", hinta=" + hinta + ", taytteet=" + taytteet
-				+ ", poistomerkinta=" + poistomerkinta + ", tayteIdt=" + tayteIdt + ", kuvaus=" + kuvaus + ", oregano="
-				+ oregano + ", valkosipuli=" + valkosipuli + ", vl=" + vl + ", gluteeniton=" + gluteeniton + "]";
+				+ ", poistomerkinta=" + poistomerkinta + ", tayteIdt=" + tayteIdt + ", kuvaus=" + kuvaus
+				+ ", lisatiedot=" + lisatiedot + "]";
 	}
 
 }

@@ -179,10 +179,7 @@ public class TilausServlet extends HttpServlet {
 									// Setataan eka pizzatiedoiks falset
 									// Ilman tätä oli probleemia
 									for (int i = 0; i < ostoskoriPizzat.size(); i++) {
-										ostoskoriPizzat.get(i).setOregano(false);
-										ostoskoriPizzat.get(i).setValkosipuli(false);
-										ostoskoriPizzat.get(i).setGluteeniton(false);
-										ostoskoriPizzat.get(i).setVl(false);
+										ostoskoriPizzat.get(i).setLisatiedot(new ArrayList<>());
 									}
 									// Pizzatietojen parsiminen ja liittäminen
 									// pizzoille
@@ -195,13 +192,13 @@ public class TilausServlet extends HttpServlet {
 											int pizzaindeksi = Integer.parseInt(pizzaindex);
 											if (pizzaindeksi <= ostoskoriPizzat.size()) {
 												if (pizzatieto.equals("oregano")) {
-													ostoskoriPizzat.get(pizzaindeksi).setOregano(true);
+													ostoskoriPizzat.get(pizzaindeksi).getLisatiedot().add("Oregano");
 												} else if (pizzatieto.equals("valkosipuli")) {
-													ostoskoriPizzat.get(pizzaindeksi).setValkosipuli(true);
+													ostoskoriPizzat.get(pizzaindeksi).getLisatiedot().add("Valkosipuli");
 												} else if (pizzatieto.equals("gluteeniton")) {
-													ostoskoriPizzat.get(pizzaindeksi).setGluteeniton(true);
+													ostoskoriPizzat.get(pizzaindeksi).getLisatiedot().add("Gluteeniton");
 												} else if (pizzatieto.equals("vl")) {
-													ostoskoriPizzat.get(pizzaindeksi).setVl(true);
+													ostoskoriPizzat.get(pizzaindeksi).getLisatiedot().add("Vähälaktoosinen");
 												} else {
 													System.out.println("Virhe - tuntematon pizzatieto indeksissä "
 															+ pizzaindex + " : " + pizzatieto);
@@ -215,30 +212,34 @@ public class TilausServlet extends HttpServlet {
 
 									// Tilaustavan parsiminen
 									if (tilaustapa.equals("0")) {
-										tilaustapa = "kuljetus";
+										tilaustapa = "Kotiinkuljetus";
 									} else if (tilaustapa.equals("1")) {
-										tilaustapa = "nouto";
+										tilaustapa = "Nouto";
 									} else if (tilaustapa.equals("2")) {
-										tilaustapa = "ravintolassa";
+										tilaustapa = "Ravintolassa";
 									}
 
 									// Maksutavan parsiminen
 									if (maksutapa.equals("0")) {
-										maksutapa = "kateinen";
+										maksutapa = "Käteinen";
 									} else if (maksutapa.equals("1")) {
-										maksutapa = "luottokortti";
+										maksutapa = "Luottokortti";
 									} else if (maksutapa.equals("2")) {
-										maksutapa = "verkkomaksu";
+										maksutapa = "Verkkomaksu";
 									}
 
 									// Lasketaan yhteishinta
-									// Lisätään tähän sit jos tulee kuljetusmaksu tms
 									double kokonaishinta = 0;
 									for (int i = 0; i < ostoskoriPizzat.size(); i++) {
 										kokonaishinta += ostoskoriPizzat.get(i).getHinta();
 									}
 									for (int i = 0; i < ostoskoriJuomat.size(); i++) {
 										kokonaishinta += ostoskoriJuomat.get(i).getHinta();
+									}
+									
+									// Kokonaishintaan kuljetusmaksu, staattinen 5 eur
+									if (tilaustapa.equals("Kotiinkuljetus")) {
+										kokonaishinta += 5;
 									}
 									
 									// Luodaan tilausolio
@@ -251,7 +252,7 @@ public class TilausServlet extends HttpServlet {
 									if (!lisatiedot.equals("")) {
 									tilaus.setLisatiedot(lisatiedot);
 									}
-									if (tilaustapa.equals("kuljetus")) {
+									if (tilaustapa.equals("Kotiinkuljetus")) {
 										tilaus.setOsoite(osoite);
 									}
 									

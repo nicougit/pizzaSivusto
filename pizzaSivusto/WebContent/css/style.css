@@ -181,6 +181,10 @@ h5 {
 	border-bottom: none !important;
 }
 
+.tilausrivi td {
+	padding: 5px;
+}
+
 .osoitelabel {
 	color: #000;
 }

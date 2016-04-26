@@ -36,7 +36,7 @@
 	<div class="col s12 m4 sl4">
 	<h5 class="tilaustitle">Toimitustapa</h5>
 	<input type="radio" name="tilaustapa" value="0" id="kotiinkuljetus" checked>
-	<label for="kotiinkuljetus">Kotiinkuljetus</label><br>
+	<label for="kotiinkuljetus">Kotiinkuljetus (Lisämaksu 5€)</label><br>
 	<input type="radio" name="tilaustapa" value="1" id="nouto">
 	<label for="nouto">Nouto ravintolasta</label><br>
 	<input type="radio" name="tilaustapa" value="2" id="paikanpaalla">
@@ -49,7 +49,7 @@
 	<input type="radio" name="maksutapa" value="1" id="luottokortti">
 	<label for="luottokortti">Luottokortti</label><br>
 	<input type="radio" name="maksutapa" value="2" id="verkkomaksu">
-	<label for="debitkortti">Verkkomaksu</label><br>
+	<label for="verkkomaksu">Verkkomaksu</label><br>
 	</div>
 	<div class="col s12 m5 sl5">
 	<h5 class="tilaustitle">Tilauksen lisätiedot</h5>
@@ -82,6 +82,7 @@
 	</div>
 	<div class="col s12">
 		<h2>Tilattavat tuotteet</h2>
+		<p class="flow-text center-align">Voit lisätä tai poistaa tuotteita palaamalla takaisin ostoskoriin</p>
 		<table class="bordered">
 			<thead>
 				<tr>
@@ -125,10 +126,12 @@
 			<c:forEach items="${ostoskoriJuomat }" var="juoma">
 			<c:set var="koko" value="${juoma.koko }"></c:set>
 			<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${juoma.hinta }"></fmt:formatNumber></c:set>
+			<tr>
 			<td><c:out value="${juoma.nimi }"></c:out> <span class="pienifontti">( ${fn:replace(koko, ".", ",") }l juoma )</span></td>
 			<td></td>
 			<td class="center">${fn:replace(hinta, ".", ",") } €</td>
 			<c:set var="yhteishinta" value="${yhteishinta + juoma.hinta }"></c:set>
+			</tr>
 			</c:forEach>
 			<tr class="tilaus-nobottom">
 			<c:set var="yhteishinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${yhteishinta }"></fmt:formatNumber></c:set>
@@ -141,7 +144,7 @@
 	</div>
 	</div>
 	<a class="btn waves-effect waves-light left red lighten-2" href="<c:url value='/ostoskori'/>">Palaa ostoskoriin</a>
-	<button class="btn waves-effect waves-light right" type="submit" name="action" value="lahetatilaus">Lähetä tilaus</button>
+	<button class="btn waves-effect waves-light right" type="submit" name="action" value="lahetatilaus">Tilaa</button>
 	<br><br>
 	</form>
 			<div id="osoitemodal" class="modal">

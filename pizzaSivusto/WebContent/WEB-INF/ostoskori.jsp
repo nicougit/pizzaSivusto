@@ -35,7 +35,7 @@
 					class="btn waves-effect waves-light orange lighten-1 ostoskori-tyhjennysnappi"
 					type="button" onClick="tyhjennaOstoskori()">
 					<i class="material-icons left">clear</i>Tyhjennä
-				</button>
+				</button> 
 				
 					<c:if test="${not empty kayttaja }">
 					<a class="btn waves-effect waves-light right ostoskori-tilausnappi"
