@@ -1,14 +1,18 @@
 package daot;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import bean.Kayttaja;
 import bean.Osoite;
+import bean.Tilaus;
 import login.KayttajaLista;
 import login.Tiiviste;
 import tietokanta.Kysely;
@@ -131,6 +135,61 @@ public class KayttajaDao {
 		}
 	}
 	
+	public ArrayList<Tilaus> haeTilaushistoria(String kayttajaid) {
+		ArrayList<Tilaus> tilaukset = new ArrayList<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		
+		if (yhteys.getYhteys() == null) {
+			return tilaukset;
+		}
+		
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		
+		ArrayList<String> parametrit = new ArrayList<>();
+		
+		// Haetaan käyttäjän osoitteet
+		String sqlkysely = "SELECT tilaus_id, tilaushetki, kokonaishinta FROM Tilaus JOIN Kayttaja ON kayttaja_id = id WHERE kayttaja_id = ? ORDER BY tilaus_id DESC";
+		parametrit.add(kayttajaid);
+
+		kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		while (iteraattori.hasNext()) {
+			HashMap osoiteMappi = (HashMap) iteraattori.next();
+			String idStr = (String) osoiteMappi.get("tilaus_id");
+			String tilaushetkiStr = (String) osoiteMappi.get("tilaushetki");
+			String kokonaishintaStr = (String) osoiteMappi.get("kokonaishinta");
+			int tilausid;
+			Timestamp tilaushetki;
+			double kokonaishinta;
+
+			try {
+			tilausid = Integer.parseInt(idStr);
+			tilaushetki = Timestamp.valueOf(tilaushetkiStr);
+			kokonaishinta = Double.parseDouble(kokonaishintaStr);
+			} catch (Exception ex) {
+				System.out.println("Virhe tilaushistorian tietoja parsiessa");
+				return tilaukset;
+			}
+
+			// Olio
+			Tilaus tilaus = new Tilaus();
+			tilaus.setTilausid(tilausid);
+			tilaus.setTilaushetki(tilaushetki);
+			tilaus.setKokonaishinta(kokonaishinta);
+			tilaukset.add(tilaus);
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+		
+		return tilaukset;
+	}
+	
 	public ArrayList<Osoite> haeOsoitteet(String kayttajaid) {
 		ArrayList<Osoite> osoitteet = new ArrayList<>();
 
@@ -173,6 +232,8 @@ public class KayttajaDao {
 		
 		return osoitteet;
 	}
+	
+	
 	
 	public HashMap<String, String> lisaaOsoite(String kayttajaid, String lahiosoite, String postinumero, String postitoimipaikka) {
 		HashMap<String, String> vastaus = new HashMap<>();

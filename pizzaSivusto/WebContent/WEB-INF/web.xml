@@ -3,7 +3,6 @@
   <display-name>pizzaSivusto</display-name>
   <welcome-file-list>
     <welcome-file>landingpage.jsp</welcome-file>
- 
   </welcome-file-list>
   <error-page>
     <error-code>404</error-code>

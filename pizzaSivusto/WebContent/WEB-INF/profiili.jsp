@@ -2,6 +2,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,14 +15,10 @@
 	<jsp:include page="header.jsp"></jsp:include>
 	<div class="headertext">
 			<h1>
-				Tervetuloa takaisin,
 				<c:out value="${kayttaja.etunimi } ${kayttaja.sukunimi }"></c:out>
-				!
 			</h1>
-			<p class="flow-text">Siirry selaamaan menuamme alla olevasta napista!</p>
-			<a class="waves-effect waves-light btn-large"
-			href="<c:url value='/pizza'/>"><i class="material-icons right">restaurant_menu</i>
-			Menu</a> <br> <br>
+			<p class="flow-text">Tervetuloa profiilisivullesi!</p>
+			<br>
 	</div>
 
 	<div class="row" id="main-content">
@@ -33,9 +31,33 @@
 			</div>
 			<div class="col s12 m6 center-align">
 				<h2>Tilaushistoria</h2>
-				Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-				<br><br>
-				Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+				
+				<c:choose>
+				<c:when test="${empty tilaushistoria }">Sinulla ei ole vielä tilauksia</c:when>
+				<c:otherwise>
+				<table class="bordered">
+				<thead>
+				<tr>
+				<th class="center">Tilausnumero</th>
+				<th>Tilausajankohta</th>
+				<th class="center">Hinta</th>
+				</tr>
+				</thead>
+				<tbody>
+				<c:forEach items="${tilaushistoria }" var="tilaus">
+				<tr class="taulukkorivi">
+				<td class="center"><c:out value="${tilaus.tilausid }"></c:out></td>
+				<td><fmt:formatDate value="${tilaus.tilaushetki }" pattern="dd.MM.yyyy HH:mm"/></td>
+				<td class="center">
+				<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${tilaus.kokonaishinta }"></fmt:formatNumber></c:set>
+				${fn:replace(hinta, ".", ",") } €
+				</td>
+				</tr>
+				</c:forEach>
+				</tbody>
+				</table>
+				</c:otherwise>
+				</c:choose>
 			</div>
 		</div>
 	</div>

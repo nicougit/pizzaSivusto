@@ -10,7 +10,7 @@
 <div class="navbar-fixed">
 	<c:if test="${not empty kayttaja }">
 		<ul id="user-dropdowni" class="dropdown-content">
-			<li><a href="#!">Profiili</a></li>
+			<li><a href="<c:url value='/kayttaja'/>">Profiili</a></li>
 			<li><a href="#!">Tilaushistoria</a></li>
 			<c:if
 				test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
@@ -71,7 +71,7 @@
 						class="navbar-yhteishinta right"></span></a> <c:choose>
 						<c:when test="${not empty kayttaja }">
 							<li class="divider"></li>
-							<li><a href="#!"><c:out value="${kayttaja.tunnus }"></c:out></a></li>
+							<li><a href="<c:url value='/kayttaja'/>"><c:out value="${kayttaja.tunnus }"></c:out></a></li>
 							<li><a href="#!">Tilaushistoria</a></li>
 							<c:if
 								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">

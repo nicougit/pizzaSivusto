@@ -1,14 +1,14 @@
 package bean;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class Tilaus {
 	int tilausid;
 	Kayttaja kayttaja;
 	Osoite osoite;
-	Date tilaushetki;
-	Date toimitusaika;
+	Timestamp tilaushetki;
+	Timestamp toimitusaika;
 	String toimitustapa;
 	String lisatiedot;
 	String maksutapa;
@@ -22,7 +22,7 @@ public class Tilaus {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Tilaus(int tilausid, Kayttaja kayttaja, Osoite osoite, Date tilaushetki, Date toimitusaika,
+	public Tilaus(int tilausid, Kayttaja kayttaja, Osoite osoite, Timestamp tilaushetki, Timestamp toimitusaika,
 			String toimitustapa, String lisatiedot, String maksutapa, double kokonaishinta, boolean maksettu,
 			ArrayList<Pizza> pizzat, ArrayList<Juoma> juomat) {
 		super();
@@ -64,19 +64,19 @@ public class Tilaus {
 		this.osoite = osoite;
 	}
 
-	public Date getTilaushetki() {
+	public Timestamp getTilaushetki() {
 		return tilaushetki;
 	}
 
-	public void setTilaushetki(Date tilaushetki) {
+	public void setTilaushetki(Timestamp tilaushetki) {
 		this.tilaushetki = tilaushetki;
 	}
 
-	public Date getToimitusaika() {
+	public Timestamp getToimitusaika() {
 		return toimitusaika;
 	}
 
-	public void setToimitusaika(Date toimitusaika) {
+	public void setToimitusaika(Timestamp toimitusaika) {
 		this.toimitusaika = toimitusaika;
 	}
 
