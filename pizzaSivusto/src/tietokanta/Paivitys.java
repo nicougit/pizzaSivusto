@@ -2,6 +2,7 @@ package tietokanta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -31,6 +32,29 @@ public class Paivitys {
 			System.out.println("Virhe kyselyn suorittamisessa - " + ex);
 		}
 		return tulokset;
+	}
+	
+	public int suoritaSqlParamPalautaAvaimet(String sqlLause, ArrayList<String> parametrit) {
+		int avain = -1;
+
+		try {
+			PreparedStatement valmisteltuLause = yhteys.prepareStatement(sqlLause, Statement.RETURN_GENERATED_KEYS);
+			for (int i = 0; i < parametrit.size(); i++) {
+				valmisteltuLause.setObject(i + 1, parametrit.get(i));
+			}
+
+			System.out.println(valmisteltuLause);
+			
+			valmisteltuLause.executeUpdate();
+			
+			ResultSet rs = valmisteltuLause.getGeneratedKeys();
+			rs.next();
+			avain = rs.getInt(1);
+			
+		} catch (SQLException ex) {
+			System.out.println("Virhe kyselyn suorittamisessa - " + ex);
+		}
+		return avain;
 	}
 
 	public boolean suoritaSqlLause(String sqlLause) {

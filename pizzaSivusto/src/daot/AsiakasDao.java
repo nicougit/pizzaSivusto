@@ -7,6 +7,7 @@ import java.util.Iterator;
 import bean.Juoma;
 import bean.Pizza;
 import bean.Tayte;
+import bean.Tilaus;
 import tietokanta.Kysely;
 import tietokanta.Paivitys;
 import tietokanta.Yhteys;
@@ -245,7 +246,7 @@ public class AsiakasDao {
 	public ArrayList<Juoma> haeKaikkiJuomat() {
 		ArrayList<Juoma> juomat = new ArrayList<>();
 
-		// Yhteyden m��ritys
+		// Yhteyden määritys
 		Yhteys yhteys = new Yhteys();
 		if (yhteys.getYhteys() == null) {
 			yhteys.suljeYhteys();
@@ -301,6 +302,127 @@ public class AsiakasDao {
 		// Pizzojen palautus
 		return juomat;
 
+	}
+	
+	public HashMap<String, String> lisaaTilaus(Tilaus tilaus) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+
+		/*
+		 tilaus_id | kayttaja_id | osoite_id | tilaushetki| toimitustapa | toimitusaika  | lisatiedot | kokonaishinta | maksutapa | maksutilanne
+		*/
+		// Tilauksen lisääminen
+		//id, kayttajaid, osoiteid, tilaushetki, toimitustapa, toimitusaika, lisatiedot, kokonaishinta, maksutapa, maksutilanne
+		String sql = "INSERT INTO Tilaus (kayttaja_id, osoite_id, tilaushetki, toimitustapa, toimitusaika, lisatiedot, kokonaishinta, maksutapa, maksutilanne) VALUES (?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+		
+		parametrit.add(String.valueOf(tilaus.getKayttaja().getId()));
+		parametrit.add(String.valueOf(tilaus.getOsoite().getOsoiteid()));
+		parametrit.add(tilaus.getToimitustapa());
+		parametrit.add(tilaus.getLisatiedot());
+		parametrit.add(String.valueOf(tilaus.getKokonaishinta()));
+		parametrit.add(tilaus.getMaksutapa());
+		parametrit.add("E");
+
+
+		// Palauttaa lisätyn tilauksen tilaus_id:n
+		int tilausid = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
+
+		System.out.println("Lisätyn tilauksen tilaus_id: " + tilausid);
+
+		if (tilausid < 0) {
+			String virhe = "Tilausta lisätessä generated key palautti < 0";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		
+		ArrayList<Pizza> pizzat = tilaus.getPizzat();
+		ArrayList<Juoma> juomat = tilaus.getJuomat();
+
+		if (pizzat.size() > 0) {
+		// tilaus_id, pizza_id, laktoositon; gluteeniton, oregano, valkosipuli
+		sql = "INSERT INTO Tilausrivi VALUES (null, ?, ?, null, ?, ?, ?, ?, 1)";
+		
+		for (int i = 0; i < pizzat.size(); i++) {
+			if (i > 0) {
+				sql += ", (null, ?, ?, null, ?, ?, ?, ?, 1)";
+			}
+			parametrit.add(String.valueOf(tilausid));
+			parametrit.add(String.valueOf(pizzat.get(i).getId()));
+			if (pizzat.get(i).getLisatiedot().contains("Vähälaktoosinen")) {
+				parametrit.add("K");
+			}
+			else {
+				parametrit.add("E");
+			}
+			
+			if (pizzat.get(i).getLisatiedot().contains("Gluteeniton")) {
+				parametrit.add("K");
+			}
+			else {
+				parametrit.add("E");
+			}
+			
+			if (pizzat.get(i).getLisatiedot().contains("Oregano")) {
+				parametrit.add("K");
+			}
+			else {
+				parametrit.add("E");
+			}
+			
+			if (pizzat.get(i).getLisatiedot().contains("Valkosipuli")) {
+				parametrit.add("K");
+			}
+			else {
+				parametrit.add("E");
+			}
+		}
+		
+		if (juomat.size() > 0) {
+			if (pizzat.size() == 0) {
+				sql = "INSERT INTO Tilausrivi VALUES (null, 1, null, 1, 'E', 'E', 'E', 'E', 1);";
+			}
+			
+			for (int i = 0; i < juomat.size(); i++) {
+				if (pizzat.size() != 0 && i != 0) {
+				sql += ", (null, 1, null, 1, 'E', 'E', 'E', 'E', 1)";
+				}
+				parametrit.add(String.valueOf(tilausid));
+				parametrit.add(String.valueOf(pizzat.get(i).getId()));
+			}
+			
+		}
+		
+		}
+
+		// Palauttaa lisättyjen tilausrivien määrän
+		int tilausrivitok = paivitys.suoritaSqlLauseParametreilla(sql,
+				parametrit);
+
+		System.out.println("Tilausrivien lisäys palautti" + tilausrivitok);
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Palautetaan true jos kaikki onnistui, false jos kaikki ei onnistunut
+		if (tilausrivitok == (pizzat.size() + juomat.size())) {
+			String success = "Tilaus lähetetty onnistuneesti!";
+			vastaus.put("success", success);
+			return vastaus;
+		} else {
+			String virhe = "Tilausta lähettäessä tapahtui virhe.";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 	}
 	
 }

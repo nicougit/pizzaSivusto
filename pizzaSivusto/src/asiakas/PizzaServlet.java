@@ -34,9 +34,7 @@ public class PizzaServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		naytaSivu(request, response);
-		
+		naytaSivu(request, response);		
 	}
 	
 	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response)

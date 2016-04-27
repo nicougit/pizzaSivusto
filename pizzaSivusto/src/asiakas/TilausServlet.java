@@ -36,6 +36,8 @@ public class TilausServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession sessio = request.getSession(false);
+		
+		System.out.println("Tultiin dogettiin");
 
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
@@ -99,23 +101,68 @@ public class TilausServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			
+			System.out.println("Tultiin dopostiin");
 
 			String action = request.getParameter("action");
+			if (action != null) {
+				System.out.println("Action: " + action);
+			}
+			else {
+				System.out.println("Ei actionii");
+			}
+			
 			if (action != null && action.equals("lisaaosoite")) {
 				lisaaOsoite(request, response);
-			} else if (action != null && action.equals("lahetatilaus")) {
+			} else if (action != null && action.equals("tilausvahvistukseen")) {
+				siirryTilausvahvistukseen(request, response);
+			}
+			else if (action != null && action.equals("lahetatilaus")) {
 				lahetaTilaus(request, response);
-			} else {
+			}
+			else {
 				doGet(request, response);
 			}
 		} else {
 			// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle
-			response.sendRedirect("/login");
+			response.sendRedirect(request.getContextPath() + "/login");
 		}
 
 	}
-
+	
 	protected void lahetaTilaus(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession sessio = request.getSession(false);
+		Tilaus tilaus = new Tilaus();
+		
+		if (sessio.getAttribute("tilaus") != null) {
+		tilaus = (Tilaus) sessio.getAttribute("tilaus");
+		
+		AsiakasDao dao = new AsiakasDao();
+		
+		HashMap<String, String> vastaus = dao.lisaaTilaus(tilaus);
+		
+		if (vastaus.get("virhe") != null) {
+			String virhe = vastaus.get("virhe");
+			request.setAttribute("virhe", virhe);
+		} else if (vastaus.get("success") != null) {
+			String success = vastaus.get("success");
+			request.setAttribute("success", success);
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilaustiedot.jsp");
+			rd.forward(request, response);
+		} else {
+			request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+		}
+		
+		}
+		else {
+			String virhe = "Sessiosta ei löytynyt tilausta";
+			virhe(request, response, virhe);
+		}
+		
+	}
+
+	protected void siirryTilausvahvistukseen(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		HttpSession sessio = request.getSession(false);
@@ -244,6 +291,7 @@ public class TilausServlet extends HttpServlet {
 									
 									// Luodaan tilausolio
 									Tilaus tilaus = new Tilaus();
+									tilaus.setKayttaja(kayttaja);
 									tilaus.setToimitustapa(tilaustapa);
 									tilaus.setMaksutapa(maksutapa);
 									tilaus.setPizzat(ostoskoriPizzat);
@@ -294,6 +342,8 @@ public class TilausServlet extends HttpServlet {
 	
 	protected void naytaTilausvahvistus(HttpServletRequest request, HttpServletResponse response, Tilaus tilaus)
 			throws ServletException, IOException {
+		HttpSession sessio = request.getSession(false);
+		sessio.setAttribute("tilaus", tilaus);
 		request.setAttribute("tilaus", tilaus);
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilausvahvistus.jsp");
 		rd.forward(request, response);

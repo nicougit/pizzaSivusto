@@ -144,7 +144,7 @@
 	</div>
 	</div>
 	<a class="btn waves-effect waves-light left red lighten-2" href="<c:url value='/ostoskori'/>">Palaa ostoskoriin</a>
-	<button class="btn waves-effect waves-light right" type="submit" name="action" value="lahetatilaus">Tilaa</button>
+	<button class="btn waves-effect waves-light right" type="submit" name="action" value="tilausvahvistukseen">Tilaa</button>
 	<br><br>
 	</form>
 			<div id="osoitemodal" class="modal">

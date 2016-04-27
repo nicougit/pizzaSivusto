@@ -163,7 +163,7 @@
 		</div>
 		<br>
 	<a class="btn waves-effect waves-light left red lighten-2" href="<c:url value='/tilaus'/>">Muokkaa tilausta</a>
-	<button class="btn waves-effect waves-light right" type="button" onClick="naytaVirhe('Ei vielä implementoitu')">Lähetä tilaus</button>
+	<form method="post" action="tilaus"><button class="btn waves-effect waves-light right" type="submit" name="action" value="lahetatilaus">Lähetä tilaus</button></form>
 		
 		</c:otherwise>
 		</c:choose>
