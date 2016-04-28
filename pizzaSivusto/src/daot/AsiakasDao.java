@@ -1,10 +1,13 @@
 package daot;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import bean.Juoma;
+import bean.Kayttaja;
+import bean.Osoite;
 import bean.Pizza;
 import bean.Tayte;
 import bean.Tilaus;
@@ -172,7 +175,7 @@ public class AsiakasDao {
 		return pizza;
 
 	}
-	
+
 	public Juoma haeYksiJuoma(String id) {
 		Juoma juoma = new Juoma();
 
@@ -216,23 +219,21 @@ public class AsiakasDao {
 			double hintaKanta = Double.parseDouble(hintaString);
 			double kokoKanta = Double.parseDouble(kokoString);
 			boolean saatavilla = false;
-			
+
 			if (poistoKanta != null && poistoKanta.equals("null")) {
 				poistoKanta = null;
 			}
-			
+
 			if (saatavillaKanta.equals("K")) {
 				saatavilla = true;
-			}
-			else if (saatavillaKanta.equals("E")) {
+			} else if (saatavillaKanta.equals("E")) {
 				saatavilla = false;
-			}
-			else {
+			} else {
 				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") täytteellä " + idString);
 			}
-			
+
 			juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta, kuvausKanta, poistoKanta, saatavilla);
-			
+
 		}
 
 		// Yhteyden sulkeminen
@@ -242,7 +243,7 @@ public class AsiakasDao {
 		return juoma;
 
 	}
-	
+
 	public ArrayList<Juoma> haeKaikkiJuomat() {
 		ArrayList<Juoma> juomat = new ArrayList<>();
 
@@ -277,23 +278,21 @@ public class AsiakasDao {
 			double hintaKanta = Double.parseDouble(hintaString);
 			double kokoKanta = Double.parseDouble(kokoString);
 			boolean saatavilla = false;
-			
+
 			if (poistoKanta != null && poistoKanta.equals("null")) {
 				poistoKanta = null;
 			}
-			
+
 			if (saatavillaKanta.equals("K")) {
 				saatavilla = true;
-			}
-			else if (saatavillaKanta.equals("E")) {
+			} else if (saatavillaKanta.equals("E")) {
 				saatavilla = false;
-			}
-			else {
+			} else {
 				System.out.println("Virheellinen 'saatavilla' arvo (" + saatavillaKanta + ") täytteellä " + idString);
 			}
-			
+
 			Juoma juoma = new Juoma(idKanta, nimikanta, hintaKanta, kokoKanta, kuvausKanta, poistoKanta, saatavilla);
-			juomat.add(juoma);			
+			juomat.add(juoma);
 		}
 
 		// Yhteyden sulkeminen
@@ -303,7 +302,7 @@ public class AsiakasDao {
 		return juomat;
 
 	}
-	
+
 	public HashMap<String, String> lisaaTilaus(Tilaus tilaus) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
@@ -315,100 +314,105 @@ public class AsiakasDao {
 			return vastaus;
 		}
 
-		/*
-		 tilaus_id | kayttaja_id | osoite_id | tilaushetki| toimitustapa | toimitusaika  | lisatiedot | kokonaishinta | maksutapa | maksutilanne
-		*/
 		// Tilauksen lisääminen
-		//id, kayttajaid, osoiteid, tilaushetki, toimitustapa, toimitusaika, lisatiedot, kokonaishinta, maksutapa, maksutilanne
 		String sql = "INSERT INTO Tilaus (kayttaja_id, osoite_id, tilaushetki, toimitustapa, toimitusaika, lisatiedot, kokonaishinta, maksutapa, maksutilanne) VALUES (?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)";
 		ArrayList<String> parametrit = new ArrayList<String>();
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		
+
 		parametrit.add(String.valueOf(tilaus.getKayttaja().getId()));
+		if (tilaus.getOsoite() != null) {
 		parametrit.add(String.valueOf(tilaus.getOsoite().getOsoiteid()));
+		}
+		else {
+			parametrit.add(null);
+		}
 		parametrit.add(tilaus.getToimitustapa());
 		parametrit.add(tilaus.getLisatiedot());
 		parametrit.add(String.valueOf(tilaus.getKokonaishinta()));
 		parametrit.add(tilaus.getMaksutapa());
 		parametrit.add("E");
 
-
 		// Palauttaa lisätyn tilauksen tilaus_id:n
-		int tilausid = paivitys.suoritaSqlLauseParametreilla(sql,
-				parametrit);
+		int tilausid = paivitys.suoritaSqlParamPalautaAvaimet(sql, parametrit);
 
 		System.out.println("Lisätyn tilauksen tilaus_id: " + tilausid);
 
-		if (tilausid < 0) {
-			String virhe = "Tilausta lisätessä generated key palautti < 0";
+		if (tilausid < 1) {
+			String virhe = "Tilausta lisätessä generated key palautti < 1";
 			vastaus.put("virhe", virhe);
 			return vastaus;
 		}
-		
+
 		ArrayList<Pizza> pizzat = tilaus.getPizzat();
 		ArrayList<Juoma> juomat = tilaus.getJuomat();
+		parametrit.clear();
 
 		if (pizzat.size() > 0) {
-		// tilaus_id, pizza_id, laktoositon; gluteeniton, oregano, valkosipuli
-		sql = "INSERT INTO Tilausrivi VALUES (null, ?, ?, null, ?, ?, ?, ?, 1)";
-		
-		for (int i = 0; i < pizzat.size(); i++) {
-			if (i > 0) {
-				sql += ", (null, ?, ?, null, ?, ?, ?, ?, 1)";
-			}
-			parametrit.add(String.valueOf(tilausid));
-			parametrit.add(String.valueOf(pizzat.get(i).getId()));
-			if (pizzat.get(i).getLisatiedot().contains("Vähälaktoosinen")) {
-				parametrit.add("K");
-			}
-			else {
-				parametrit.add("E");
-			}
-			
-			if (pizzat.get(i).getLisatiedot().contains("Gluteeniton")) {
-				parametrit.add("K");
-			}
-			else {
-				parametrit.add("E");
-			}
-			
-			if (pizzat.get(i).getLisatiedot().contains("Oregano")) {
-				parametrit.add("K");
-			}
-			else {
-				parametrit.add("E");
-			}
-			
-			if (pizzat.get(i).getLisatiedot().contains("Valkosipuli")) {
-				parametrit.add("K");
-			}
-			else {
-				parametrit.add("E");
-			}
-		}
-		
-		if (juomat.size() > 0) {
-			if (pizzat.size() == 0) {
-				sql = "INSERT INTO Tilausrivi VALUES (null, 1, null, 1, 'E', 'E', 'E', 'E', 1);";
-			}
-			
-			for (int i = 0; i < juomat.size(); i++) {
-				if (pizzat.size() != 0 && i != 0) {
-				sql += ", (null, 1, null, 1, 'E', 'E', 'E', 'E', 1)";
+			// tilaus_id, pizza_id, laktoositon; gluteeniton, oregano,
+			// valkosipuli
+			sql = "INSERT INTO Tilausrivi VALUES (null, ?, ?, null, ?, ?, ?, ?, 1)";
+
+			for (int i = 0; i < pizzat.size(); i++) {
+				if (i > 0) {
+					sql += ", (null, ?, ?, null, ?, ?, ?, ?, 1)";
 				}
 				parametrit.add(String.valueOf(tilausid));
 				parametrit.add(String.valueOf(pizzat.get(i).getId()));
+				if (pizzat.get(i).getLisatiedot().contains("Vähälaktoosinen")) {
+					parametrit.add("K");
+				} else {
+					parametrit.add("E");
+				}
+
+				if (pizzat.get(i).getLisatiedot().contains("Gluteeniton")) {
+					parametrit.add("K");
+				} else {
+					parametrit.add("E");
+				}
+
+				if (pizzat.get(i).getLisatiedot().contains("Oregano")) {
+					parametrit.add("K");
+				} else {
+					parametrit.add("E");
+				}
+
+				if (pizzat.get(i).getLisatiedot().contains("Valkosipuli")) {
+					parametrit.add("K");
+				} else {
+					parametrit.add("E");
+				}
 			}
-			
+
+			if (juomat.size() > 0) {
+				for (int i = 0; i < juomat.size(); i++) {
+					if (pizzat.size() == 0 && i == 0) {
+						sql = "INSERT INTO Tilausrivi VALUES (null, ?, null, ?, 'E', 'E', 'E', 'E', 1);";
+					} else {
+						sql += ", (null, ?, null, ?, 'E', 'E', 'E', 'E', 1)";
+					}
+					parametrit.add(String.valueOf(tilausid));
+					parametrit.add(String.valueOf(juomat.get(i).getId()));
+				}
+
+			}
+
 		}
-		
+
+		String parametritstr = "";
+		for (int i = 0; i < parametrit.size(); i++) {
+			parametritstr += (i + 1) + ": " + parametrit.get(i);
+			if (i + 1 != parametrit.size()) {
+				parametritstr += ", ";
+			}
 		}
+
+		System.out.println("SQL: " + sql);
+		System.out.println("Parametrit: " + parametritstr);
 
 		// Palauttaa lisättyjen tilausrivien määrän
-		int tilausrivitok = paivitys.suoritaSqlLauseParametreilla(sql,
-				parametrit);
+		int tilausrivitok = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
 
-		System.out.println("Tilausrivien lisäys palautti" + tilausrivitok);
+		System.out.println("Tilausrivien lisäys palautti " + tilausrivitok);
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
@@ -425,4 +429,160 @@ public class AsiakasDao {
 		}
 	}
 	
+	public Tilaus haeYksiTilaus(String tilausid, String kayttajaid) {
+		Tilaus tilaus = new Tilaus();
+		ArrayList<Pizza> pizzat = new ArrayList<>();
+		ArrayList<Juoma> juomat = new ArrayList<>();
+		
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		
+		if (yhteys.getYhteys() == null) {
+			return tilaus;
+		}
+		
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		
+		ArrayList<String> parametrit = new ArrayList<>();
+		
+		// Haetaan käyttäjän osoitteet
+		String sqlkysely = "SELECT tr.tilaus_id, k.etunimi, k.sukunimi, k.puhelin, k.tunnus, os.toimitusosoite, os.postinro, os.postitmp, t.tilaushetki, t.toimitusaika, t.toimitustapa, t.lisatiedot, t.kokonaishinta, t.maksutapa, t.maksutilanne, j.nimi AS juoma, p.nimi AS pizza, tr.laktoositon, tr.gluteeniton, tr.oregano, tr.valkosipuli FROM Tilausrivi tr JOIN Tilaus t USING (tilaus_id) JOIN Kayttaja k ON t.kayttaja_id = k.id LEFT OUTER JOIN Pizza p ON tr.tuote_pizza = p.pizza_id LEFT OUTER JOIN Juoma j ON tr.tuote_juoma = j.juoma_id LEFT OUTER JOIN Toimitusosoite os ON t.osoite_id = os.osoite_id WHERE tr.tilaus_id = ?";
+		parametrit.add(tilausid);
+		if (!kayttajaid.equals("admin")) {
+			sqlkysely += " AND k.id = ?";
+		parametrit.add(kayttajaid);
+		}
+
+		kysely.suoritaYksiKyselyParam(sqlkysely, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		int looppi = 0;
+		while (iteraattori.hasNext()) {
+			HashMap map = (HashMap) iteraattori.next();
+			String idStr;
+			if (looppi < 1) {
+			idStr = (String) map.get("tilaus_id");
+			String etunimi = (String) map.get("etunimi");
+			String sukunimi = (String) map.get("sukunimi");
+			String puhelin = (String) map.get("puhelin");
+			String tunnus = (String) map.get("tunnus");
+			String toimitusosoite = (String) map.get("toimitusosoite");
+			String postinro = (String) map.get("postinro");
+			String postitmp = (String) map.get("postitmp");
+			String tilaushetkistr = (String) map.get("tilaushetki");
+			String toimitusaikastr = (String) map.get("toimitusaika");
+			String toimitustapa = (String) map.get("toimitustapa");
+			String lisatiedot = (String) map.get("lisatiedot");
+			String kokonaishintastr = (String) map.get("kokonaishinta");
+			String maksutapa = (String) map.get("maksutapa");
+			String maksutilanne = (String) map.get("maksutilanne");
+			
+			// Käyttäjän setit
+			Kayttaja kayttaja = new Kayttaja();
+			kayttaja.setEtunimi(etunimi);
+			kayttaja.setSukunimi(sukunimi);
+			kayttaja.setTunnus(tunnus);
+			if (puhelin != null) {
+				kayttaja.setPuhelin(puhelin);
+			}
+			tilaus.setKayttaja(kayttaja);
+			
+			// Toimitusosoite
+			if (toimitustapa.equals("Kotiinkuljetus")) {
+				Osoite osoite = new Osoite();
+				osoite.setOsoite(toimitusosoite);
+				osoite.setPostinro(postinro);
+				osoite.setPostitmp(postitmp);
+				tilaus.setOsoite(osoite);
+			}
+			
+			// Loput tilauskohtaiset setit
+			int tilausidint;
+			Timestamp tilaushetki;
+			Timestamp toimitusaika;
+			double kokonaishinta;
+			
+			try {
+				tilausidint = Integer.parseInt(idStr);
+				tilaushetki = Timestamp.valueOf(tilaushetkistr);
+				toimitusaika = Timestamp.valueOf(toimitusaikastr);
+				kokonaishinta = Double.valueOf(kokonaishintastr);
+				
+				tilaus.setTilausid(tilausidint);
+				tilaus.setTilaushetki(tilaushetki);
+				tilaus.setToimitusaika(toimitusaika);
+				tilaus.setKokonaishinta(kokonaishinta);
+				tilaus.setMaksutapa(maksutapa);
+				
+			} catch (Exception ex) {
+				System.out.println("KAUHEE VIRHE TILAUSTA PARSIESSA");
+				return new Tilaus();
+			}
+			
+			if (lisatiedot != null) {
+				tilaus.setLisatiedot(lisatiedot);
+			}
+			
+			if (maksutilanne.equals("K")) {
+				tilaus.setMaksettu(true);
+			}
+			else {
+				tilaus.setMaksettu(false);
+			}
+			
+			}
+			
+			String pizzanimi = (String) map.get("pizza");
+			String juomanimi = (String) map.get("juoma");
+			
+			if (pizzanimi != null) {
+				String laktoositon = (String) map.get("laktoositon");
+				String gluteeniton = (String) map.get("gluteeniton");
+				String oregano = (String) map.get("oregano");
+				String vl = (String) map.get("laktoositon");
+				
+				Pizza pizza = new Pizza();
+				ArrayList<String> pizzatiedot = new ArrayList<>();
+				pizza.setNimi(pizzanimi);
+				if (laktoositon != null && laktoositon.equals("K")) {
+					pizzatiedot.add("Laktoositon");
+				}
+				if (gluteeniton != null && gluteeniton.equals("K")) {
+					pizzatiedot.add("Gluteeniton");
+				}
+				if (oregano != null && oregano.equals("K")) {
+					pizzatiedot.add("Oregano");
+				}
+				if (vl != null && vl.equals("K")) {
+					pizzatiedot.add("Vähälaktoosinen");
+				}
+				
+				if (pizzatiedot.size() > 0) {
+					pizza.setLisatiedot(pizzatiedot);
+				}
+				
+				pizzat.add(pizza);
+				
+			}
+			else if (juomanimi != null) {
+				Juoma juoma = new Juoma();
+				juoma.setNimi(juomanimi);
+				juomat.add(juoma);
+			}
+			
+			looppi++;
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+		
+		tilaus.setPizzat(pizzat);
+		tilaus.setJuomat(juomat);
+		
+		return tilaus;
+	}
+
 }

@@ -50,10 +50,6 @@ public class KayttajaServlet extends HttpServlet {
 			// Tilaushistoria attribuutiksi ja sivun näyttö
 			request.setAttribute("tilaushistoria", tilaushistoria);
 			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/profiili.jsp");
-			System.out.println("Tilaushistoria: ");
-			for (int i = 0; i < tilaushistoria.size(); i++) {
-				System.out.println(tilaushistoria.get(i).getTilausid() + " - " + tilaushistoria.get(i).getTilaushetki());
-			}
 			rd.forward(request, response);
 			
 		} else {

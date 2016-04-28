@@ -262,7 +262,7 @@ public class LoginServlet extends HttpServlet {
 						response.sendRedirect(request.getContextPath());
 					}
 					else {
-						response.sendRedirect(request.getContextPath() + osoite);
+						response.sendRedirect(request.getContextPath() + osoite + "?loggedin=true");
 					}
 					
 					

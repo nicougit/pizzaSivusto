@@ -55,15 +55,16 @@
 </script>
 <c:if test="${not empty success }">
 	<script type="text/javascript">
-		$(document).ready(function() {
 			naytaSuccess("${success }");
-		});
 	</script>
 </c:if>
 <c:if test="${not empty virhe }">
 	<script type="text/javascript">
-		$(document).ready(function() {
 			naytaVirhe("${virhe }");
-		});
 	</script>
+</c:if>
+<c:if test="${not empty param.loggedin && param.loggedin == \"true\" }">
+<script type="text/javascript">
+	naytaSuccess('Olet kirjautunut sisään onnistuneesti!');
+</script>
 </c:if>

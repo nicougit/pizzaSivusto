@@ -37,12 +37,30 @@ public class TilausServlet extends HttpServlet {
 
 		HttpSession sessio = request.getSession(false);
 		
-		System.out.println("Tultiin dogettiin");
+		Apuri apuri = new Apuri();
 
 		response.setCharacterEncoding("UTF-8");
 		request.setCharacterEncoding("UTF-8");
+		
+		String tilausnro = request.getParameter("tilausnro");
 
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			
+			if (tilausnro != null && apuri.validoiInt(tilausnro, 11)) {
+				AsiakasDao asiakasDao = new AsiakasDao();
+				Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+				Tilaus tilaus = asiakasDao.haeYksiTilaus(tilausnro, String.valueOf(kayttaja.getId()));
+				if (tilaus.getKayttaja() != null) {
+				request.setAttribute("tilaus", tilaus);
+				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilaustiedot.jsp");
+				rd.forward(request, response);
+				}
+				else {
+					String virhe = "Virheellinen tilausnumero";
+					virhe(request, response, virhe);
+				}
+			}
+			else {
 
 			// Haetaan käyttäjän ostoskori
 			HashMap<String, ArrayList> ostoskori = haeOstoskori(request, response);
@@ -55,13 +73,12 @@ public class TilausServlet extends HttpServlet {
 				// errorviestin
 				response.sendRedirect(request.getContextPath() + "/ostoskori");
 			} else {
-
 				if (request.getParameter("poista-osoite") != null) {
 					poistaOsoite(request, response);
-					System.out.println("osoitteen poisto");
 				} else {
 					naytaSivu(request, response);
 				}
+			}
 			}
 		} else {
 			// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle ja
@@ -101,17 +118,7 @@ public class TilausServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
-			
-			System.out.println("Tultiin dopostiin");
-
-			String action = request.getParameter("action");
-			if (action != null) {
-				System.out.println("Action: " + action);
-			}
-			else {
-				System.out.println("Ei actionii");
-			}
-			
+			String action = request.getParameter("action");			
 			if (action != null && action.equals("lisaaosoite")) {
 				lisaaOsoite(request, response);
 			} else if (action != null && action.equals("tilausvahvistukseen")) {
@@ -148,6 +155,16 @@ public class TilausServlet extends HttpServlet {
 		} else if (vastaus.get("success") != null) {
 			String success = vastaus.get("success");
 			request.setAttribute("success", success);
+			
+			// Tyhjennetään ostoskori
+			HashMap<String, ArrayList> ostoskori = new HashMap<>();
+			ArrayList<Pizza> ostoskoriPizzat = new ArrayList<>();
+			ArrayList<Juoma> ostoskoriJuomat = new ArrayList<>();
+			ostoskori.put("pizzat", ostoskoriPizzat);
+			ostoskori.put("juomat", ostoskoriJuomat);
+			sessio.setAttribute("ostoskori", ostoskori);
+			
+			// Ohjataan eteenpäin
 			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilaustiedot.jsp");
 			rd.forward(request, response);
 		} else {

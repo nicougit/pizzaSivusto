@@ -97,13 +97,13 @@
 			<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber></c:set>
 			<tr class="tilaus-nobottom">
 			<td>
-			<c:out value="${pizza.nimi }"></c:out>
+			<span class="strong-id"><c:out value="${pizza.nimi }"></c:out></span>
+			<span class="pienifontti"> | 
 			<c:set var="taytteita" value="${fn:length(pizza.taytteet) }"></c:set>
-			<span class="pienifontti">(
 			<c:forEach items="${pizza.taytteet }" var="tayte" varStatus="taytestatus">
 			<c:out value="${tayte.nimi }"></c:out><c:if test="${taytestatus.count < taytteita }">, </c:if>
 			</c:forEach>
-			)</span>
+			</span>
 			</td>
 			<td>
 			</td>
@@ -127,7 +127,7 @@
 			<c:set var="koko" value="${juoma.koko }"></c:set>
 			<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${juoma.hinta }"></fmt:formatNumber></c:set>
 			<tr>
-			<td><c:out value="${juoma.nimi }"></c:out> <span class="pienifontti">( ${fn:replace(koko, ".", ",") }l juoma )</span></td>
+			<td><span class="strong-id"><c:out value="${juoma.nimi }"></c:out></span> <span class="pienifontti"> | ${fn:replace(koko, ".", ",") }l juoma</span></td>
 			<td></td>
 			<td class="center">${fn:replace(hinta, ".", ",") } €</td>
 			<c:set var="yhteishinta" value="${yhteishinta + juoma.hinta }"></c:set>
