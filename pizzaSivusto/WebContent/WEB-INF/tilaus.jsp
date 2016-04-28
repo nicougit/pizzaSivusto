@@ -33,7 +33,7 @@
 	<h5 class="tilaustitle">Puhelinnumero</h5>
 	<c:out value="${kayttaja.puhelin }"></c:out>
 	</div>
-	<div class="col s12 m4 sl4">
+	<div class="col s12 m4 sl4" id="toimitustapadiv">
 	<h5 class="tilaustitle">Toimitustapa</h5>
 	<input type="radio" name="tilaustapa" value="0" id="kotiinkuljetus" checked>
 	<label for="kotiinkuljetus">Kotiinkuljetus (Lisämaksu 5€)</label><br>
@@ -53,9 +53,11 @@
 	</div>
 	<div class="col s12 m5 sl5">
 	<h5 class="tilaustitle">Tilauksen lisätiedot</h5>
-	<textarea id="lisatiedot" class="materialize-textarea" name="lisatiedot" length="250"></textarea>
+	<c:set var="lisikset" value=""></c:set>
+	<textarea id="lisatiedot" class="materialize-textarea" name="lisatiedot" length="250">
+	</textarea>
 	</div>
-	<div class="col s12">
+	<div class="col s12" id="osoitediv">
 	<h5 class="tilaustitle">Toimitusosoite</h5>
 	<c:choose>
 	<c:when test="${empty kayttaja.osoitteet }">
@@ -173,7 +175,7 @@
 		</form>
 	</div>
 	</div>
-
+	<script src="js/tilaus.js" type="text/javascript"></script>
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

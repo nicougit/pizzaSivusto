@@ -64,7 +64,11 @@
 	</script>
 </c:if>
 <c:if test="${not empty param.loggedin && param.loggedin == \"true\" }">
-<script type="text/javascript">
-	naytaSuccess('Olet kirjautunut sisään onnistuneesti!');
-</script>
+<script type="text/javascript">naytaSuccess('Olet kirjautunut sisään onnistuneesti!');</script>
+</c:if>
+<c:if test="${not empty param.error && param.error == \"ostoskorityhja\" }">
+<script type="text/javascript">naytaVirhe('Et voi siirtyä tilaukseen, ostoskorisi on tyhjä!');</script>
+</c:if>
+<c:if test="${not empty param.error && param.error == \"nologin\" }">
+<script type="text/javascript">naytaVirhe('Kirjaudu sisään siirtyäksesi tilaukseen!');</script>
 </c:if>

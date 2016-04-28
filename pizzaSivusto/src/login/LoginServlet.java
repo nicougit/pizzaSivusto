@@ -203,7 +203,6 @@ public class LoginServlet extends HttpServlet {
 		// Haetaan parametrit
 		String reffi = request.getHeader("referer");
 		String loppuosa = reffi.substring(reffi.lastIndexOf('/')+1);
-		System.out.println(loppuosa);
 		
 		HashMap osoitteet = new HashMap<String, String>();
 		
@@ -211,6 +210,7 @@ public class LoginServlet extends HttpServlet {
 		osoitteet.put("ostoskori", "/ostoskori");
 		
 		String osoite = null;
+		
 		
 		String[] parametrit = loppuosa.split("\\?");
 		if (loppuosa.contains("?")) {
@@ -221,7 +221,12 @@ public class LoginServlet extends HttpServlet {
 		 osoite = (String)osoitteet.get(loppuosa);
 		}
 		
+		if (parametrit.length == 2) {
+			parametrit = parametrit[1].split("&");
+		}
+		
 		for (int i = 0; i < parametrit.length; i++) {
+			System.out.println(parametrit[i]);
 			if (parametrit[i].equals("tilaukseen=true")) {
 				osoite = "/tilaus";
 			}
@@ -307,9 +312,8 @@ public class LoginServlet extends HttpServlet {
 			String rdPath = "landingpage.jsp";
 			naytaSivu(request, response, rdPath);
 		} else {
-			// Suoritetaan, jos käyttäjä ei ole kirjautunut sisään
-			String virhe = "Et ole kirjautunut sisään.";
-			virhe(request, response, virhe);
+			String rdPath = "landingpage.jsp";
+			naytaSivu(request, response, rdPath);
 		}
 	}
 
