@@ -255,6 +255,18 @@ nav {
 	font-size: 40pt;
 }
 
+.menu-favspan {
+	margin-right: 10px;
+}
+
+.menu-favyes {
+	color: #f57c00;
+}
+
+.menu-favno {
+	color: #ffb74d;
+}
+
 /* Ostoskori */
 .ostoskori-yhteishinta {
 	background: none !important;

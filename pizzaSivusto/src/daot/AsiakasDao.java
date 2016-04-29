@@ -17,7 +17,7 @@ import tietokanta.Yhteys;
 
 public class AsiakasDao {
 
-	public ArrayList<Pizza> haeKaikkiPizzat() {
+	public ArrayList<Pizza> haeKaikkiPizzat(String kayttajaid) {
 		ArrayList<Pizza> pizzat = new ArrayList<>();
 
 		// Yhteyden määritys
@@ -29,8 +29,14 @@ public class AsiakasDao {
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 
 		String sql = "SELECT pizza_id, p.nimi AS pizza, kuvaus, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL ORDER BY hinta ASC";
-
-		kysely.suoritaKysely(sql);
+		ArrayList<String> parametrit = new ArrayList<>();
+		
+		if (kayttajaid != null) {
+			sql = "SELECT pizza_id, p.nimi AS pizza, kuvaus, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla, (SELECT suosikki_id FROM SuosikkiPizza WHERE kayttaja_id = ? AND pizza_id = pt.pizza_id) AS suosikki_id FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL ORDER BY hinta ASC";
+			parametrit.add(kayttajaid);
+		}
+		
+		kysely.suoritaYksiKyselyParam(sql, parametrit);
 		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
 
 		// Iteraattorin luonti
@@ -46,6 +52,7 @@ public class AsiakasDao {
 			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
 			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
 			String kuvausKanta = (String) pizzaMappi.get("kuvaus");
+			String suosikkiKanta = (String) pizzaMappi.get("suosikki_id");
 			int idKanta = Integer.parseInt(idString);
 			double hintaKanta = Double.parseDouble(hintaString);
 
@@ -81,6 +88,12 @@ public class AsiakasDao {
 				ArrayList<Tayte> taytteet = new ArrayList<>();
 				taytteet.add(tayte);
 				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null, kuvausKanta);
+				
+				if (kayttajaid != null && suosikkiKanta != null) {
+					int suosikkiid = Integer.parseInt(suosikkiKanta);
+					pizza.setSuosikkiid(suosikkiid);
+				}
+				
 				pizzat.add(pizza);
 			}
 		}

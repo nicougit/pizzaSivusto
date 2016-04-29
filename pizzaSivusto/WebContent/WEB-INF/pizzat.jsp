@@ -32,6 +32,9 @@ $(function() {
 	  });
 	});
 </script>
+<c:if test="${not empty kayttaja }">
+<script src="js/suosikki.js" type="text/javascript"></script>
+</c:if>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -58,7 +61,20 @@ $(function() {
 							<fmt:formatNumber type="number" minFractionDigits="2"
 								maxFractionDigits="2" value="${pizza.hinta }"></fmt:formatNumber>
 						</c:set>
-						<h3 class="menu-pizzaname"><c:out value="${pizza.nimi }"></c:out>
+						<h3 class="menu-pizzaname">
+						<c:if test="${not empty kayttaja}">
+						<span class="menu-favspan" id="suosikkidiv-${pizza.id }">
+						<c:choose>
+						<c:when test="${not empty pizza.suosikkiid && pizza.suosikkiid != 0}">
+						<a href="#!"><i class="material-icons menu-favyes tooltipped" onClick="poistaSuosikki(${pizza.id},${pizza.suosikkiid})" data-position="left" data-delay="500" data-tooltip="Poista suosikeista">star</i></a>
+						</c:when>
+						<c:otherwise>
+						<a href="#!"><i class="material-icons menu-favno tooltipped" onClick="lisaaSuosikki(${pizza.id})" data-position="left" data-delay="500" data-tooltip="Lisää suosikkeihin">star_border</i></a>
+						</c:otherwise>
+						</c:choose>
+						</span>
+						</c:if>
+						<c:out value="${pizza.nimi }"></c:out>
 							<span class="menu-pizzahinta">${fn:replace(pizzahinta, ".", ",") }
 								€</span>
 						</h3>
@@ -70,7 +86,6 @@ $(function() {
 						</span>
 						<p class="menu-pizzakuvaus">"<c:out value="${pizza.kuvaus }"></c:out>"</p>
 						<br>
-						<c:if test="${not empty kayttaja}"><button class="btn waves-effect waves-light ostoskorinappi" type="button"><i class="material-icons">star</i></button></c:if>
 						<button class="btn waves-effect waves-light ostoskorinappi" type="button" onClick="lisaaOstoskoriin(<c:out value="${pizza.id}"></c:out>,'pizza')">Lisää
 							ostoskoriin</button>
 						<br> <br>

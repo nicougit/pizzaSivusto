@@ -21,6 +21,7 @@ import apuluokka.Apuri;
 import bean.Kayttaja;
 import bean.Pizza;
 import bean.Tilaus;
+import daot.AsiakasDao;
 import daot.KayttajaDao;
 
 /**
@@ -160,15 +161,84 @@ public class KayttajaServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		HttpSession sessio = request.getSession();
 		String action = request.getParameter("action");
+		String id = request.getParameter("id");
 		String json = request.getParameter("json");
 		
+		Apuri apuri = new Apuri();
+		
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) { 
+		Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
 		if (action != null && action.equals("haetilaukset") && json != null && json.equals("true")) {
 			tilaushistoriaJsonina(request, response);
+		}
+		else if (action != null && action.equals("lisaasuosikki") && json != null && json.equals("true") && id != null && apuri.validoiInt(id, 11) == true) {
+			KayttajaDao dao = new KayttajaDao();
+			HashMap<String, String> vastaus = dao.lisaaSuosikkiPizza(String.valueOf(kayttaja.getId()), id);
+			
+			if (vastaus.get("success") != null) {
+				JSONArray jsonarray = new JSONArray();
+				JSONObject jsonvastaus = new JSONObject();
+				JSONObject suosikkiid = new JSONObject();
+				
+				jsonvastaus.put("success", "Pizza lisätty suosikiksi!");
+				suosikkiid.put("suosikkiid", Integer.parseInt(vastaus.get("success")));
+				
+				jsonarray.add(jsonvastaus);
+				jsonarray.add(suosikkiid);
+				
+				// Encoding ja printtaus
+				response.setCharacterEncoding("UTF-8");
+				response.setContentType("application/json");
+
+				PrintWriter out = response.getWriter();
+				out.print(jsonarray);
+				
+			} else {
+				jsonVastaus(request, response, vastaus);
+			}
+			
+		}
+		else if (action != null && action.equals("poistasuosikki") && json != null && json.equals("true") && id != null && apuri.validoiInt(id, 11) == true) {
+			KayttajaDao dao = new KayttajaDao();
+			HashMap<String, String> vastaus = dao.poistaSuosikkipizza(String.valueOf(kayttaja.getId()), id);
+			jsonVastaus(request, response, vastaus);
 		}
 		else {
 		doGet(request, response);
 		}
+		}
+		else {
+			doGet(request, response);
+		}
+	}
+	
+	// Success- ja virheilmoitusten välitys JavaScriptille JSON-muodossa
+	protected void jsonVastaus(HttpServletRequest request,
+			HttpServletResponse response, HashMap<String, String> vastaus)
+			throws ServletException, IOException {
+
+		JSONArray jsonarray = new JSONArray();
+		JSONObject jsonvastaus = new JSONObject();
+
+		if (vastaus.get("virhe") != null) {
+			jsonvastaus.put("virhe", vastaus.get("virhe"));
+		} else if (vastaus.get("success") != null) {
+			jsonvastaus.put("success", vastaus.get("success"));
+		} else {
+			jsonvastaus.put("virhe", "Tuntematon virhe JSONia käsitellessä");
+		}
+
+		jsonarray.add(jsonvastaus);
+
+		// Encoding ja printtaus
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+		out.print(jsonarray);
+
 	}
 
 }

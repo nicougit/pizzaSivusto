@@ -321,8 +321,8 @@ public class KayttajaDao {
 		Kysely kysely = new Kysely(yhteys.getYhteys());
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 
-		// Katsotaan ensin duplicaten varalta
-		String sql = "SELECT pizza_id FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) JOIN SuosikkiPizza sp USING(pizza_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL AND pizza_id = ? LIMIT 1";
+		// Katsotaan että pizza on olemassa
+		String sql = "SELECT pizza_id FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) LEFT JOIN SuosikkiPizza sp USING(pizza_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL AND pizza_id = ? LIMIT 1";
 		ArrayList<String> parametrit = new ArrayList<String>();
 		parametrit.add(pizzaid);
 
@@ -337,11 +337,12 @@ public class KayttajaDao {
 		sql = "INSERT INTO SuosikkiPizza VALUES (null, ?, ?)";
 		parametrit.add(kayttajaid);
 
-		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
-		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+		// Palauttaa lisätyn suosikkipizzan suosikki_id
+		int suosikkiid = paivitys.suoritaSqlParamPalautaAvaimet(sql, parametrit);
 
-		if (rivit == 1) {
-			String success = "Pizza lisätty suosikkeihin!";
+		// Palautetaan suosikki_id
+		if (suosikkiid > 0) {
+			String success = String.valueOf(suosikkiid);
 			vastaus.put("success", success);
 			yhteys.suljeYhteys();
 			return vastaus;

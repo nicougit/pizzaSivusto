@@ -9,8 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import bean.Juoma;
+import bean.Kayttaja;
 import bean.Pizza;
 import bean.Tayte;
 import daot.AsiakasDao;
@@ -44,9 +46,21 @@ public class PizzaServlet extends HttpServlet {
 
 		// RequestDispatcher
 		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/pizzat.jsp");
-
+		
+		// Katsotaan onko käyttäjä kirjautunut, suosikkipizzojen takia
+		HttpSession sessio = request.getSession(false);
+		
 		// Pizzojen ja juomien haku
-		ArrayList<Pizza> pizzat = dao.haeKaikkiPizzat();
+		ArrayList<Pizza> pizzat = new ArrayList<>();
+		
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+			pizzat = dao.haeKaikkiPizzat(String.valueOf(kayttaja.getId()));
+		}
+		else {
+			pizzat = dao.haeKaikkiPizzat(null);
+		}
+
 		ArrayList<Juoma> juomat = dao.haeKaikkiJuomat();
 
 

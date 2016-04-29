@@ -36,7 +36,7 @@
 			</c:if>
 		</div>
 
-		<div class="col s12 m5 m5">
+		<div class="col s12 m12 l5">
 			<div class="row">
 				<div class="col s12 m6 l6">
 					<h5 class="tilaustitle">Tilaaja</h5>
@@ -75,7 +75,7 @@
 			</div>
 		</div>
 
-		<div class="col s12 m6 l6 offset-m1 offset-l1">
+		<div class="col s12 m12 l6 offset-l1">
 			<h2>Tilatut tuotteet</h2>
 			<c:set var="yhteishinta" value="0"></c:set>
 			<table class="bordered">
