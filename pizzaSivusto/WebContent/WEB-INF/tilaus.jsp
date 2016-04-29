@@ -31,7 +31,12 @@
 	</div>
 	<div class="col s12 m4 l4">
 	<h5 class="tilaustitle">Puhelinnumero</h5>
-	<c:out value="${kayttaja.puhelin }"></c:out>
+	<c:choose>
+	<c:when test="${not empty kayttaja.puhelin }"><c:out value="${kayttaja.puhelin }"></c:out></c:when>
+	<c:otherwise>
+	&nbsp;
+	</c:otherwise>
+	</c:choose>
 	</div>
 	<div class="col s12 m4 sl4" id="toimitustapadiv">
 	<h5 class="tilaustitle">Toimitustapa</h5>
@@ -61,7 +66,7 @@
 	<h5 class="tilaustitle">Toimitusosoite</h5>
 	<c:choose>
 	<c:when test="${empty kayttaja.osoitteet }">
-	Et ole vielä lisännyt yhtään osoitetta. Lisää osoite alla olevasta painikkeesta.<br><br>
+	<p class="flow-text center-align">Et ole vielä määrittänyt osoitettasi. Lisää osoite alla olevasta painikkeesta.</p>
 	</c:when>
 	<c:otherwise>
 	<ul class="collection">

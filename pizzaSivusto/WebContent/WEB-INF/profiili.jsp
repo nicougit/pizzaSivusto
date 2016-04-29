@@ -33,36 +33,9 @@
 				Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 			</div>
 			<div class="col s12 m6 center-align" id="tilaushistoriadiv">
-				<h2>Tilaushistoria</h2>
-				
-				<c:choose>
-				<c:when test="${empty tilaushistoria }">Sinulla ei ole vielä tilauksia</c:when>
-				<c:otherwise>
-				<table class="bordered">
-				<thead>
-				<tr>
-				<th class="center">Tilausnumero</th>
-				<th>Tilausajankohta</th>
-				<th class="center">Hinta</th>
-				</tr>
-				</thead>
-				<tbody>
-				<c:forEach items="${tilaushistoria }" var="tilaus">
-				<tr class="taulukkorivi">
-				<td class="center">
-				<a href="<c:url value="/tilaus?tilausnro=${tilaus.tilausid }"></c:url>"><c:out value="${tilaus.tilausid }"></c:out></a>
-				</td>
-				<td><fmt:formatDate value="${tilaus.tilaushetki }" pattern="dd.MM.yyyy HH:mm"/></td>
-				<td class="center">
-				<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${tilaus.kokonaishinta }"></fmt:formatNumber></c:set>
-				${fn:replace(hinta, ".", ",") } €
-				</td>
-				</tr>
-				</c:forEach>
-				</tbody>
-				</table>
-				</c:otherwise>
-				</c:choose>
+			<noscript>
+			Tilaushistoriaa ei voida ladata ilman JavaScriptiä!
+			</noscript>
 			</div>
 		</div>
 	</div>

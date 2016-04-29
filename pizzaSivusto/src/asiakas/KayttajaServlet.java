@@ -2,6 +2,7 @@ package asiakas;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -46,24 +47,8 @@ public class KayttajaServlet extends HttpServlet {
 
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 			
-			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
-			
-			// Haetaan tilaushistoria
-			KayttajaDao kayttajadao = new KayttajaDao();
-			ArrayList<Tilaus> tilaushistoria = kayttajadao.haeTilaushistoria(String.valueOf(kayttaja.getId()));
-			
-			
-			String json = request.getParameter("json");
-			
-			if (json != null) {
-				tilaushistoriaJsonina(request, response);
-			}
-			else {
-			// Tilaushistoria attribuutiksi ja sivun näyttö
-			request.setAttribute("tilaushistoria", tilaushistoria);
 			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/profiili.jsp");
 			rd.forward(request, response);
-			}
 			
 		} else {
 			// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle
@@ -89,8 +74,14 @@ public class KayttajaServlet extends HttpServlet {
 		for (int i = 0; i < tilaushistoria.size(); i++) {
 			Tilaus tilaus = tilaushistoria.get(i);
 			JSONObject tilausobjekti = new JSONObject();
+			
+			// Parsetaan timestamp
+			Timestamp ts = tilaus.getTilaushetki();
+			long tilaushetki = ts.getTime();
+			
+			// Tungetaan objektiin jne
 			tilausobjekti.put("tilaus_id", tilaus.getTilausid());
-			tilausobjekti.put("tilaushetki", tilaus.getTilaushetki());
+			tilausobjekti.put("tilaushetki", tilaushetki);
 			tilausobjekti.put("kokonaishinta", tilaus.getKokonaishinta());
 			tilaushistoriaJson.add(tilausobjekti);
 		}
