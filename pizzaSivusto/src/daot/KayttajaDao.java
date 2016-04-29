@@ -12,6 +12,8 @@ import java.util.Iterator;
 
 import bean.Kayttaja;
 import bean.Osoite;
+import bean.Pizza;
+import bean.Tayte;
 import bean.Tilaus;
 import login.KayttajaLista;
 import login.Tiiviste;
@@ -188,6 +190,168 @@ public class KayttajaDao {
 		yhteys.suljeYhteys();
 		
 		return tilaukset;
+	}
+	
+	public ArrayList<Pizza> haeSuosikkiPizzat(String kayttajaid) {
+		ArrayList<Pizza> pizzat = new ArrayList<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			yhteys.suljeYhteys();
+			return pizzat;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		ArrayList<String> parametrit = new ArrayList<>();
+		String sql = "SELECT suosikki_id, kayttaja_id, pizza_id, p.nimi AS pizza, kuvaus, hinta, t.nimi AS tayte, p.poistomerkinta, tayte_id, t.saatavilla FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) JOIN SuosikkiPizza sp USING(pizza_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL AND kayttaja_id = ? ORDER BY hinta ASC";
+		parametrit.add(kayttajaid);
+		
+		kysely.suoritaYksiKyselyParam(sql, parametrit);
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		// Iteraattorin luonti
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		while (iteraattori.hasNext()) {
+			HashMap pizzaMappi = (HashMap) iteraattori.next();
+			String idString = (String) pizzaMappi.get("pizza_id");
+			String favidString = (String) pizzaMappi.get("suosikki_id");
+			String nimikanta = (String) pizzaMappi.get("pizza");
+			String hintaString = (String) pizzaMappi.get("hinta");
+			String tayteKanta = (String) pizzaMappi.get("tayte");
+			String tayteIdKanta = (String) pizzaMappi.get("tayte_id");
+			String tayteSaatavilla = (String) pizzaMappi.get("saatavilla");
+			String poistoKanta = (String) pizzaMappi.get("poistomerkinta");
+			String kuvausKanta = (String) pizzaMappi.get("kuvaus");
+			int idKanta = Integer.parseInt(idString);
+			int favId = Integer.parseInt(favidString);
+			double hintaKanta = Double.parseDouble(hintaString);
+
+			Tayte tayte = new Tayte();
+
+			// Täyte-oliolle tiedot
+			tayte.setId(Integer.parseInt(tayteIdKanta));
+			tayte.setNimi(tayteKanta);
+			if (tayteSaatavilla.equals("K")) {
+				tayte.setSaatavilla(true);
+			} else if (tayteSaatavilla.equals("E")) {
+				tayte.setSaatavilla(false);
+			} else {
+				System.out.println("Tuntematon saatavilla-arvo: " + tayteSaatavilla + " - Asetetaan false.");
+				tayte.setSaatavilla(false);
+			}
+
+			// Katsotaan, onko pizza jo listalla
+			// Jos on, lisätään siihen täyte
+			// Jos ei, luodaan uusi pizza
+			boolean pizzaloyty = false;
+
+			for (int i = 0; i < pizzat.size(); i++) {
+				if (pizzat.get(i).getId() == idKanta) {
+					ArrayList<Tayte> taytteet = pizzat.get(i).getTaytteet();
+					taytteet.add(tayte);
+					pizzat.get(i).setTaytteet(taytteet);
+					pizzaloyty = true;
+				}
+			}
+
+			if (pizzaloyty == false) {
+				ArrayList<Tayte> taytteet = new ArrayList<>();
+				taytteet.add(tayte);
+				Pizza pizza = new Pizza(idKanta, nimikanta, hintaKanta, taytteet, poistoKanta, null, kuvausKanta);
+				pizza.setSuosikkiid(favId);
+				pizzat.add(pizza);
+			}
+		}
+
+		// Yhteyden sulkeminen
+		yhteys.suljeYhteys();
+
+		// Pizzojen palautus
+		return pizzat;
+
+	}
+	
+	public HashMap<String, String> poistaSuosikkipizza(String kayttajaid, String suosikkiid) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		// Poistetaan suosikkimerkintä
+		String sql = "DELETE FROM SuosikkiPizza WHERE kayttaja_id = ? AND suosikki_id = ?";
+		ArrayList<String> parametrit = new ArrayList<>();
+		parametrit.add(kayttajaid);
+		parametrit.add(suosikkiid);
+
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit > 0) {
+			String success = "Pizza poistettu suosikeista";
+			vastaus.put("success", success);
+			yhteys.suljeYhteys();
+			return vastaus;
+		} else {
+			String virhe = "Pizzan poistamisessa suosikeista tapahtui virhe";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+	}
+	
+	public HashMap<String, String> lisaaSuosikkiPizza(String kayttajaid, String pizzaid) {
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		// Katsotaan ensin duplicaten varalta
+		String sql = "SELECT pizza_id FROM PizzanTayte pt JOIN Pizza p USING(pizza_id) JOIN Tayte t USING(tayte_id) JOIN SuosikkiPizza sp USING(pizza_id) WHERE NOT EXISTS (SELECT * FROM PizzanTayte JOIN Tayte USING(tayte_id) WHERE p.pizza_id = pizza_id AND saatavilla = 'E') AND p.poistomerkinta IS NULL AND pizza_id = ? LIMIT 1";
+		ArrayList<String> parametrit = new ArrayList<String>();
+		parametrit.add(pizzaid);
+
+		if (kysely.montaRivia(sql, parametrit) != 1) {
+			String virhe = "Virheellinen pizza";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
+		// Lisätään osoite
+		sql = "INSERT INTO SuosikkiPizza VALUES (null, ?, ?)";
+		parametrit.add(kayttajaid);
+
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit == 1) {
+			String success = "Pizza lisätty suosikkeihin!";
+			vastaus.put("success", success);
+			yhteys.suljeYhteys();
+			return vastaus;
+		} else {
+			String virhe = "Suosikkipizzaa lisätessä tapahtui virhe!";
+			vastaus.put("virhe", virhe);
+			yhteys.suljeYhteys();
+			return vastaus;
+		}
+
 	}
 	
 	public ArrayList<Osoite> haeOsoitteet(String kayttajaid) {

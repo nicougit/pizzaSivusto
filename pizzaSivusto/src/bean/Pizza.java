@@ -12,6 +12,7 @@ public class Pizza {
 	ArrayList<String> tayteIdt;
 	String kuvaus;
 	ArrayList<String> lisatiedot;
+	int suosikkiid;
 
 	public Pizza() {
 		super();
@@ -92,6 +93,14 @@ public class Pizza {
 
 	public void setLisatiedot(ArrayList<String> lisatiedot) {
 		this.lisatiedot = lisatiedot;
+	}
+
+	public int getSuosikkiid() {
+		return suosikkiid;
+	}
+
+	public void setSuosikkiid(int suosikkiid) {
+		this.suosikkiid = suosikkiid;
 	}
 
 	@Override
