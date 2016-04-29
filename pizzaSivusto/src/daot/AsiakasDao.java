@@ -358,42 +358,43 @@ public class AsiakasDao {
 				}
 				parametrit.add(String.valueOf(tilausid));
 				parametrit.add(String.valueOf(pizzat.get(i).getId()));
-				if (pizzat.get(i).getLisatiedot().contains("Vähälaktoosinen")) {
+				if (pizzat.get(i).getLisatiedot() != null && pizzat.get(i).getLisatiedot().contains("Laktoositon")) {
 					parametrit.add("K");
 				} else {
 					parametrit.add("E");
 				}
 
-				if (pizzat.get(i).getLisatiedot().contains("Gluteeniton")) {
+				if (pizzat.get(i).getLisatiedot() != null &&pizzat.get(i).getLisatiedot().contains("Gluteeniton")) {
 					parametrit.add("K");
 				} else {
 					parametrit.add("E");
 				}
 
-				if (pizzat.get(i).getLisatiedot().contains("Oregano")) {
+				if (pizzat.get(i).getLisatiedot() != null &&pizzat.get(i).getLisatiedot().contains("Oregano")) {
 					parametrit.add("K");
 				} else {
 					parametrit.add("E");
 				}
 
-				if (pizzat.get(i).getLisatiedot().contains("Valkosipuli")) {
+				if (pizzat.get(i).getLisatiedot() != null &&pizzat.get(i).getLisatiedot().contains("Valkosipuli")) {
 					parametrit.add("K");
 				} else {
 					parametrit.add("E");
 				}
 			}
 
-			if (juomat.size() > 0) {
-				for (int i = 0; i < juomat.size(); i++) {
-					if (pizzat.size() == 0 && i == 0) {
-						sql = "INSERT INTO Tilausrivi VALUES (null, ?, null, ?, 'E', 'E', 'E', 'E', 1);";
-					} else {
-						sql += ", (null, ?, null, ?, 'E', 'E', 'E', 'E', 1)";
-					}
-					parametrit.add(String.valueOf(tilausid));
-					parametrit.add(String.valueOf(juomat.get(i).getId()));
+		}
+		
+		if (juomat.size() > 0) {
+			for (int i = 0; i < juomat.size(); i++) {
+				if (pizzat.size() == 0 && i == 0) {
+					sql = "INSERT INTO Tilausrivi VALUES (null, ?, null, ?, 'E', 'E', 'E', 'E', 1);";
+				} else {
+					sql += ", (null, ?, null, ?, 'E', 'E', 'E', 'E', 1)";
 				}
-
+				
+				parametrit.add(String.valueOf(tilausid));
+				parametrit.add(String.valueOf(juomat.get(i).getId()));
 			}
 
 		}
@@ -418,8 +419,9 @@ public class AsiakasDao {
 		yhteys.suljeYhteys();
 
 		// Palautetaan true jos kaikki onnistui, false jos kaikki ei onnistunut
+		// Poikkeuksellisesti lähetetään tässä hashmapissa success-viestissä tilauksen id
 		if (tilausrivitok == (pizzat.size() + juomat.size())) {
-			String success = "Tilaus lähetetty onnistuneesti!";
+			String success = String.valueOf(tilausid);
 			vastaus.put("success", success);
 			return vastaus;
 		} else {
@@ -447,7 +449,7 @@ public class AsiakasDao {
 		ArrayList<String> parametrit = new ArrayList<>();
 		
 		// Haetaan käyttäjän osoitteet
-		String sqlkysely = "SELECT tr.tilaus_id, k.etunimi, k.sukunimi, k.puhelin, k.tunnus, os.toimitusosoite, os.postinro, os.postitmp, t.tilaushetki, t.toimitusaika, t.toimitustapa, t.lisatiedot, t.kokonaishinta, t.maksutapa, t.maksutilanne, j.nimi AS juoma, p.nimi AS pizza, tr.laktoositon, tr.gluteeniton, tr.oregano, tr.valkosipuli FROM Tilausrivi tr JOIN Tilaus t USING (tilaus_id) JOIN Kayttaja k ON t.kayttaja_id = k.id LEFT OUTER JOIN Pizza p ON tr.tuote_pizza = p.pizza_id LEFT OUTER JOIN Juoma j ON tr.tuote_juoma = j.juoma_id LEFT OUTER JOIN Toimitusosoite os ON t.osoite_id = os.osoite_id WHERE tr.tilaus_id = ?";
+		String sqlkysely = "SELECT tr.tilaus_id, k.etunimi, k.sukunimi, k.puhelin, k.tunnus, os.toimitusosoite, os.postinro, os.postitmp, t.tilaushetki, t.toimitusaika, t.toimitustapa, t.lisatiedot, t.kokonaishinta, t.maksutapa, t.maksutilanne, j.nimi AS juoma, p.nimi AS pizza, tr.laktoositon, tr.gluteeniton, tr.oregano, tr.valkosipuli, p.hinta AS pizzahinta, j.hinta AS juomahinta FROM Tilausrivi tr JOIN Tilaus t USING (tilaus_id) JOIN Kayttaja k ON t.kayttaja_id = k.id LEFT OUTER JOIN Pizza p ON tr.tuote_pizza = p.pizza_id LEFT OUTER JOIN Juoma j ON tr.tuote_juoma = j.juoma_id LEFT OUTER JOIN Toimitusosoite os ON t.osoite_id = os.osoite_id WHERE tr.tilaus_id = ?";
 		parametrit.add(tilausid);
 		if (!kayttajaid.equals("admin")) {
 			sqlkysely += " AND k.id = ?";
@@ -516,6 +518,7 @@ public class AsiakasDao {
 				tilaus.setToimitusaika(toimitusaika);
 				tilaus.setKokonaishinta(kokonaishinta);
 				tilaus.setMaksutapa(maksutapa);
+				tilaus.setToimitustapa(toimitustapa);
 				
 			} catch (Exception ex) {
 				System.out.println("KAUHEE VIRHE TILAUSTA PARSIESSA");
@@ -539,16 +542,26 @@ public class AsiakasDao {
 			String juomanimi = (String) map.get("juoma");
 			
 			if (pizzanimi != null) {
-				String laktoositon = (String) map.get("laktoositon");
+				String valkosipuli = (String) map.get("valkosipuli");
 				String gluteeniton = (String) map.get("gluteeniton");
 				String oregano = (String) map.get("oregano");
 				String vl = (String) map.get("laktoositon");
+				String hintaStr = (String) map.get("pizzahinta");
+				double hinta = 0;
+				
+				try {
+					if (hintaStr != null) {
+						hinta = Double.parseDouble(hintaStr);
+					}
+				} catch (Exception ex) {
+					System.out.println("Virhe doublee parsiessa");
+				}
 				
 				Pizza pizza = new Pizza();
 				ArrayList<String> pizzatiedot = new ArrayList<>();
 				pizza.setNimi(pizzanimi);
-				if (laktoositon != null && laktoositon.equals("K")) {
-					pizzatiedot.add("Laktoositon");
+				if (valkosipuli != null && valkosipuli.equals("K")) {
+					pizzatiedot.add("Valkosipuli");
 				}
 				if (gluteeniton != null && gluteeniton.equals("K")) {
 					pizzatiedot.add("Gluteeniton");
@@ -557,12 +570,14 @@ public class AsiakasDao {
 					pizzatiedot.add("Oregano");
 				}
 				if (vl != null && vl.equals("K")) {
-					pizzatiedot.add("Vähälaktoosinen");
+					pizzatiedot.add("Laktoositon");
 				}
 				
 				if (pizzatiedot.size() > 0) {
 					pizza.setLisatiedot(pizzatiedot);
 				}
+				
+				pizza.setHinta(hinta);
 				
 				pizzat.add(pizza);
 				
@@ -570,6 +585,18 @@ public class AsiakasDao {
 			else if (juomanimi != null) {
 				Juoma juoma = new Juoma();
 				juoma.setNimi(juomanimi);
+				String hintaStr = (String) map.get("juomahinta");
+				double hinta = 0;
+				
+				try {
+					if (hintaStr != null) {
+						hinta = Double.parseDouble(hintaStr);
+					}
+				} catch (Exception ex) {
+					System.out.println("Virhe doublee parsiessa");
+				}
+				
+				juoma.setHinta(hinta);
 				juomat.add(juoma);
 			}
 			

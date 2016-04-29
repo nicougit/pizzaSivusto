@@ -10,6 +10,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Castello &#233; Fiori - Tervetuloa</title>
 <jsp:include page="head-include.jsp"></jsp:include>
+<script src="build/react.js"></script>
+<script src="build/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 </head>
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
@@ -29,7 +32,7 @@
 				<br><br>
 				Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 			</div>
-			<div class="col s12 m6 center-align">
+			<div class="col s12 m6 center-align" id="tilaushistoriadiv">
 				<h2>Tilaushistoria</h2>
 				
 				<c:choose>
@@ -46,7 +49,9 @@
 				<tbody>
 				<c:forEach items="${tilaushistoria }" var="tilaus">
 				<tr class="taulukkorivi">
-				<td class="center"><c:out value="${tilaus.tilausid }"></c:out></td>
+				<td class="center">
+				<a href="<c:url value="/tilaus?tilausnro=${tilaus.tilausid }"></c:url>"><c:out value="${tilaus.tilausid }"></c:out></a>
+				</td>
 				<td><fmt:formatDate value="${tilaus.tilaushetki }" pattern="dd.MM.yyyy HH:mm"/></td>
 				<td class="center">
 				<c:set var="hinta"><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${tilaus.kokonaishinta }"></fmt:formatNumber></c:set>
@@ -61,6 +66,8 @@
 			</div>
 		</div>
 	</div>
+	
+	<script src="js/tilaushistoria.js" type="text/babel"></script>
 
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>

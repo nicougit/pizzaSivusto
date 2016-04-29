@@ -161,8 +161,9 @@ public class TilausServlet extends HttpServlet {
 		HttpSession sessio = request.getSession(false);
 		Tilaus tilaus = new Tilaus();
 
-		if (sessio.getAttribute("tilaus") != null) {
+		if (sessio.getAttribute("tilaus") != null && sessio.getAttribute("kayttaja") != null) {
 			tilaus = (Tilaus) sessio.getAttribute("tilaus");
+			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
 
 			AsiakasDao dao = new AsiakasDao();
 
@@ -172,8 +173,8 @@ public class TilausServlet extends HttpServlet {
 				String virhe = vastaus.get("virhe");
 				request.setAttribute("virhe", virhe);
 			} else if (vastaus.get("success") != null) {
-				String success = vastaus.get("success");
-				request.setAttribute("success", success);
+				String tilausid = vastaus.get("success");
+				tilaus = dao.haeYksiTilaus(tilausid, String.valueOf(kayttaja.getId()));
 
 				// Tyhjennetään ostoskori
 				HashMap<String, ArrayList> ostoskori = new HashMap<>();
@@ -184,8 +185,7 @@ public class TilausServlet extends HttpServlet {
 				sessio.setAttribute("ostoskori", ostoskori);
 
 				// Ohjataan eteenpäin
-				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilaustiedot.jsp");
-				rd.forward(request, response);
+				response.sendRedirect(request.getContextPath() + "/tilaus?tilausnro=" + tilausid + "&tilaus=success");
 			} else {
 				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
 			}
@@ -235,7 +235,7 @@ public class TilausServlet extends HttpServlet {
 				if (apuri.validoiInt(maksutapa, 11) == true && Integer.parseInt(maksutapa) >= 0
 						&& Integer.parseInt(maksutapa) < 3) {
 					// TODO: Lisätietojen validointi
-					if (lisatiedot != null) {
+					if (lisatiedot.length() < 256) {
 						if (apuri.validoiInt(osoitevalinta, 11) == true) {
 							// Osoitteen tarkempi validointi ja haku
 							ArrayList<Osoite> osoitteet = kayttaja.getOsoitteet();
@@ -287,7 +287,7 @@ public class TilausServlet extends HttpServlet {
 															.add("Gluteeniton");
 												} else if (pizzatieto.equals("vl")) {
 													ostoskoriPizzat.get(pizzaindeksi).getLisatiedot()
-															.add("Vähälaktoosinen");
+															.add("Laktoositon");
 												} else {
 													System.out.println("Virhe - tuntematon pizzatieto indeksissä "
 															+ pizzaindex + " : " + pizzatieto);
@@ -366,7 +366,7 @@ public class TilausServlet extends HttpServlet {
 					} else {
 						// Eclipse sanoo et dead codee, koska validointia ei
 						// vielä tehty
-						String virhe = "Lisätiedoissa laittomia merkkejä";
+						String virhe = "Lisätiedoissa on liikaa sisältöä";
 						virhe(request, response, virhe);
 					}
 

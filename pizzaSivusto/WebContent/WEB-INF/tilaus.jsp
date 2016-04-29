@@ -120,7 +120,7 @@
 			<input type="checkbox" name="pizzatieto" id="<c:out value="${status.index }-gluteeniton"></c:out>" value="<c:out value="${status.index }-gluteeniton"></c:out>">
 			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-gluteeniton"></c:out>">Gluteeniton</label>
 			<input type="checkbox" name="pizzatieto" id="<c:out value="${status.index }-vl"></c:out>" value="<c:out value="${status.index }-vl"></c:out>">
-			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-vl"></c:out>">Vähälaktoosinen</label>
+			<label class="tilaus-tietolabel" for="<c:out value="${status.index }-vl"></c:out>">Laktoositon</label>
 			</td>
 			</tr>
 			<c:set var="yhteishinta" value="${yhteishinta + pizza.hinta }"></c:set>

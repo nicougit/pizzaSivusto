@@ -1,6 +1,7 @@
 package asiakas;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -11,7 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import bean.Kayttaja;
+import bean.Pizza;
 import bean.Tilaus;
 import daot.KayttajaDao;
 
@@ -47,15 +52,61 @@ public class KayttajaServlet extends HttpServlet {
 			KayttajaDao kayttajadao = new KayttajaDao();
 			ArrayList<Tilaus> tilaushistoria = kayttajadao.haeTilaushistoria(String.valueOf(kayttaja.getId()));
 			
+			
+			String json = request.getParameter("json");
+			
+			if (json != null) {
+				tilaushistoriaJsonina(request, response);
+			}
+			else {
 			// Tilaushistoria attribuutiksi ja sivun näyttö
 			request.setAttribute("tilaushistoria", tilaushistoria);
 			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/profiili.jsp");
 			rd.forward(request, response);
+			}
 			
 		} else {
 			// Jos käyttäjä ei ole kirjautunut, ohjataan login -sivulle
 			response.sendRedirect(request.getContextPath() + "/login");
 		}
+		
+	}
+	
+	protected void tilaushistoriaJsonina(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		HttpSession sessio = request.getSession();
+		
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			
+			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+			
+			// Haetaan tilaushistoria
+			KayttajaDao kayttajadao = new KayttajaDao();
+			ArrayList<Tilaus> tilaushistoria = kayttajadao.haeTilaushistoria(String.valueOf(kayttaja.getId()));
+		
+		// Tilaushistorian JSON-array
+		JSONArray tilaushistoriaJson = new JSONArray();
+		for (int i = 0; i < tilaushistoria.size(); i++) {
+			Tilaus tilaus = tilaushistoria.get(i);
+			JSONObject tilausobjekti = new JSONObject();
+			tilausobjekti.put("tilaus_id", tilaus.getTilausid());
+			tilausobjekti.put("tilaushetki", tilaus.getTilaushetki());
+			tilausobjekti.put("kokonaishinta", tilaus.getKokonaishinta());
+			tilaushistoriaJson.add(tilausobjekti);
+		}
+		
+		// Encoding ja printtaus
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+
+		PrintWriter out = response.getWriter();
+		out.print(tilaushistoriaJson);
+		
+		}
+		else {
+			naytaSivu(request, response);
+		}
+		
 		
 	}
 	
@@ -68,7 +119,16 @@ public class KayttajaServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		String action = request.getParameter("action");
+		String json = request.getParameter("json");
+		
+		if (action != null && action.equals("haetilaukset") && json != null && json.equals("true")) {
+			tilaushistoriaJsonina(request, response);
+		}
+		else {
 		doGet(request, response);
+		}
 	}
 
 }

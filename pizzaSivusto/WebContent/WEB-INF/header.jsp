@@ -11,7 +11,6 @@
 	<c:if test="${not empty kayttaja }">
 		<ul id="user-dropdowni" class="dropdown-content">
 			<li><a href="<c:url value='/kayttaja'/>">Profiili</a></li>
-			<li><a href="#!">Tilaushistoria</a></li>
 			<c:if
 				test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
 
@@ -72,7 +71,6 @@
 						<c:when test="${not empty kayttaja }">
 							<li class="divider"></li>
 							<li><a href="<c:url value='/kayttaja'/>"><c:out value="${kayttaja.tunnus }"></c:out></a></li>
-							<li><a href="#!">Tilaushistoria</a></li>
 							<c:if
 								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
 								<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
@@ -94,7 +92,6 @@
 	</nav>
 </div>
 <div class="container" id="main-container">
-
 
 	<c:if test="${empty kayttaja }">
 		<div id="loginmodal" class="modal loginmodaali">
