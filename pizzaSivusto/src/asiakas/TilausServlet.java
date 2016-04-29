@@ -228,7 +228,7 @@ public class TilausServlet extends HttpServlet {
 		 * käteinen, 1 = luottokortti, 2 = verkkomaksu
 		 */
 
-		if (tilaustapa != null && maksutapa != null && lisatiedot != null && osoitevalinta != null) {
+		if (tilaustapa != null && maksutapa != null && lisatiedot != null) {
 
 			if (apuri.validoiInt(tilaustapa, 11) == true && Integer.parseInt(tilaustapa) >= 0
 					&& Integer.parseInt(tilaustapa) < 3) {
@@ -236,17 +236,27 @@ public class TilausServlet extends HttpServlet {
 						&& Integer.parseInt(maksutapa) < 3) {
 					// TODO: Lisätietojen validointi
 					if (lisatiedot.length() < 256) {
-						if (apuri.validoiInt(osoitevalinta, 11) == true) {
-							// Osoitteen tarkempi validointi ja haku
-							ArrayList<Osoite> osoitteet = kayttaja.getOsoitteet();
+						if ((osoitevalinta != null && apuri.validoiInt(osoitevalinta, 11) == true)
+								|| !tilaustapa.equals("0")) {
 							Osoite osoite = null;
-							for (int i = 0; i < osoitteet.size(); i++) {
-								if (osoitteet.get(i).getOsoiteid() == Integer.parseInt(osoitevalinta)) {
-									osoite = osoitteet.get(i);
-									i = osoitteet.size();
+							Boolean osoiteok = false;
+
+							if (tilaustapa.equals("0")) {
+								// Osoitteen tarkempi validointi ja haku
+								ArrayList<Osoite> osoitteet = kayttaja.getOsoitteet();
+								for (int i = 0; i < osoitteet.size(); i++) {
+									if (osoitteet.get(i).getOsoiteid() == Integer.parseInt(osoitevalinta)) {
+										osoite = osoitteet.get(i);
+										osoiteok = true;
+										i = osoitteet.size();
+									}
 								}
+							} else {
+								System.out
+										.println("Käyttäjällä ei osoitetta, mut ei valittu kotiinkuljetusta joten ok");
+								osoiteok = true;
 							}
-							if (osoite != null) {
+							if (osoiteok == true) {
 								Boolean pizzatiedotOk = true;
 								if (pizzatiedot != null) {
 									for (int i = 0; i < pizzatiedot.length; i++) {
