@@ -1,7 +1,6 @@
 var kayttajapathi = "/" + window.location.pathname.split("/")[1] + "/kayttaja";
 
 var lisaaSuosikki = function(pizzaid) {
-  $('.tooltipped').tooltip('remove');
   $.post(kayttajapathi, {action: "lisaasuosikki", id: pizzaid, json: "true"}).done(
     function(json) {
       var vastaus = json[0];
@@ -23,7 +22,6 @@ var lisaaSuosikki = function(pizzaid) {
     }
 
     var poistaSuosikki = function(pizzaid, suosikkiid) {
-      $('.tooltipped').tooltip('remove');
       $.post(kayttajapathi, {action: "poistasuosikki", id: suosikkiid, json: "true"}).done(
         function(json) {
           var vastaus = json[0];
@@ -50,15 +48,14 @@ var lisaaSuosikki = function(pizzaid) {
           }
 
           if (toiminto == "lisatty") {
-            var uusnappi = "<a href=\"#!\"><i class=\"material-icons menu-favyes tooltipped\" onClick=\"poistaSuosikki(" + id + ", " + suosikkiid + ")\" data-position=\"left\" data-delay=\"500\" data-tooltip=\"Poista suosikeista\">star</i></a>";
+            var uusnappi = "<a href=\"#!\"><i class=\"material-icons menu-favyes\" onClick=\"poistaSuosikki(" + id + ", " + suosikkiid + ")\">star</i></a>";
             $(elementti).html(uusnappi);
           }
           else if (toiminto == "poistettu") {
-            var uusnappi = "<a href=\"#!\"><i class=\"material-icons menu-favno tooltipped\" onClick=\"lisaaSuosikki(" + id + ")\" data-position=\"left\" data-delay=\"500\" data-tooltip=\"Lisää suosikkeihin\">star_border</i></a>";
+            var uusnappi = "<a href=\"#!\"><i class=\"material-icons menu-favno\" onClick=\"lisaaSuosikki(" + id + ")\">star_border</i></a>";
             $(elementti).html(uusnappi);
           }
           else {
             console.log("Tuntematon toiminto suosikkimeiningeissä")
           }
-          $('.tooltipped').tooltip({delay: 500});
         }

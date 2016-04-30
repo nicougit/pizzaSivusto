@@ -66,10 +66,10 @@ $(function() {
 						<span class="menu-favspan" id="suosikkidiv-${pizza.id }">
 						<c:choose>
 						<c:when test="${not empty pizza.suosikkiid && pizza.suosikkiid != 0}">
-						<a href="#!"><i class="material-icons menu-favyes tooltipped" onClick="poistaSuosikki(${pizza.id},${pizza.suosikkiid})" data-position="left" data-delay="500" data-tooltip="Poista suosikeista">star</i></a>
+						<a href="#!"><i class="material-icons menu-favyes" onClick="poistaSuosikki(${pizza.id},${pizza.suosikkiid})">star</i></a>
 						</c:when>
 						<c:otherwise>
-						<a href="#!"><i class="material-icons menu-favno tooltipped" onClick="lisaaSuosikki(${pizza.id})" data-position="left" data-delay="500" data-tooltip="Lisää suosikkeihin">star_border</i></a>
+						<a href="#!"><i class="material-icons menu-favno" onClick="lisaaSuosikki(${pizza.id})">star_border</i></a>
 						</c:otherwise>
 						</c:choose>
 						</span>

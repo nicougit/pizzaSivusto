@@ -462,7 +462,7 @@ public class AsiakasDao {
 		ArrayList<String> parametrit = new ArrayList<>();
 		
 		// Haetaan käyttäjän osoitteet
-		String sqlkysely = "SELECT tr.tilaus_id, k.etunimi, k.sukunimi, k.puhelin, k.tunnus, os.toimitusosoite, os.postinro, os.postitmp, t.tilaushetki, t.toimitusaika, t.toimitustapa, t.lisatiedot, t.kokonaishinta, t.maksutapa, t.maksutilanne, j.nimi AS juoma, p.nimi AS pizza, tr.laktoositon, tr.gluteeniton, tr.oregano, tr.valkosipuli, p.hinta AS pizzahinta, j.hinta AS juomahinta FROM Tilausrivi tr JOIN Tilaus t USING (tilaus_id) JOIN Kayttaja k ON t.kayttaja_id = k.id LEFT OUTER JOIN Pizza p ON tr.tuote_pizza = p.pizza_id LEFT OUTER JOIN Juoma j ON tr.tuote_juoma = j.juoma_id LEFT OUTER JOIN Toimitusosoite os ON t.osoite_id = os.osoite_id WHERE tr.tilaus_id = ?";
+		String sqlkysely = "SELECT tr.tilaus_id, k.etunimi, k.sukunimi, k.puhelin, k.tunnus, os.toimitusosoite, os.postinro, os.postitmp, t.tilaushetki, t.toimitusaika, t.toimitustapa, t.lisatiedot, t.kokonaishinta, t.maksutapa, t.maksutilanne, j.nimi AS juoma, p.nimi AS pizza, tr.laktoositon, tr.gluteeniton, tr.oregano, tr.valkosipuli, p.hinta AS pizzahinta, j.hinta AS juomahinta, j.koko AS juomakoko FROM Tilausrivi tr JOIN Tilaus t USING (tilaus_id) JOIN Kayttaja k ON t.kayttaja_id = k.id LEFT OUTER JOIN Pizza p ON tr.tuote_pizza = p.pizza_id LEFT OUTER JOIN Juoma j ON tr.tuote_juoma = j.juoma_id LEFT OUTER JOIN Toimitusosoite os ON t.osoite_id = os.osoite_id WHERE tr.tilaus_id = ?";
 		parametrit.add(tilausid);
 		if (!kayttajaid.equals("admin")) {
 			sqlkysely += " AND k.id = ?";
@@ -599,17 +599,23 @@ public class AsiakasDao {
 				Juoma juoma = new Juoma();
 				juoma.setNimi(juomanimi);
 				String hintaStr = (String) map.get("juomahinta");
+				String kokoStr = (String) map.get("juomakoko");
 				double hinta = 0;
+				double koko = 0;
 				
 				try {
 					if (hintaStr != null) {
 						hinta = Double.parseDouble(hintaStr);
+					}
+					if (kokoStr != null) {
+						koko = Double.parseDouble(kokoStr);
 					}
 				} catch (Exception ex) {
 					System.out.println("Virhe doublee parsiessa");
 				}
 				
 				juoma.setHinta(hinta);
+				juoma.setKoko(koko);
 				juomat.add(juoma);
 			}
 			

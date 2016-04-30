@@ -58,9 +58,7 @@
 	</div>
 	<div class="col s12 m5 sl5">
 	<h5 class="tilaustitle">Tilauksen lisätiedot</h5>
-	<c:set var="lisikset" value=""></c:set>
-	<textarea id="lisatiedot" class="materialize-textarea" name="lisatiedot" length="250">
-	</textarea>
+	<textarea id="lisatiedot" class="materialize-textarea" name="lisatiedot" length="250"></textarea>
 	</div>
 	<div class="col s12" id="osoitediv">
 	<h5 class="tilaustitle">Toimitusosoite</h5>

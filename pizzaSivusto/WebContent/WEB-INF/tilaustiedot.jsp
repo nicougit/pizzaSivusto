@@ -76,7 +76,7 @@
 		</div>
 
 		<div class="col s12 m12 l6 offset-l1">
-			<h2>Tilatut tuotteet</h2>
+			<h3>Tilatut tuotteet</h3>
 			<c:set var="yhteishinta" value="0"></c:set>
 			<table class="bordered">
 				<thead>
