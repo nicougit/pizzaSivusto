@@ -264,7 +264,7 @@ public class LoginServlet extends HttpServlet {
 					request.setAttribute("success", "Olet kirjautunut sisään onnistuneesti!");
 					
 					if (osoite == null) {
-						response.sendRedirect(request.getContextPath());
+						response.sendRedirect(request.getContextPath() + "/kayttaja?loggedin=true");
 					}
 					else {
 						response.sendRedirect(request.getContextPath() + osoite + "?loggedin=true");
