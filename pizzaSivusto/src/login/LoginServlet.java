@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mysql.fabric.xmlrpc.base.Array;
-
 import apuluokka.Apuri;
-import apuluokka.DeployAsetukset;
 import bean.Kayttaja;
 import daot.KayttajaDao;
 

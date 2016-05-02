@@ -17,7 +17,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import apuluokka.Apuri;
-import apuluokka.DeployAsetukset;
 import bean.Juoma;
 import bean.Kayttaja;
 import bean.Pizza;
@@ -30,12 +29,6 @@ import daot.HallintaDao;
 @WebServlet(name = "hallinta", urlPatterns = { "/hallinta" })
 public class HallintaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	// Määritetään sivuston path linkkejä ja redirectejä varten
-	// Määritys "/reptilemafia" koulun protoservua varten
-	// Eclipsessä ajettaessa "/pizzaSivusto"
-	DeployAsetukset asetukset = new DeployAsetukset();
-	private String sivustopath = asetukset.getPathi();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -65,8 +58,6 @@ public class HallintaServlet extends HttpServlet {
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
 			if (kayttaja.getTyyppi().equals("admin") || kayttaja.getTyyppi().equals("staff")) {
-				// Asetetaan sivun path
-				request.setAttribute("pathi", sivustopath);
 
 				// Tarkastetaan parametrit
 				String pizzaEdit = request.getParameter("pizza-edit");
