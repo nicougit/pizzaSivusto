@@ -306,10 +306,10 @@ public class LoginServlet extends HttpServlet {
 			
 			request.setAttribute("success", "Olet kirjautunut ulos onnistuneesti!");
 
-			String rdPath = "landingpage.jsp";
+			String rdPath = "index.jsp";
 			naytaSivu(request, response, rdPath);
 		} else {
-			String rdPath = "landingpage.jsp";
+			String rdPath = "index.jsp";
 			naytaSivu(request, response, rdPath);
 		}
 	}
@@ -319,7 +319,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 		request.setAttribute("virhe", virhe);
 		System.out.println(virhe);
-		String rdPath = "landingpage.jsp";
+		String rdPath = "index.jsp";
 		naytaSivu(request, response, rdPath);
 	}
 
