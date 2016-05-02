@@ -226,8 +226,8 @@ var LoginReg = React.createClass({
       <br />
       <ul className="tabs">
       <li className="tab col s6"><a href="#kirjaudusisaan"
-      className="active">Kirjaudu</a></li>
-      <li className="tab col s6"><a href="#rekisteroidy">Rekisteröidy</a></li>
+     >Kirjaudu</a></li>
+      <li className="tab col s6"><a href="#rekisteroidy"  className="active">Rekisteröidy</a></li>
       </ul>
       </div>
       </div>
