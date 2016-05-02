@@ -117,7 +117,7 @@
 							<button class="btn waves-effect waves-light" type="submit"
 								name="action" value="login">Kirjaudu</button>
 							<br> <br> <span class="pienifontti">Jos sinulla ei ole vielä käyttäjätiliä, voit rekisteröityä <a
-								href="<c:url value='/login'/>">täältä</a>.
+								href="<c:url value='/login#rekisteroidy'/>">täältä</a>.
 							</span>
 						</div>
 					</div>
