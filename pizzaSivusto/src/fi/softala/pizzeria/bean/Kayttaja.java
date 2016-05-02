@@ -1,4 +1,4 @@
-package bean;
+package fi.softala.pizzeria.bean;
 
 import java.util.ArrayList;
 

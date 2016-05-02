@@ -1,4 +1,4 @@
-package hallinta;
+package fi.softala.pizzeria.hallinta;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,12 +16,12 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import apuluokka.Apuri;
-import bean.Juoma;
-import bean.Kayttaja;
-import bean.Pizza;
-import bean.Tayte;
-import daot.HallintaDao;
+import fi.softala.pizzeria.apuluokka.Apuri;
+import fi.softala.pizzeria.bean.Juoma;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tayte;
+import fi.softala.pizzeria.daot.HallintaDao;
 
 /**
  * Servlet implementation class HallintaServlet

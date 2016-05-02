@@ -1,4 +1,4 @@
-package daot;
+package fi.softala.pizzeria.daot;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -10,16 +10,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import bean.Kayttaja;
-import bean.Osoite;
-import bean.Pizza;
-import bean.Tayte;
-import bean.Tilaus;
-import login.KayttajaLista;
-import login.Tiiviste;
-import tietokanta.Kysely;
-import tietokanta.Paivitys;
-import tietokanta.Yhteys;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.bean.Osoite;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tayte;
+import fi.softala.pizzeria.bean.Tilaus;
+import fi.softala.pizzeria.login.KayttajaLista;
+import fi.softala.pizzeria.login.Tiiviste;
+import fi.softala.pizzeria.tietokanta.Kysely;
+import fi.softala.pizzeria.tietokanta.Paivitys;
+import fi.softala.pizzeria.tietokanta.Yhteys;
 
 public class KayttajaDao {
 

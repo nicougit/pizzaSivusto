@@ -1,4 +1,4 @@
-package login;
+package fi.softala.pizzeria.login;
 
 public class KayttajaLista {
 

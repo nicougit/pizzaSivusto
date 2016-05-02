@@ -1,4 +1,4 @@
-package asiakas;
+package fi.softala.pizzeria.asiakas;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,12 +18,12 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import apuluokka.Apuri;
-import daot.AsiakasDao;
-import daot.HallintaDao;
-import bean.Juoma;
-import bean.Pizza;
-import bean.Tayte;
+import fi.softala.pizzeria.apuluokka.Apuri;
+import fi.softala.pizzeria.bean.Juoma;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tayte;
+import fi.softala.pizzeria.daot.AsiakasDao;
+import fi.softala.pizzeria.daot.HallintaDao;
 
 @WebServlet(name = "ostoskori", urlPatterns = { "/ostoskori" })
 public class Ostoskori extends HttpServlet {

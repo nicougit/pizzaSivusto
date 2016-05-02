@@ -1,4 +1,4 @@
-package asiakas;
+package fi.softala.pizzeria.asiakas;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,12 +17,12 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import apuluokka.Apuri;
-import bean.Kayttaja;
-import bean.Pizza;
-import bean.Tilaus;
-import daot.AsiakasDao;
-import daot.KayttajaDao;
+import fi.softala.pizzeria.apuluokka.Apuri;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tilaus;
+import fi.softala.pizzeria.daot.AsiakasDao;
+import fi.softala.pizzeria.daot.KayttajaDao;
 
 /**
  * Servlet implementation class Kayttaja

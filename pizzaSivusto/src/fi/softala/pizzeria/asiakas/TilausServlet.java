@@ -1,4 +1,4 @@
-package asiakas;
+package fi.softala.pizzeria.asiakas;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,15 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import apuluokka.Apuri;
-import bean.Juoma;
-import bean.Kayttaja;
-import bean.Osoite;
-import bean.Pizza;
-import bean.Tilaus;
-import daot.AsiakasDao;
-import daot.HallintaDao;
-import daot.KayttajaDao;
+import fi.softala.pizzeria.apuluokka.Apuri;
+import fi.softala.pizzeria.bean.Juoma;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.bean.Osoite;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tilaus;
+import fi.softala.pizzeria.daot.AsiakasDao;
+import fi.softala.pizzeria.daot.HallintaDao;
+import fi.softala.pizzeria.daot.KayttajaDao;
 
 @WebServlet(name = "tilaus", urlPatterns = { "/tilaus" })
 

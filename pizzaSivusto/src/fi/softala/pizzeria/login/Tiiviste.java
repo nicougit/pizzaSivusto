@@ -1,4 +1,4 @@
-package login;
+package fi.softala.pizzeria.login;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

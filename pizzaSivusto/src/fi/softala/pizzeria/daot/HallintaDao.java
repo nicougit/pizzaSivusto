@@ -1,16 +1,16 @@
-package daot;
+package fi.softala.pizzeria.daot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-import bean.Juoma;
-import bean.Pizza;
-import bean.Tayte;
-import tietokanta.Kysely;
-import tietokanta.Paivitys;
-import tietokanta.Yhteys;
+import fi.softala.pizzeria.bean.Juoma;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tayte;
+import fi.softala.pizzeria.tietokanta.Kysely;
+import fi.softala.pizzeria.tietokanta.Paivitys;
+import fi.softala.pizzeria.tietokanta.Yhteys;
 
 public class HallintaDao {
 

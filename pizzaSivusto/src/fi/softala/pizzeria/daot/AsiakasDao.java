@@ -1,19 +1,19 @@
-package daot;
+package fi.softala.pizzeria.daot;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import bean.Juoma;
-import bean.Kayttaja;
-import bean.Osoite;
-import bean.Pizza;
-import bean.Tayte;
-import bean.Tilaus;
-import tietokanta.Kysely;
-import tietokanta.Paivitys;
-import tietokanta.Yhteys;
+import fi.softala.pizzeria.bean.Juoma;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.bean.Osoite;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tayte;
+import fi.softala.pizzeria.bean.Tilaus;
+import fi.softala.pizzeria.tietokanta.Kysely;
+import fi.softala.pizzeria.tietokanta.Paivitys;
+import fi.softala.pizzeria.tietokanta.Yhteys;
 
 public class AsiakasDao {
 

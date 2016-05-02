@@ -1,4 +1,4 @@
-package asiakas;
+package fi.softala.pizzeria.asiakas;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import bean.Juoma;
-import bean.Kayttaja;
-import bean.Pizza;
-import bean.Tayte;
-import daot.AsiakasDao;
+import fi.softala.pizzeria.bean.Juoma;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.bean.Pizza;
+import fi.softala.pizzeria.bean.Tayte;
+import fi.softala.pizzeria.daot.AsiakasDao;
 
 /**
  * Servlet implementation class PizzaServlet

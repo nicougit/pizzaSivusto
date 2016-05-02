@@ -1,4 +1,4 @@
-package login;
+package fi.softala.pizzeria.login;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import apuluokka.Apuri;
-import bean.Kayttaja;
-import daot.KayttajaDao;
+import fi.softala.pizzeria.apuluokka.Apuri;
+import fi.softala.pizzeria.bean.Kayttaja;
+import fi.softala.pizzeria.daot.KayttajaDao;
 
 /**
  * Servlet implementation class LoginServlet

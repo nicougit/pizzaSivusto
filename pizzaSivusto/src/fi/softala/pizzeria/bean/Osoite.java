@@ -1,4 +1,4 @@
-package bean;
+package fi.softala.pizzeria.bean;
 
 public class Osoite {
 

@@ -1,4 +1,4 @@
-package apuluokka;
+package fi.softala.pizzeria.apuluokka;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

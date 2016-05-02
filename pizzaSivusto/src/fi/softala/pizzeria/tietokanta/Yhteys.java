@@ -1,4 +1,4 @@
-package tietokanta;
+package fi.softala.pizzeria.tietokanta;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
