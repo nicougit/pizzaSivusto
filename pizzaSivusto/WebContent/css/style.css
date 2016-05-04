@@ -150,6 +150,10 @@ h5 {
 	margin-bottom: 25px;
 }
 
+#announcement{
+	resize:none;
+}
+
 /* Landing page map div + iframe */
 .karttacol {
 	overflow: hidden;
