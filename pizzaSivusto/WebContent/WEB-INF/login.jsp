@@ -31,40 +31,27 @@
 		</div>
 		<div class="col s12 m12 l6 pull-l5">
 			<div class="row center-align">
-				<h2>Uudet käyttäjät</h2>
-				Tässä näytetään ainakin kehitysvaiheessa uusimmat 10
-				rekisteröitynyttä käyttäjää. user@pizza.fi, staff@pizza.fi ja
-				admin@pizza.fi tilien salasanat on joko salasana tai salasana123.<br>
-				<br>
+				<h3>Kirjaudu sisään tai rekisteröidy asiakkaaksi</h3>
+				
+				<p class="pienifontti">
+				Haluamme tarjota asiakkaillemme parasta mahdollista palvelua,<br> joten tarjoamme asiakkaillemme mahdollisuuden rekisteröityä.
+				</p>
 			</div>
-			<c:choose>
-				<c:when test="${empty kayttajat }">
-					<div class="row center-align errori">Tietokannassa ei ole
-						käyttäjiä, tai niitä noutaessa tapahtui virhe.</div>
-				</c:when>
-				<c:otherwise>
-					<div class="row">
-						<table class="striped">
-							<thead>
-								<tr>
-									<th>ID</th>
-									<th>Login</th>
-									<th class="hide-on-small-only">Tyyppi</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach items="${kayttajat}" var="kayttaja">
-									<tr>
-										<td class="strong-id"><c:out value="${kayttaja.id }"></c:out>.</td>
-										<td><c:out value="${kayttaja.tunnus }"></c:out></td>
-										<td class="hide-on-small-only"><c:out value="${kayttaja.tyyppi }"></c:out></td>
-									</tr>
-								</c:forEach>
-							</tbody>
-						</table>
-					</div>
-				</c:otherwise>
-			</c:choose>
+			<div class="row">
+			<p class="loginkuvaus">
+Rekisteröityminen mahdollistaa seuraavat edut:
+<br><br>
+Tuotteiden tilaaminen verkkokaupan kautta. Tilatun tuotteen voimme toimittaa kotiinkuljetuksena, tuotteen voit tulla noutamaan ravintolastamme tai halutessanne voitte jäädä aterioimaan ravintolaan.
+<br><br>
+Useat maksutavat verkkokaupan tilauksiin; käteinen, luottokortti ja verkkomaksu.
+<br><br>
+Mahdollisuus merkitä omat suosikkipizzat jotka näkyvät omalla profiilisivulla. Tämä mahdollistaa nopean verkkokauppatilauksen ilman täydellisen Menun selaamista.
+<br><br>
+Tilaushistoria, jos vaikka unohdat mikä oli se herkullinen pizza kaksi kuukautta sitten ja haluaisit tänään samanlaisen.
+<br><br>
+Useiden toimitusosotteiden tallennus; koti, työpaikka, vanhempien kesämökki, kotiinkuljetus helposti ilman osoitteen selvittelyä.
+</p>
+			</div>			
 		</div>
 	</div>
 	</div>

@@ -326,3 +326,16 @@ nav {
 	padding: 10px;
 	vertical-align: middle;
 }
+
+/* Login-sivun asetuksia */
+.logintitle {
+	font-family: 'Martel', serif;
+	font-size: 14pt;
+}
+
+.loginkuvaus {
+	font-family: 'Martel', serif;
+	font-size: 12pt;
+	margin-left: 20px;
+	margin-right: auto;
+}
