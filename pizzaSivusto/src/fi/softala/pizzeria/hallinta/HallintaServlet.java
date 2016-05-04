@@ -69,6 +69,7 @@ public class HallintaServlet extends HttpServlet {
 				String juomaPoista = request.getParameter("juoma-poista");
 				String juomaPalauta = request.getParameter("juoma-palauta");
 				String kaikkiJsonina = request.getParameter("kaikkiJsonina");
+				String naytaTilaukset = request.getParameter("naytaTilaukset");
 
 				// Apuri validointiin
 				Apuri apuri = new Apuri();
@@ -124,7 +125,12 @@ public class HallintaServlet extends HttpServlet {
 					pizzatTaytteella(request, response);
 				} else if (kaikkiJsonina != null) {
 					kaikkiJsonina(request, response);
-				} else {
+				}
+				else if (naytaTilaukset != null) {
+					rd = request.getRequestDispatcher("WEB-INF/tilauslista.jsp");
+					rd.forward(request, response);
+				}				
+				else {
 					if (json != null) {
 						String virhe = "Virheellinen JSON pyyntö";
 						virhe(request, response, virhe);

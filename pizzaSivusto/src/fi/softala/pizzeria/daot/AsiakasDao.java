@@ -328,7 +328,7 @@ public class AsiakasDao {
 		}
 
 		// Tilauksen lisääminen
-		String sql = "INSERT INTO Tilaus (kayttaja_id, osoite_id, tilaushetki, toimitustapa, toimitusaika, lisatiedot, kokonaishinta, maksutapa, maksutilanne) VALUES (?, ?, NOW(), ?, NOW(), ?, ?, ?, ?)";
+		String sql = "INSERT INTO Tilaus (kayttaja_id, osoite_id, tilaushetki, toimitustapa, toimitusaika, lisatiedot, kokonaishinta, maksutapa, maksutilanne, status) VALUES (?, ?, NOW(), ?, NOW(), ?, ?, ?, ?, 0)";
 		ArrayList<String> parametrit = new ArrayList<String>();
 		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
 

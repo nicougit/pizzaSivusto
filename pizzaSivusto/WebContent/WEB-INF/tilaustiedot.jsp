@@ -72,6 +72,7 @@
 					<c:out value="${tilaus.lisatiedot }"></c:out>
 					</div>
 				</c:if>
+				<br><br>
 			</div>
 		</div>
 
@@ -159,11 +160,10 @@
 					</tr>
 				</tbody>
 			</table>
+			<br><br>
 		</div>
-	<a class="btn waves-effect waves-light left" href="<c:url value='kayttaja'/>">Palaa profiiliin</a>
-
+	<a class="btn waves-effect waves-light" href="<c:url value='kayttaja'/>">Palaa profiiliin</a>
 	</div>
-
 	<jsp:include page="footer.jsp"></jsp:include>
 </body>
 </html>

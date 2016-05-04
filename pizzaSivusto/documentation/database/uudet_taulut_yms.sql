@@ -10,6 +10,10 @@ ALTER TABLE Pizza MODIFY COLUMN nimi VARCHAR(50) NOT NULL;
 // Mahdollistetaan pidemmät täytteiden nimet.
 ALTER TABLE Tayte MODIFY COLUMN nimi VARCHAR(50) NOT NULL;
 
+// Tilaukselle status, tehdään numeraaliseksi
+// 0 = tilaus lähetetty, 1 = tilaus otettu työnalle, 2 = tilaus valmis, 3 = tilaus noudettu / toimitettu
+ALTER TABLE Tilaus ADD COLUMN status CHAR(1)
+
 // Juoma-taulu
 CREATE TABLE Juoma (
 juoma_id INT AUTO_INCREMENT NOT NULL,
@@ -65,6 +69,7 @@ lisatiedot VARCHAR(255),
 kokonaishinta DECIMAL(7,2) NOT NULL,
 maksutapa VARCHAR(50) NOT NULL,
 maksutilanne CHAR(1),
+status CHAR(1),
 PRIMARY KEY (tilaus_id),
 FOREIGN KEY (kayttaja_id) REFERENCES Kayttaja(id),
 FOREIGN KEY (osoite_id) REFERENCES Toimitusosoite(osoite_id)
