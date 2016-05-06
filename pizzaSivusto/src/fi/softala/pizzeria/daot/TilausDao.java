@@ -76,6 +76,9 @@ public class TilausDao {
 				maksettu = false;
 			}
 			
+			/*
+			 * Ei sittenkään ehkä muuteta statusta täällä, vaan käsitellään JavaScriptillä
+			 * 
 			if (status != null && status.equals("0")) {
 				status = "Vastaanotettu";
 			}
@@ -99,6 +102,8 @@ public class TilausDao {
 			else {
 				status = "Tuntematon status";
 			}
+			
+			*/
 
 			// Oliot
 			

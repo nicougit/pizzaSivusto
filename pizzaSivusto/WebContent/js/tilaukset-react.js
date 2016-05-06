@@ -6,6 +6,9 @@ var Tilaukset = React.createClass({
   componentDidMount: function() {
     this.haeData();
   },
+  componentDidUpdate: function() {
+    $('select').material_select();
+  },
   haeData: function() {
     return $.get("tilaukset", {action: "tilauksetJsonina"}).done(
       function(json) {
@@ -54,10 +57,16 @@ var Tilausrivi = React.createClass({
   },
   render: function() {
     return (
-      <tr>
+      <tr className="taulukkorivi">
       <td>{this.props.rivi.id}</td>
       <td>{this.formatoiPaiva()}</td>
-      <td>{this.props.rivi.status}</td>
+      <td>
+      <select>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+      </select>
+      </td>
       <td>{this.props.rivi.toimitustapa}</td>
       </tr>
     );
