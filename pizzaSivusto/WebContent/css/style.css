@@ -40,6 +40,10 @@ body {
 	margin-left: 20px;
 }
 
+.navicon {
+	font-size: 18pt !important;
+}
+
 /* Fonttien kokoja */
 .pienifontti {
 	font-size: 9pt;

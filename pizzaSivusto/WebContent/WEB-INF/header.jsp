@@ -8,22 +8,13 @@
 <c:set var="tilausvahvistusurl" value="${url }/WEB-INF/tilausvahvistus.jsp"></c:set>
 <div class="navbar-fixed">
 	<c:if test="${not empty kayttaja }">
-		<ul id="user-dropdowni" class="dropdown-content">
-			<li><a href="<c:url value='/kayttaja'/>">Profiili</a></li>
-			<c:if
-				test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
-
-				<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
-			</c:if>
-			<c:if test="${kayttaja.tyyppi == 'staff' }">
-
-				<li><a href="<c:url value='/avoimet_tilaukset'/>">Avoimet
-						tilaukset</a></li>
-			</c:if>
-			<li class="divider"></li>
-			<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu
-					ulos</a></li>
+	<c:if test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
+		<ul id="hallinta-dropdown" class="dropdown-content">
+				<li><a href="<c:url value='/hallinta'/>">Tuotteet</a></li>
+				<li><a href="<c:url value='/tilaukset'/>">Tilaukset</a></li>
+				<li><a href="<c:url value='/kayttajat'/>">Käyttäjät</a></li>
 		</ul>
+		</c:if>
 	</c:if>
 	<nav>
 		<div class="nav-wrapper">
@@ -32,11 +23,11 @@
 				class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down">
 				<c:if test="${pageContext.request.requestURI == pizzaurl }">
-					<li><a href="#pizzat">Pizzat</a></li>
-					<li><a href="#juomat">Juomat</a></li>
+					<li><a href="#pizzat"><i class="material-icons left navicon">local_pizza</i>Pizzat</a></li>
+					<li><a href="#juomat"><i class="material-icons left navicon">local_drink</i>Juomat</a></li>
 				</c:if>
 				<c:if test="${pageContext.request.requestURI != pizzaurl }">
-					<li><a href="<c:url value='/pizza'/>">Menu</a></li>
+					<li><a href="<c:url value='/pizza'/>"><i class="material-icons left navicon">local_pizza</i>Menu</a></li>
 				</c:if>
 				
 				<li>
@@ -49,13 +40,17 @@
 				</c:otherwise>
 				</c:choose>
 				<i
-						class="material-icons left">shopping_cart</i> Ostoskori<span
+						class="material-icons left navicon">shopping_cart</i> Ostoskori<span
 						class="navbar-yhteishinta pienifontti"></span></a></li>
 				<c:choose>
 					<c:when test="${not empty kayttaja }">
-						<li><a class="dropdown-button" href="#!"
-							data-activates="user-dropdowni"><c:out value="${kayttaja.tunnus }"></c:out> <i
+						<li><a href="<c:url value="/kayttaja"></c:url>"><i class="material-icons left navicon">person</i><c:out value="${kayttaja.tunnus }"></c:out></a></li>
+											<c:if test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
+					<li><a class="dropdown-button" href="#!"
+							data-activates="hallinta-dropdown"><i class="material-icons left navicon">settings</i>Hallinta<i
 								class="material-icons right">arrow_drop_down</i></a></li>
+								</c:if>
+						<li class="tooltipped" data-position="left" data-delay="300" data-tooltip="Kirjaudu ulos"><a href="<c:url value='/login?logout=true'/>"><i class="material-icons navicon">power_settings_new</i></a></li>
 					</c:when>
 					<c:otherwise>
 						<li><a onClick="loginModal()">Kirjaudu
@@ -64,22 +59,19 @@
 				</c:choose>
 			</ul>
 			<ul class="side-nav" id="mobiili-nav">
-				<li><a href="<c:url value='/pizza'/>">Menu</a></li>
-				<li><a href="<c:url value='/ostoskori'/>">Ostoskori<span
+				<li><a href="<c:url value='/pizza'/>"><i class="material-icons left navicon">local_pizza</i> Menu</a></li>
+				<li><a href="<c:url value='/ostoskori'/>"><i class="material-icons left navicon">shopping_cart</i> Ostoskori<span
 						class="navbar-yhteishinta right"></span></a> <c:choose>
 						<c:when test="${not empty kayttaja }">
-							<li class="divider"></li>
-							<li><a href="<c:url value='/kayttaja'/>"><c:out value="${kayttaja.tunnus }"></c:out></a></li>
-							<c:if
-								test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
-								<li><a href="<c:url value='/hallinta'/>">Hallinta</a></li>
-							</c:if>
 							<c:if test="${kayttaja.tyyppi == 'admin' || kayttaja.tyyppi == 'staff' }">
-
-								<li><a href="<c:url value='/avoimet_tilaukset'/>">Avoimet
-										tilaukset</a></li>
+								<li class="divider"></li>
+								<li><a href="<c:url value='/hallinta'/>"><i class="material-icons left navicon">settings</i>Tuotteet</a></li>
+								<li><a href="<c:url value='/tilaukset'/>"><i class="material-icons left navicon">settings</i>Tilaukset</a></li>
+								<li><a href="<c:url value='/kayttajat'/>"><i class="material-icons left navicon">settings</i>Käyttäjät</a></li>
 							</c:if>
-							<li><a href="<c:url value='/login?logout=true'/>">Kirjaudu
+							<li class="divider"></li>
+							<li><a href="<c:url value='/kayttaja'/>"><i class="material-icons left navicon">person</i><c:out value="${kayttaja.tunnus }"></c:out></a></li>
+							<li><a href="<c:url value='/login?logout=true'/>"><i class="material-icons navicon left">power_settings_new</i>Kirjaudu
 									ulos</a></li>
 						</c:when>
 						<c:otherwise>
