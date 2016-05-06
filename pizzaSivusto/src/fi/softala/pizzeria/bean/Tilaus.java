@@ -16,6 +16,7 @@ public class Tilaus {
 	boolean maksettu;
 	ArrayList<Pizza> pizzat;
 	ArrayList<Juoma> juomat;
+	String status;
 
 	public Tilaus() {
 		super();
@@ -135,5 +136,15 @@ public class Tilaus {
 	public void setJuomat(ArrayList<Juoma> juomat) {
 		this.juomat = juomat;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
 
 }
