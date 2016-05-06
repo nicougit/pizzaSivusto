@@ -4,10 +4,10 @@ var Tilaukset = React.createClass({
     return { tilaukset: [] };
   },
   componentDidMount: function() {
-    //this.haeData();
+    this.haeData();
   },
   haeData: function() {
-    return $.post("hallinta", {action: "haeTilaukset"}).done(
+    return $.get("tilaukset", {action: "tilauksetJsonina"}).done(
       function(json) {
         console.log("Datat haettu - tilauksia " + json.length + "kpl");
         this.setState({ tilaukset: json });
@@ -20,11 +20,49 @@ var Tilaukset = React.createClass({
       render: function() {
         return(
           <div className="center-align">
-          Tähän käyttäjien listaus
+          <table>
+          <thead>
+          <tr>
+          <td>#</td>
+          <td>Tilausaika</td>
+          <td>Status</td>
+          <td>Toimitus</td>
+          </tr>
+          </thead>
+          <tbody>
+          {this.state.tilaukset.map((o,i) => <Tilausrivi rivi={o} key={i} />)}
+          </tbody>
+          </table>
           </div>
         );
       }
     });
+
+var Tilausrivi = React.createClass({
+  formatoiPaiva: function() {
+    var p = new Date(this.props.rivi.tilaushetki);
+    var tunti = p.getHours();
+    var minuutti = p.getMinutes();
+    if (tunti < 10) {
+      tunti = "0" + tunti;
+    }
+    if (minuutti < 10) {
+      minuutti = "0" + minuutti;
+    }
+    var tilaushetki = p.getDate() + "." + (p.getMonth() + 1) + "." + p.getFullYear() + " " + tunti + ":" + minuutti;
+    return tilaushetki;
+  },
+  render: function() {
+    return (
+      <tr>
+      <td>{this.props.rivi.id}</td>
+      <td>{this.formatoiPaiva()}</td>
+      <td>{this.props.rivi.status}</td>
+      <td>{this.props.rivi.toimitustapa}</td>
+      </tr>
+    );
+  }
+});
 
     ReactDOM.render(
       <Tilaukset />,
