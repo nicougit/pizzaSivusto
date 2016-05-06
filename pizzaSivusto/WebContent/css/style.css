@@ -334,12 +334,13 @@ nav {
 /* Login-sivun asetuksia */
 .logintitle {
 	font-family: 'Martel', serif;
-	font-size: 14pt;
+	font-size: 12pt;
 }
 
 .loginkuvaus {
+	max-width: 90%;
 	font-family: 'Martel', serif;
 	font-size: 12pt;
-	margin-left: 20px;
-	margin-right: auto;
+	margin-left: 25px;
+	margin-top: 0px;
 }
