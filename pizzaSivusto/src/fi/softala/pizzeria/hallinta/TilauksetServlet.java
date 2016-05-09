@@ -30,19 +30,21 @@ import fi.softala.pizzeria.daot.TilausDao;
 @WebServlet(name = "tilaukset", urlPatterns = { "/tilaukset" })
 public class TilauksetServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public TilauksetServlet() {
-        super();
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	public TilauksetServlet() {
+		super();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 		// Oleellinen jos halutaan siirrellä ääkkösiä POST-metodilla.
 		// Pitää selvittää, saako tän toteutettua yksinkertaisemmin jotenkin
 		response.setCharacterEncoding("UTF-8");
@@ -55,18 +57,17 @@ public class TilauksetServlet extends HttpServlet {
 
 		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
 			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
-			if (kayttaja.getTyyppi().equals("admin") || kayttaja.getTyyppi().equals("staff")) {
-				
+			if (kayttaja.getTyyppi().equals("admin")
+					|| kayttaja.getTyyppi().equals("staff")) {
+
 				String action = request.getParameter("action");
-				
+
 				if (action != null && action.equals("tilauksetJsonina")) {
 					tilauksetJsonina(request, response);
-				}
-				else {
+				} else {
 					naytaSivu(request, response);
 				}
-				
-				
+
 			} else {
 				if (json != null) {
 					String virhe = "Pääsy evätty! Sinulla pitää olla staff- tai admin-tunnukset!";
@@ -84,9 +85,9 @@ public class TilauksetServlet extends HttpServlet {
 			}
 		}
 	}
-	
-	protected void tilauksetJsonina(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+
+	protected void tilauksetJsonina(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
 		// Tietojen haku
 		TilausDao dao = new TilausDao();
@@ -94,7 +95,7 @@ public class TilauksetServlet extends HttpServlet {
 
 		// Pizzojen JSON-array
 		JSONArray jsonArray = new JSONArray();
-		
+
 		for (int i = 0; i < tilaukset.size(); i++) {
 			Tilaus tilaus = tilaukset.get(i);
 			JSONObject objekti = new JSONObject();
@@ -107,15 +108,53 @@ public class TilauksetServlet extends HttpServlet {
 			objekti.put("toimitustapa", tilaus.getToimitustapa());
 			objekti.put("maksutilanne", tilaus.isMaksettu());
 			objekti.put("status", tilaus.getStatus());
-			
+
 			kayttaja.put("id", tilaus.getKayttaja().getId());
 			kayttaja.put("etunimi", tilaus.getKayttaja().getEtunimi());
 			kayttaja.put("sukunimi", tilaus.getKayttaja().getSukunimi());
 			kayttaja.put("puhelin", tilaus.getKayttaja().getPuhelin());
 			kayttaja.put("tunnus", tilaus.getKayttaja().getTunnus());
-			
+
+			JSONArray pizzalista = new JSONArray();
+			JSONArray juomalista = new JSONArray();
+
+			if (tilaus.getPizzat() != null) {
+				for (int j = 0; j < tilaus.getPizzat().size(); j++) {
+					Pizza pizza = tilaus.getPizzat().get(j);
+					JSONObject pizzaobjekti = new JSONObject();
+					JSONArray taytearray = new JSONArray();
+					pizzaobjekti.put("id", pizza.getId());
+					pizzaobjekti.put("nimi", pizza.getNimi());
+					pizzaobjekti.put("hinta", pizza.getHinta());
+					/* Ei saada toistaiseksi tietokannasta täytteitä
+					for (int k = 0; k < pizza.getTaytteet().size(); k++) {
+						JSONObject tayteobjekti = new JSONObject();
+						tayteobjekti.put("tayte", pizza.getTaytteet().get(k)
+								.getNimi());
+						taytearray.add(tayteobjekti);
+					}
+					pizzaobjekti.put("taytteet", taytearray);
+					*/
+					pizzalista.add(pizzaobjekti);
+				}
+			}
+
+			if (tilaus.getJuomat() != null) {
+				for (int j = 0; j < tilaus.getJuomat().size(); j++) {
+					Juoma juoma = tilaus.getJuomat().get(j);
+					JSONObject juomaobjekti = new JSONObject();
+					juomaobjekti.put("id", juoma.getId());
+					juomaobjekti.put("nimi", juoma.getNimi());
+					juomaobjekti.put("hinta", juoma.getHinta());
+					juomalista.add(juomaobjekti);
+				}
+			}
+
+			objekti.put("pizzat", pizzalista);
+			objekti.put("juomat", juomalista);
+
 			objekti.put("kayttaja", kayttaja);
-			
+
 			jsonArray.add(objekti);
 		}
 
@@ -127,8 +166,9 @@ public class TilauksetServlet extends HttpServlet {
 		out.print(jsonArray);
 
 	}
-	
-	protected void virhe(HttpServletRequest request, HttpServletResponse response, String virhe)
+
+	protected void virhe(HttpServletRequest request,
+			HttpServletResponse response, String virhe)
 			throws ServletException, IOException {
 		String json = request.getParameter("json");
 		System.out.println(virhe);
@@ -141,15 +181,17 @@ public class TilauksetServlet extends HttpServlet {
 			naytaSivu(request, response);
 		}
 	}
-	
-	protected void paasyEvatty(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/paasy-evatty.jsp");
+
+	protected void paasyEvatty(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher rd = request
+				.getRequestDispatcher("WEB-INF/paasy-evatty.jsp");
 		rd.forward(request, response);
 	}
-	
-	protected void jsonVastaus(HttpServletRequest request, HttpServletResponse response,
-			HashMap<String, String> vastaus) throws ServletException, IOException {
+
+	protected void jsonVastaus(HttpServletRequest request,
+			HttpServletResponse response, HashMap<String, String> vastaus)
+			throws ServletException, IOException {
 
 		JSONArray jsonarray = new JSONArray();
 		JSONObject jsonvastaus = new JSONObject();
@@ -172,14 +214,15 @@ public class TilauksetServlet extends HttpServlet {
 		out.print(jsonarray);
 
 	}
-	
-	protected void naytaSivu(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+
+	protected void naytaSivu(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// Daon alustus
 		TilausDao dao = new TilausDao();
 
 		// RequestDispatcher
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/tilauslista.jsp");
+		RequestDispatcher rd = request
+				.getRequestDispatcher("WEB-INF/tilauslista.jsp");
 
 		// Pizzojen ja täytteiden haku
 		ArrayList<Tilaus> tilaukset = dao.haeTilaukset();
@@ -189,9 +232,11 @@ public class TilauksetServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 	}
 
 }
