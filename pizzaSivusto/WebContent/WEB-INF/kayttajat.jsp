@@ -39,7 +39,11 @@
 										<td><c:out value="${kayttaja.tunnus }"></c:out></td>
 										<td><c:out value="${kayttaja.etunimi }"></c:out></td>
 										<td><c:out value="${kayttaja.sukunimi }"></c:out></td>
-										<td class="hide-on-small-only"><c:out value="${kayttaja.tyyppi }"></c:out></td>
+										<td class="hide-on-small-only">
+										<c:if test="${kayttaja.tyyppi == 'admin'}"><i>Ylläpito</i></c:if>
+										<c:if test="${kayttaja.tyyppi == 'staff'}"><b>Henkilökunta</b></c:if>
+										<c:if test="${kayttaja.tyyppi == 'user'}">Peruskäyttäjä</c:if>										
+										</td>
 									</tr>
 								</c:forEach>
 							</tbody>
