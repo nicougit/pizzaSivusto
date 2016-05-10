@@ -1,3 +1,11 @@
+/*
+Todo:
+- Pizzojen lisätiedot näkyviin (orgeano, valkosipuli...)
+--> vaatii myös backendissä muutoksia
+- Joka pizza ja juoma omalle riville?
+- Taulukon riveille class jolle tyylimääritys vertical-align: top
+*/
+
 // Hallintasivun renderointi ja funktiot
 var Tilaukset = React.createClass({
   getInitialState: function() {
@@ -32,7 +40,7 @@ var Tilaukset = React.createClass({
         self.haeData();
         self._timer = setInterval(self.haeData, paivitysvali);
       }
-    }, 1000);
+    }, 1);
   },
   postRequest: function(data) {
     $.post("tilaukset", data).done(

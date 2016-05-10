@@ -167,12 +167,16 @@ h5 {
 	border: none;
 	overflow: hidden;
 	max-width: 140px;
-	max-height: 30px;
 	-webkit-appearance: none; -moz-appearance : none; appearance : none;
 	background: url(../img/ic_expand_more_black_24dp_1x.png) 96% / 15%;
 	background-repeat: no-repeat;
 	box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
 	outline: 0;
+	vertical-align: middle;
+}
+
+.tilaus-statusvalinta option {
+	padding: 5px;
 }
 
 select:-moz-focusring {
