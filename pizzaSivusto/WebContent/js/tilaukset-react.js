@@ -1,13 +1,38 @@
 // Hallintasivun renderointi ja funktiot
 var Tilaukset = React.createClass({
   getInitialState: function() {
-    return { tilaukset: [] };
+    return { tilaukset: [], filtterit: ["0", "1", "2"] };
   },
   componentDidMount: function() {
-    this.haeData();
+    this.autoRefresh();
   },
   componentDidUpdate: function() {
     $('select').material_select();
+  },
+  filtteriMuutos: function(value, checked) {
+    var filtterit = this.state.filtterit;
+    if (checked === true) {
+      if (filtterit.indexOf(value) < 0) {
+        filtterit.push(value);
+        this.setState({ filtterit: filtterit });
+      }
+    }
+    else {
+      if (filtterit.indexOf(value) >= 0) {
+        filtterit.splice(filtterit.indexOf(value), 1);
+        this.setState({ filtterit: filtterit });
+      }
+    }
+  },
+  autoRefresh: function() {
+    var self = this;
+    var paivitysvali = 10000; // Päivitysväli millisekunteina
+    setTimeout(function() {
+      if (self.isMounted()) {
+        self.haeData();
+        self._timer = setInterval(self.haeData, paivitysvali);
+      }
+    }, 1000);
   },
   postRequest: function(data) {
     $.post("tilaukset", data).done(
@@ -35,7 +60,7 @@ var Tilaukset = React.createClass({
   haeData: function() {
     return $.get("tilaukset", {action: "tilauksetJsonina"}).done(
       function(json) {
-        console.log("Datat haettu - tilauksia " + json.length + "kpl");
+        console.log("Tilaukset haettu - tilauksia " + json.length + "kpl");
         this.setState({ tilaukset: json });
       }.bind(this)).fail(
         function(jqxhr, textStatus, error) {
@@ -44,11 +69,47 @@ var Tilaukset = React.createClass({
         });
       },
       render: function() {
+
+        var naytettavat = [];
+
+        for (var i = 0; i < this.state.tilaukset.length; i++) {
+          if (this.state.filtterit.indexOf(this.state.tilaukset[i].status) >= 0) {
+            naytettavat.push(this.state.tilaukset[i]);
+          }
+        }
+
         return(
           <div>
+          <Filtterit filtteriMuutos={this.filtteriMuutos}/>
           <div className="row">
-          {this.state.tilaukset.map((o,i) => <Tilausrivi rivi={o} key={i} paivitaStatus={this.postRequest}/>)}
+          {naytettavat.map((o,i) => <Tilausrivi rivi={o} key={i} paivitaStatus={this.postRequest}/>)}
           </div>
+          </div>
+        );
+      }
+    });
+
+    var Filtterit = React.createClass({
+      kasitteleValinnat: function(e) {
+        this.props.filtteriMuutos(e.target.value.toString(), e.target.checked);
+      },
+      render: function() {
+        return (
+          <div className="center-align">
+          <h3>Näytettävät tilaukset</h3>
+          <form id="#filtterit">
+          <input type="checkbox" name="filtteri" value="0" id="filtteri0" onChange={this.kasitteleValinnat} defaultChecked />
+          <label className="tilausfiltteri" htmlFor="filtteri0">Vastaanotetut</label>
+          <input type="checkbox" name="filtteri" value="1" id="filtteri1" onChange={this.kasitteleValinnat} defaultChecked />
+          <label className="tilausfiltteri" htmlFor="filtteri1">Työn alla</label>
+          <input type="checkbox" name="filtteri" value="2" id="filtteri2" onChange={this.kasitteleValinnat} defaultChecked />
+          <label className="tilausfiltteri" htmlFor="filtteri2">Valmiit</label>
+          <input type="checkbox" name="filtteri" value="3" id="filtteri3" onChange={this.kasitteleValinnat} />
+          <label className="tilausfiltteri" htmlFor="filtteri3">Luovutetut</label>
+          </form>
+          <br />
+          <div className="divider" />
+          <br />
           </div>
         );
       }
@@ -57,6 +118,11 @@ var Tilaukset = React.createClass({
     var Tilausrivi = React.createClass({
       getInitialState: function() {
         return ({ valinta: this.props.rivi.status });
+      },
+      componentWillReceiveProps: function(propsit) {
+        if (propsit.rivi.status && propsit.rivi.status != this.state.valinta) {
+          this.setState({ valinta: propsit.rivi.status });
+        }
       },
       formatoiPaiva: function() {
         var p = new Date(this.props.rivi.tilaushetki);
@@ -94,9 +160,10 @@ var Tilaukset = React.createClass({
         }
       },
       render: function() {
+
+        // Loopataan pizzat ja juomat stringeiksi pilkuilla eroteltuina
         var pizzat = "";
         var juomat = "";
-
         for (var i = 0; i < this.props.rivi.pizzat.length; i++) {
           pizzat += this.props.rivi.pizzat[i].nimi;
           if ((i + 1) != this.props.rivi.pizzat.length) {
@@ -111,11 +178,24 @@ var Tilaukset = React.createClass({
           }
         }
 
+        // Käännetään taulukon riveiksi
         if (pizzat != "") {
-          pizzat = <span>Pizzat: {pizzat}<br /></span>;
+          pizzat = <tr><td className="strong-id">Pizzat</td><td>{pizzat}</td></tr>;
+        }
+        else {
+          pizzat = null;
         }
         if (juomat != "") {
-          juomat = <span>Juomat: {juomat}<br /></span>;
+          juomat = <tr><td className="strong-id">Juomat</td><td>{juomat}</td></tr>;
+        }
+        else {
+          juomat = null;
+        }
+
+        // Lisätiedot taulukkoriviksi jos löytyy
+        var lisatiedot = null;
+        if (this.props.rivi.lisatiedot != null) {
+          lisatiedot = <tr><td className="strong-id">Lisätiedot</td><td>{this.props.rivi.lisatiedot}</td></tr>;
         }
 
         var statusLuokka = {};
@@ -135,6 +215,7 @@ var Tilaukset = React.createClass({
         else {
           statusLuokka = {"className": "card grey lighten-5"}
         }
+
         return (
           <div className="col s12 m12 l6">
           <div {... statusLuokka}>
@@ -147,12 +228,14 @@ var Tilaukset = React.createClass({
           <option value="3">Luovutettu</option>
           </select>
           </span>
-          <p>
-          <span>Tilattu kello {this.formatoiPaiva()}</span>
-          <br />
+          <table className="tilaukset-table">
+          <tbody>
+          <tr><td className="strong-id">Tilausaika</td><td>{this.formatoiPaiva()}</td></tr>
           {pizzat }
           {juomat }
-          </p>
+          {lisatiedot }
+          </tbody>
+          </table>
           </div>
           </div>
           </div>

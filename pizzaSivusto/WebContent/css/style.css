@@ -166,7 +166,7 @@ h5 {
 	font-size: 12pt;
 	border: none;
 	overflow: hidden;
-	max-width: 150px;
+	max-width: 140px;
 	max-height: 30px;
 	-webkit-appearance: none; -moz-appearance : none; appearance : none;
 	background: url(../img/ic_expand_more_black_24dp_1x.png) 96% / 15%;
@@ -178,6 +178,18 @@ h5 {
 select:-moz-focusring {
 	color: rgba(0,0,0,0);
 	text-shadow: 0 0 0 #000;
+}
+
+.tilaukset-table td {
+	padding: 4px;
+}
+
+.tilausfiltteri {
+	margin-right: 20px;
+}
+
+.card-title {
+	line-height: auto;
 }
 
 /* Landing page map div + iframe */
