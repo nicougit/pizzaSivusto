@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Castello &#233; Fiori - Kirjautuminen</title>
+<title>Castello &#233; Fiori - Kirjautuminen & Rekisteröityminen</title>
 <jsp:include page="head-include.jsp"></jsp:include>
 <script src="build/react.js"></script>
 <script src="build/react-dom.js"></script>
@@ -15,11 +15,11 @@
 <body>
 	<jsp:include page="header.jsp"></jsp:include>
 	<div class="row headertext">
-		<h1>Tervetuloa!</h1>
-		<p class="flow-text">Olemme pieni 1950-luvulla toimintansa
-			aloittanut Hämeenlinnassa toimiva perheyritys. Viime vuosina olemme
-			erikoistunut pizzoihin. Panostamme laatuun, joten hankimme kaikki
-			raaka-aineemme tarkkaan harkituilta toimittajilta.</p>
+		<h1>Rekisteröityminen ja kirjautuminen</h1>
+		<p class="flow-text">Parhaiden tuotteiden rinnalla tahdomme tarjota asiakkaillemme
+						parasta mahdollista palvelua, joten tarjoamme
+						asiakkaillemme mahdollisuuden rekisteröityä. Reskiteröitymällä saat
+						lukuisia henkilökohtaisia etuja!</p>
 	</div>
 	<div id="main-content">
 		<div class="row">
@@ -32,34 +32,26 @@
 				</noscript>
 				<script src="js/login-react.js" type="text/babel"></script>
 			</div>
-			<div class="col s12 m12 l6 pull-l5">
-				<div class="row center-align">
-					<h3>Kirjaudu sisään tai rekisteröidy asiakkaaksi</h3>
-					<p class="logintitle">
-						Parhaiden tuotteiden rinnalla tahdomme tarjota asiakkaillemme
-						parasta mahdollista palvelua,<br> joten tarjoamme
-						asiakkaillemme mahdollisuuden rekisteröityä. Rekisteröityminen
-						mahdollistaa seuraavat henkilökohtaisemmat edut:
-					</p>
-				</div>
-				<div class="row">
-					<p class="loginkuvaus">
-						<b>Tuotteiden tilaaminen verkkokaupan kautta.</b><br>
-						<i>Tilatun tuotteen voimme toimittaa kotiinkuljetuksena,
+			<div class="col s12 m12 l6 pull-l5 center-align">
+						<h5 class="login-title">Tuotteiden tilaaminen verkkokaupan kautta</h5>
+						<span class="login-kuvaus">
+						Tilatun tuotteen voimme toimittaa kotiinkuljetuksena,
 							tuotteen voit tulla noutamaan ravintolastamme tai halutessanne
-							voitte jäädä aterioimaan ravintolaan. <br>
-						</i> <br><b>Useat maksutavat verkkokaupan tilauksiin.</b><br>
-						<i>Käteinen, luottokortti ja verkkomaksu. </i><br> <br>
-						<b>Mahdollisuus merkitä pizzoja suosikeiksi.</b><br>
-						<i>Suosikit näkyvät omalla profiilisivulla, tämä mahdollistaa nopean verkkokauppatilauksen ilman
-							täydellisen Menun selaamista.</i><br> 
-						<br><b>Tilaushistoria.</b><br>
-						<i>Jos vaikka unohdat mikä oli se herkullinen pizza kaksi
-							kuukautta sitten ja haluaisit tänään samanlaisen.</i><br> <br>
-						<b>Useiden toimitusosotteiden tallennus.</b><br>
-						<i>Koti, työpaikka, vanhempien kesämökki, kotiinkuljetus
-							helposti ilman osoitteen selvittelyä.</i>
-					</p>
+							voitte jäädä aterioimaan ravintolaan.</span>
+							<br><br><div class="divider"></div>
+						<h5 class="login-title">Useat maksutavat verkkokaupan tilauksiin</h5>
+						<span class="login-kuvaus">Käteinen, luottokortti ja verkkomaksu.</span>
+						<br><br><div class="divider"></div>
+						<h5 class="login-title">Mahdollisuus merkitä pizzoja suosikeiksi</h5>
+						<span class="login-kuvaus">Suosikit näkyvät omalla profiilisivulla, tämä mahdollistaa nopean verkkokauppatilauksen ilman
+							täydellisen Menun selaamista.</span>
+							<br><br><div class="divider"></div>
+						<h5 class="login-title">Tilaushistoria</h5>
+						<span class="login-kuvaus">Jos vaikka unohdat mikä oli se herkullinen pizza kaksi
+							kuukautta sitten ja haluaisit tänään samanlaisen.</span>
+							<br><br><div class="divider"></div>
+						<h5 class="login-title">Useiden toimitusosotteiden tallennus</h5>
+						<span class="login-kuvaus">Koti, työpaikka, vanhempien kesämökki, kotiinkuljetus helposti ilman osoitteen selvittelyä.</span>
 				</div>
 			</div>
 		</div>
