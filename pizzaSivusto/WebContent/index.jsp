@@ -89,15 +89,15 @@ src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<br>
 	<div class="row" id="main-content">
 		<div class="col s12 l4 center-align">
-			<h2>Aukioloajat</h2>
+			<h2><i class="material-icons">access_time</i> Aukioloajat</h2>
 			<p class="flow-text">Arkisin 10 - 21 <br>Lauantaisin 10 - 22<br>Sunnuntaisin 12 - 21</p>
 		</div>
 		<div class="col s12 l4 center-align">
-			<h2>Yhteystiedot</h2>
+			<h2><i class="material-icons">phone</i> Yhteystiedot</h2>
 			<p class="flow-text">Raatihuoneenkatu 6<br> 13100 Hämeenlinna<br><br>Puhelin 023 231 2342</p>
 		</div>
 		<div class="col s12 l4 center-align karttacol">
-			<h2>Kartta</h2><!--<p class="flow-text">Tähän karttakuva</p>-->
+			<h2><i class="material-icons">location_on</i> Sijainti</h2><!--<p class="flow-text">Tähän karttakuva</p>-->
 			
 			<!-- kartan kooksi määritetty 300x200, vaihdettavissa style.css map id:n alta -->
 			<div id="map"></div>
