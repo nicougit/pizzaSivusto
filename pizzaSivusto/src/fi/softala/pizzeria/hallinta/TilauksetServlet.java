@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import fi.softala.pizzeria.apuluokka.Apuri;
 import fi.softala.pizzeria.bean.Juoma;
 import fi.softala.pizzeria.bean.Kayttaja;
 import fi.softala.pizzeria.bean.Pizza;
@@ -237,6 +238,89 @@ public class TilauksetServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+
+		String json = request.getParameter("json");
+
+		// Katsotaan oikeudet
+		HttpSession sessio = request.getSession(false);
+
+		if (sessio != null && sessio.getAttribute("kayttaja") != null) {
+			Kayttaja kayttaja = (Kayttaja) sessio.getAttribute("kayttaja");
+			if (kayttaja.getTyyppi().equals("admin") || kayttaja.getTyyppi().equals("staff")) {
+
+				String action = request.getParameter("action");
+				
+				if (action != null && action.equals("paivitaStatus")) {
+					paivitaStatus(request, response);
+				}
+				else {
+						String virhe = "Virheellinen action";
+						virhe(request, response, virhe);				
+				}
+				
+			}
+			else {
+			doGet(request, response);
+			}
+			
+		}
+		else {
+			doGet(request, response);
+		}
+		
+	}
+	
+	public void paivitaStatus(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String tilausId = request.getParameter("id");
+		String tilausStatus = request.getParameter("status");
+		String json = request.getParameter("json");
+
+		// Validoidaan input
+		Apuri apuri = new Apuri();
+
+		if (tilausId != null && tilausStatus != null) {
+			if (apuri.validoiInt(tilausId, 11) == true && apuri.validoiInt(tilausStatus, 1) == true) {
+				
+				if (Integer.parseInt(tilausStatus) <= 0 && Integer.parseInt(tilausStatus) > 3) {
+					String virhe = "Virheellinen status";
+					virhe(request, response, virhe);
+				}
+				else {
+
+					TilausDao dao = new TilausDao();
+
+					// Katsotaan, onnistuuko päivitys
+					HashMap<String, String> vastaus = dao.paivitaStatus(tilausId, tilausStatus);
+					if (vastaus.get("virhe") != null) {
+						String virhe = vastaus.get("virhe");
+						request.setAttribute("virhe", virhe);
+					} else if (vastaus.get("success") != null) {
+						String success = vastaus.get("success");
+						request.setAttribute("success", success);
+					} else {
+						request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+					}
+					if (json != null) {
+						jsonVastaus(request, response, vastaus);
+					} else {
+						naytaSivu(request, response);
+					}
+				}
+
+			} else {
+				String virhe = "Virheelliset arvot statuspäivityksellä";
+				virhe(request, response, virhe);
+			}
+		} else {
+			String virhe = "Kaikkia statuspäivitykseen tarvittavia tietoja ei annettu";
+			virhe(request, response, virhe);
+		}
+
 	}
 
 }

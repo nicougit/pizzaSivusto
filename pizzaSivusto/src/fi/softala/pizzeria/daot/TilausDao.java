@@ -10,6 +10,7 @@ import fi.softala.pizzeria.bean.Kayttaja;
 import fi.softala.pizzeria.bean.Pizza;
 import fi.softala.pizzeria.bean.Tilaus;
 import fi.softala.pizzeria.tietokanta.Kysely;
+import fi.softala.pizzeria.tietokanta.Paivitys;
 import fi.softala.pizzeria.tietokanta.Yhteys;
 
 public class TilausDao {
@@ -198,6 +199,40 @@ public class TilausDao {
 		yhteys.suljeYhteys();
 		
 		return tilaukset;
+	}
+	
+	public HashMap<String, String> paivitaStatus(String id, String status) {
+
+		HashMap<String, String> vastaus = new HashMap<>();
+
+		// Yhteyden määritys
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			String virhe = "Tietokantayhteyttä ei saatu avattua";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		String sql = "UPDATE Tilaus SET status = ? WHERE tilaus_id = ?";
+		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+
+		ArrayList<String> parametrit = new ArrayList<>();
+		parametrit.add(status);
+		parametrit.add(id);
+
+		// Palauttaa onnistuneiden rivien määrän, 1 = ok, 0 = error
+		int rivit = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+
+		if (rivit == 1) {
+			String success = "Tilauksen status päivitetty!";
+			vastaus.put("success", success);
+			return vastaus;
+		} else {
+			String virhe = "Tilauksen statusta päivittäessä tapahtui virhe!";
+			vastaus.put("virhe", virhe);
+			return vastaus;
+		}
 	}
 
 }
