@@ -40,8 +40,8 @@
 										<td><c:out value="${kayttaja.etunimi }"></c:out></td>
 										<td><c:out value="${kayttaja.sukunimi }"></c:out></td>
 										<td class="hide-on-small-only">
-										<c:if test="${kayttaja.tyyppi == 'admin'}"><i>Ylläpito</i></c:if>
-										<c:if test="${kayttaja.tyyppi == 'staff'}"><b>Henkilökunta</b></c:if>
+										<c:if test="${kayttaja.tyyppi == 'admin'}"><span class="blue-text text-darken-2">Ylläpito</span></c:if>
+										<c:if test="${kayttaja.tyyppi == 'staff'}"><span class="red-text text-darken-2">Henkilökunta</span></c:if>
 										<c:if test="${kayttaja.tyyppi == 'user'}">Peruskäyttäjä</c:if>										
 										</td>
 									</tr>
