@@ -13,6 +13,7 @@
 				<li><a href="<c:url value='/hallinta'/>">Tuotteet</a></li>
 				<li><a href="<c:url value='/tilaukset'/>">Tilaukset</a></li>
 				<li><a href="<c:url value='/kayttajat'/>">Käyttäjät</a></li>
+				<li><a href="<c:url value='/aukioloajat'/>">Aukioloajat</a></li>
 		</ul>
 		</c:if>
 	</c:if>

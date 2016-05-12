@@ -70,7 +70,9 @@ src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 </script>
 </head>
 <body>
+
 	<jsp:include page="WEB-INF/header.jsp"></jsp:include>
+	
 	<div class="headertext">
 		<h1 class="firmanlogo hide-on-med-and-down">Castello é Fiori</h1>
 		<p class="flow-text">Olemme Hämeenlinnalainen perheyritys, joka on
@@ -90,7 +92,7 @@ src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<div class="row" id="main-content">
 		<div class="col s12 l4 center-align">
 			<h2><i class="material-icons">access_time</i> Aukioloajat</h2>
-			<p class="flow-text">Arkisin 10 - 21 <br>Lauantaisin 10 - 22<br>Sunnuntaisin 12 - 21</p>
+			<p class="flow-text">Arkisin <c:out value="${aukiolot[0].aloitusaika}"/> - <c:out value="${aukiolot[0].sulkemisaika}"/> <br>Lauantaisin <c:out value="${aukiolot[1].aloitusaika}"/> - <c:out value="${aukiolot[1].sulkemisaika}"/><br>Sunnuntaisin <c:out value="${aukiolot[2].aloitusaika}"/> - <c:out value="${aukiolot[2].sulkemisaika}"/></p>
 		</div>
 		<div class="col s12 l4 center-align">
 			<h2><i class="material-icons">phone</i> Yhteystiedot</h2>

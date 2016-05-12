@@ -306,10 +306,10 @@ public class LoginServlet extends HttpServlet {
 			
 			request.setAttribute("success", "Olet kirjautunut ulos onnistuneesti!");
 
-			String rdPath = "index.jsp";
+			String rdPath = "zeroindex.jsp";
 			naytaSivu(request, response, rdPath);
 		} else {
-			String rdPath = "index.jsp";
+			String rdPath = "zeroindex.jsp";
 			naytaSivu(request, response, rdPath);
 		}
 	}
