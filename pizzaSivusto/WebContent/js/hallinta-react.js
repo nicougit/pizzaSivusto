@@ -1,71 +1,3 @@
-
-var Aukiolo = React.createClass({
-	render: function() {
-		return (
-		 <div className="row">
-		 <h2 className="flow-text">Muokkaa aukioloaikoja/Kirjoita tiedote</h2>
-		 <div className="section col s12 m6">
-		 <form className="col s12">
-		 <p className="flow-text">Arkisin</p>
-		 <div className="row">
-		 <div className="input-field col s5">
-		 <input type="number" className="validate" min="7" max="24" step="1" name="arkiavaus" id="arkiavaus"/> 
-		 <label htmlFor="arkiavaus" data-error="Virhe"></label>
-		 </div>
-		 <div className="col s1"><p>-</p></div>
-		 <div className="input-field col s5">
-		 <input type="number" className="validate" min="7" max="24" step="1" name="arkisulku" id="arkisulku"/> 
-		 <label htmlFor="arkiavaus" data-error="Virhe"></label>
-		 </div>
-		 </div>
-		 <p className="flow-text">Lauantaisin</p>
-		 <div className="row">
-		 <div className="input-field col s5">
-		 <input type="number" className="validate" min="7" max="24" step="1" name="laavaus" id="laavaus"/> 
-		 <label htmlFor="arkiavaus" data-error="Virhe"></label>
-		 </div>
-		 <div className="col s1"><p>-</p></div>
-		 <div className="input-field col s5">
-		 <input type="number" className="validate" min="7" max="24" step="1" name="lasulku" id="lasulku"/> 
-		 <label htmlFor="arkiavaus" data-error="Virhe"></label>
-		 </div>
-		 </div>
-		 <p className="flow-text">Sunnuntaisin</p>
-		 <div className="row">
-		 <div className="input-field col s5">
-		 <input type="number" className="validate" min="7" max="24" step="1" name="suavaus" id="suavaus"/> 
-		 <label htmlFor="arkiavaus" data-error="Virhe"></label>
-		 </div>
-		 <div className="col s1"><p>-</p></div>
-		 <div className="input-field col s5">
-		 <input type="number" className="validate" min="7" max="24" step="1" name="susulku" id="susulku"/> 
-		 <label htmlFor="arkiavaus" data-error="Virhe"></label>
-		 </div>
-		 </div>
-		 <div className="col s4">
-		 <button className="btn waves-effect waves-light btn-large" id="paivitaaukiolo" type="button">Päivitä aukioloajat</button>
-		 </div>
-		 </form>
-		 </div>
-		 
-		 <div className="section col s12 m6">
-		 <form className="col s12">
-		 <div className="input-field col s12">
-	     <textarea id="announcement" className="materialize-textarea"></textarea>
-	     <label htmlFor="announcement">Tiedote</label>
-	     </div>
-	     <div className="col s4">
-	     <button className="btn waves-effect waves-light btn-large" id="submittiedote" type="button">Julkaise tiedote</button>
-	     </div>
-		 </form>
-		 </div>
-		 
-		 </div>
-		);	
-	}
-});
-
-
 // Palauttaa yksittäisen täytetaulukon rivin
 var Tayte = React.createClass({
 	muokkaaTaytetta: function() {
@@ -274,7 +206,7 @@ var TaytteenMuokkaus = React.createClass({
 	render: function() {
 		return (
 			<div className="col s12 m12 l5 push-l7" id="taytem">
-			<h2>Muokkaa täytettä<a onClick={this.avaaModal } href="#!" className="taytteenpoisto"><i className="material-icons">delete</i></a></h2>
+			<h2>Muokkaa täytettä<a onClick={this.avaaModal } href="#!" className="taytteenpoisto hide"><i className="material-icons">delete</i></a></h2>
 			<h3>{this.props.tayte.nimi }</h3>
 			<div className="row">
 			<form id="tayteformi">
@@ -593,7 +525,7 @@ var Pizzalista = React.createClass({
 			</tbody>
 			</table>
 			<br />
-			<div className="col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
+			<div className="hide col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
 			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista merkityt tuotteet pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
 			<div id="poistomodal" className="modal">
 			<div className="modal-content center-align">
@@ -833,7 +765,6 @@ var PizzanLisays = React.createClass({
 					<li className="tab col s12"><a href="#pizza-l">Tuotteiden lisäys</a></li>
 					<li className="tab col s12"><a href="#tayte-h">Täytteiden
 					hallinta</a></li>
-					<li className="tab col s12"><a href="#aukiolo-h">Aukioloajat</a></li>
 					</ul>
 					</div>
 					</div>
@@ -846,8 +777,6 @@ var PizzanLisays = React.createClass({
 					src="img/pizza_add.png" alt="L" /></a></li>
 					<li className="tab col s12"><a href="#tayte-h"><img
 					src="img/pizza_zoom.png" alt="T" /> </a></li>
-					<li className="tab col s12"><a href="#aukiolo-h"><img
-					src="img/pizza_clock.png" alt="A" /> </a></li>
 					</ul>
 					</div>
 					</div>
@@ -1029,7 +958,6 @@ var PizzanLisays = React.createClass({
 														else {
 															taytetoiminto = <TaytteenMuokkaus tayte={this.state.muokattavaTayte } peruuta={this.peruutaTaytemuokkaus } lahetaPaivitys={this.lahetaTaytePaivitys }/>;
 														}
-														var aukiolo = <Aukiolo/>;
 														var headerteksti = <p className="flow-text">Tietokannassa on yhteensä {this.state.pizzat.length } pizzaa, {this.state.taytteet.length } täytettä ja {this.state.juomat.length} juomaa!</p>;
 														var pizzalista = 	<Pizzalista pizzat={this.state.pizzat } juomat={this.state.juomat} kasittelePizza={this.kasittelePizza } poistaValitut={this.kasittelePizza } poistettavatpizzat={this.state.poistettavatpizzat } poistettavatjuomat={this.state.poistettavatjuomat } muokkaaJuomaa={this.lisaaJuoma}/>;
 														var taytelista = <Taytelista taytteet={this.state.taytteet } muokkaaTaytetta={this.muokkaaTaytetta }/>;
@@ -1062,9 +990,6 @@ var PizzanLisays = React.createClass({
 															<div className="row" id="tayte-h">
 															{taytetoiminto}
 															{taytelista}
-															</div>
-															<div className="row" id="aukiolo-h">
-															{aukiolo}
 															</div>
 															</div>
 															</div>

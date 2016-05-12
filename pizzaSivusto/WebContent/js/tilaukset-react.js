@@ -188,13 +188,13 @@ var Tilaukset = React.createClass({
 
         // Käännetään taulukon riveiksi
         if (pizzat != "") {
-          pizzat = <tr><td className="strong-id">Pizzat</td><td>{pizzat}</td></tr>;
+          pizzat = <tr><td className="tilaukset-rivi">Pizzat</td><td>{pizzat}</td></tr>;
         }
         else {
           pizzat = null;
         }
         if (juomat != "") {
-          juomat = <tr><td className="strong-id">Juomat</td><td>{juomat}</td></tr>;
+          juomat = <tr><td className="tilaukset-rivi">Juomat</td><td>{juomat}</td></tr>;
         }
         else {
           juomat = null;
@@ -203,7 +203,7 @@ var Tilaukset = React.createClass({
         // Lisätiedot taulukkoriviksi jos löytyy
         var lisatiedot = null;
         if (this.props.rivi.lisatiedot != null) {
-          lisatiedot = <tr><td className="strong-id">Lisätiedot</td><td>{this.props.rivi.lisatiedot}</td></tr>;
+          lisatiedot = <tr><td className="tilaukset-rivi">Lisätiedot</td><td>{this.props.rivi.lisatiedot}</td></tr>;
         }
 
         var statusLuokka = {};
@@ -238,7 +238,7 @@ var Tilaukset = React.createClass({
           </span>
           <table className="tilaukset-table">
           <tbody>
-          <tr><td className="strong-id">Tilausaika</td><td>{this.formatoiPaiva()}</td></tr>
+          <tr><td className="tilaukset-rivi">Tilausaika</td><td>{this.formatoiPaiva()}</td></tr>
           {pizzat }
           {juomat }
           {lisatiedot }

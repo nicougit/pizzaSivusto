@@ -175,6 +175,11 @@ h5 {
 	vertical-align: middle;
 }
 
+.tilaukset-rivi {
+	vertical-align: top;
+	font-weight: bold;
+}
+
 .tilaus-statusvalinta option {
 	padding: 5px;
 }
