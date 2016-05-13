@@ -401,8 +401,9 @@ public class HallintaDao {
 		}
 
 	}
-	
-	public HashMap<String, String> lisaaJuoma(String nimi, String koko, String hinta, String kuvaus, String saatavilla) {
+
+	public HashMap<String, String> lisaaJuoma(String nimi, String koko,
+			String hinta, String kuvaus, String saatavilla) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
@@ -450,8 +451,9 @@ public class HallintaDao {
 		}
 
 	}
-	
-	public HashMap<String, String> paivitaJuoma(String id, String nimi, String koko, String hinta, String kuvaus, String saatavilla) {
+
+	public HashMap<String, String> paivitaJuoma(String id, String nimi,
+			String koko, String hinta, String kuvaus, String saatavilla) {
 		HashMap<String, String> vastaus = new HashMap<>();
 
 		// Yhteyden määritys
@@ -902,8 +904,6 @@ public class HallintaDao {
 		}
 
 	}
-	
-	
 
 	public HashMap<String, String> poistaMerkityt() {
 		HashMap<String, String> vastaus = new HashMap<>();
@@ -931,17 +931,19 @@ public class HallintaDao {
 
 			// Poistetaan pizzat
 			sql = "DELETE FROM Pizza WHERE poistomerkinta IS NOT NULL";
-			rivit += paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
+			rivit += paivitys.suoritaSqlLauseParametreilla(sql,
+					new ArrayList<>());
 		}
-		
+
 		// Katsotaan poistomerkittyjen juomien määrä
 		sql = "SELECT juoma_id FROM Juoma WHERE poistomerkinta IS NOT NULL";
 		rivimaara = kysely.montaRivia(sql, new ArrayList<>());
-		
+
 		if (rivimaara > 0) {
 			// Poistetaan juomat
 			sql = "DELETE FROM Juoma WHERE poistomerkinta IS NOT NULL";
-			rivit += paivitys.suoritaSqlLauseParametreilla(sql, new ArrayList<>());
+			rivit += paivitys.suoritaSqlLauseParametreilla(sql,
+					new ArrayList<>());
 		}
 
 		// Yhteyden sulkeminen
@@ -949,13 +951,11 @@ public class HallintaDao {
 
 		// Palautetaan tulokset
 		if (rivit == 1) {
-			String success = "Tietokannasta poistettiin " + rivit
-					+ " tuote";
+			String success = "Tietokannasta poistettiin " + rivit + " tuote";
 			vastaus.put("success", success);
 			return vastaus;
 		} else if (rivit > 1) {
-			String success = "Tietokannasta poistettiin " + rivit
-					+ " tuotetta";
+			String success = "Tietokannasta poistettiin " + rivit + " tuotetta";
 			vastaus.put("success", success);
 			return vastaus;
 		} else {
@@ -1111,8 +1111,9 @@ public class HallintaDao {
 		return juomat;
 
 	}
-	
-	public HashMap<String, String> paivitaAukioloajat(ArrayList <Aukioloaika> aukioloajat) {
+
+	public HashMap<String, String> paivitaAukioloajat(
+			ArrayList<Aukioloaika> aukioloajat) {
 		HashMap<String, String> vastaus = new HashMap<>();
 		int rivit = 0;
 
@@ -1124,81 +1125,73 @@ public class HallintaDao {
 			yhteys.suljeYhteys();
 			return vastaus;
 		}
-		
+
 		String sql = "UPDATE Aukiolo";
-		int suoritetutLauseet = 0;
-		
-		for(int i = 0; i < aukioloajat.size();i++){
-		
-		ArrayList<String> parametrit = new ArrayList<String>();		
-		
-		if(aukioloajat.get(i).getAloitusaika().equals("") && aukioloajat.get(i).getSulkemisaika().equals("")){
-			continue;
-		}else if(!aukioloajat.get(i).getAloitusaika().equals("") && aukioloajat.get(i).getSulkemisaika().equals("")){
-			sql +=" SET aloitusaika=? WHERE paiva=?";			
-			parametrit.add(aukioloajat.get(i).getAloitusaika());
-			parametrit.add(aukioloajat.get(i).getPaiva());
-			suoritetutLauseet++;
+
+		for (int i = 0; i < aukioloajat.size(); i++) {
+
+			ArrayList<String> parametrit = new ArrayList<String>();
 			
-		}else if(aukioloajat.get(i).getAloitusaika().equals("") && !aukioloajat.get(i).getSulkemisaika().equals("")){
-			sql += " SET sulkemisaika=? WHERE paiva=?";
-			parametrit.add(aukioloajat.get(i).getSulkemisaika());
-			parametrit.add(aukioloajat.get(i).getPaiva());
-			suoritetutLauseet++;
-		}else {
-			sql +=" SET aloitusaika=?, sulkemisaika=? WHERE paiva=?";
+			sql = "UPDATE Aukiolo SET aloitusaika = ?, sulkemisaika = ? WHERE paiva = ?";
 			parametrit.add(aukioloajat.get(i).getAloitusaika());
 			parametrit.add(aukioloajat.get(i).getSulkemisaika());
 			parametrit.add(aukioloajat.get(i).getPaiva());
-			suoritetutLauseet++;
-		}
-		
 
-		
-
-		
-		Paivitys paivitys = new Paivitys(yhteys.getYhteys());
-		rivit += paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+			Paivitys paivitys = new Paivitys(yhteys.getYhteys());
+			int rivi = paivitys.suoritaSqlLauseParametreilla(sql, parametrit);
+			if (rivi == 1) {
+				System.out.println(aukioloajat.get(i).getPaiva() + " aikojen päivitys ");
+			}
+			else {
+				System.out.println(aukioloajat.get(i).getPaiva() + " ajan päivitys ei onnistunut");
+				vastaus.put("virhe", aukioloajat.get(i).getPaiva() + " päivitys ei onnistunut");
+				yhteys.suljeYhteys();
+				return vastaus;
+			}
+			
+			rivit += rivi;
+			
 		}
 
 		// Yhteyden sulkeminen
 		yhteys.suljeYhteys();
 
-			String success = "Aukioloajat päivitetty";
-			vastaus.put("success", success);
-			return vastaus;
+		String success = "Aukioloajat päivitetty";
+		vastaus.put("success", success);
+		return vastaus;
 
 	}
-	
-	public ArrayList <Aukioloaika> haeAukioloajat(){
-		ArrayList <Aukioloaika> aukioloajat = new ArrayList<>();
-		
+
+	public ArrayList<Aukioloaika> haeAukioloajat() {
+		ArrayList<Aukioloaika> aukioloajat = new ArrayList<>();
+
 		// Yhteyden määritys
-				Yhteys yhteys = new Yhteys();
-				if (yhteys.getYhteys() == null) {
-					return aukioloajat;
-				}
-				
-				Kysely kysely = new Kysely(yhteys.getYhteys());
-				
-				String sql = "SELECT paiva, aloitusaika, sulkemisaika FROM Aukiolo ORDER BY paiva ASC";
-				
-				kysely.suoritaKysely(sql);
-				
-				ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
-				
-				Iterator iteraattori = kysely.getTulokset().iterator();
-				
-				while (iteraattori.hasNext()) {
-					HashMap aukioloMappi = (HashMap) iteraattori.next();
-					String paiva = (String)aukioloMappi.get("paiva");
-					String aloitusaika = (String)aukioloMappi.get("aloitusaika");
-					String sulkemisaika = (String)aukioloMappi.get("sulkemisaika");
-					
-					Aukioloaika aukioloaika = new Aukioloaika(paiva, aloitusaika, sulkemisaika);
-					aukioloajat.add(aukioloaika);
-				}				
-		
+		Yhteys yhteys = new Yhteys();
+		if (yhteys.getYhteys() == null) {
+			return aukioloajat;
+		}
+
+		Kysely kysely = new Kysely(yhteys.getYhteys());
+
+		String sql = "SELECT paiva, aloitusaika, sulkemisaika FROM Aukiolo ORDER BY paiva ASC";
+
+		kysely.suoritaKysely(sql);
+
+		ArrayList<HashMap<String, String>> tulokset = kysely.getTulokset();
+
+		Iterator iteraattori = kysely.getTulokset().iterator();
+
+		while (iteraattori.hasNext()) {
+			HashMap aukioloMappi = (HashMap) iteraattori.next();
+			String paiva = (String) aukioloMappi.get("paiva");
+			String aloitusaika = (String) aukioloMappi.get("aloitusaika");
+			String sulkemisaika = (String) aukioloMappi.get("sulkemisaika");
+
+			Aukioloaika aukioloaika = new Aukioloaika(paiva, aloitusaika,
+					sulkemisaika);
+			aukioloajat.add(aukioloaika);
+		}
+
 		return aukioloajat;
 	}
 

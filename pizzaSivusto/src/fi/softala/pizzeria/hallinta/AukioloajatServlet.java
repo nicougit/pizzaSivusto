@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import fi.softala.pizzeria.apuluokka.Apuri;
 import fi.softala.pizzeria.bean.Aukioloaika;
 import fi.softala.pizzeria.bean.Kayttaja;
 import fi.softala.pizzeria.bean.Tilaus;
@@ -83,49 +84,70 @@ public class AukioloajatServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		HallintaDao dao = new HallintaDao();
+		Apuri apuri = new Apuri();
+		
+		String arkisinavaaminen = request.getParameter("Arkisinavaaminen");
+		String arkisinsulkeminen = request.getParameter("Arkisinsulkeminen");
+		
+		String laAvaaminen = request.getParameter("Lauantaisinavaaminen");
+		String laSulkeminen = request.getParameter("Arkisinsulkeminen");
+		
+		String suAvaaminen = request.getParameter("Sunnuntaisinavaaminen");
+		String suSulkeminen = request.getParameter("Sunnuntaisinsulkeminen");
 
-		Aukioloaika arkiAukiolo = new Aukioloaika();
-		arkiAukiolo.setAloitusaika(request.getParameter("Arkisinavaaminen"));
-		arkiAukiolo.setSulkemisaika(request.getParameter("Arkisinsulkeminen"));
-		arkiAukiolo.setPaiva("Arkisin");
+		if ((arkisinavaaminen != null && apuri.validoiInt(arkisinavaaminen, 2) == true) && 
+				(arkisinsulkeminen != null && apuri.validoiInt(arkisinsulkeminen, 2) == true) && 
+				(laAvaaminen != null && apuri.validoiInt(laAvaaminen, 2) == true) && 
+				(laSulkeminen != null && apuri.validoiInt(laSulkeminen, 2) == true) && 
+				(suAvaaminen != null && apuri.validoiInt(suAvaaminen, 2) == true) && 
+				(suSulkeminen != null && apuri.validoiInt(suSulkeminen, 2) == true)) {
+			
+			Aukioloaika arkiAukiolo = new Aukioloaika();
+			arkiAukiolo.setAloitusaika(arkisinavaaminen);
+			arkiAukiolo.setSulkemisaika(arkisinsulkeminen);
+			arkiAukiolo.setPaiva("Arkisin");
 
-		Aukioloaika laAukiolo = new Aukioloaika();
-		laAukiolo.setAloitusaika(request.getParameter("Lauantaisinavaaminen"));
-		laAukiolo.setSulkemisaika(request.getParameter("Lauantaisinsulkeminen"));
-		laAukiolo.setPaiva("Lauantaisin");
+			Aukioloaika laAukiolo = new Aukioloaika();
+			laAukiolo.setAloitusaika(laAvaaminen);
+			laAukiolo.setSulkemisaika(laSulkeminen);
+			laAukiolo.setPaiva("Lauantaisin");
+			
+			Aukioloaika suAukiolo = new Aukioloaika();
+			suAukiolo.setAloitusaika(suAvaaminen);
+			suAukiolo.setSulkemisaika(suSulkeminen);
+			suAukiolo.setPaiva("Sunnuntaisin");
+			
+			ArrayList<Aukioloaika> aukioloajat = new ArrayList<>();
+			aukioloajat.add(arkiAukiolo);
+			aukioloajat.add(laAukiolo);
+			aukioloajat.add(suAukiolo);
+			
+			HashMap<String, String> vastaus = dao.paivitaAukioloajat(aukioloajat);
 
-		Aukioloaika suAukiolo = new Aukioloaika();
-		suAukiolo.setAloitusaika(request.getParameter("Sunnuntaisinavaaminen"));
-		suAukiolo.setSulkemisaika(request.getParameter("Sunnuntaisinsulkeminen"));
-		suAukiolo.setPaiva("Sunnuntaisin");
+			if (vastaus.get("virhe") != null) {
+				String virhe = vastaus.get("virhe");
+				request.setAttribute("virhe", virhe);
+			} else if (vastaus.get("success") != null) {
+				String success = vastaus.get("success");
+				request.setAttribute("success", success);
+			} else {
+				request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+			}
 
-		ArrayList<Aukioloaika> aukioloajat = new ArrayList<>();
-		aukioloajat.add(arkiAukiolo);
-		aukioloajat.add(laAukiolo);
-		aukioloajat.add(suAukiolo);
+			System.out.println("Aukioloajoiksi on yritetty päivittää:" + "\n -Arkisin: klo " + arkiAukiolo.getAloitusaika()
+					+ "-" + arkiAukiolo.getSulkemisaika() + "\n -Lauantaisin: klo " + laAukiolo.getAloitusaika() + "-"
+					+ laAukiolo.getSulkemisaika() + "\n -Sunnuntaisin: klo " + suAukiolo.getAloitusaika() + "-"
+					+ suAukiolo.getSulkemisaika());
 
-		for (int i = 0; i < aukioloajat.size(); i++) {
-			System.out.println(aukioloajat.get(i).toString());
+			doGet(request, response);
+
+			
 		}
-
-		HashMap<String, String> vastaus = dao.paivitaAukioloajat(aukioloajat);
-
-		if (vastaus.get("virhe") != null) {
-			String virhe = vastaus.get("virhe");
+		else {
+			String virhe = "Päivämäärä väärässä muodossa";
 			request.setAttribute("virhe", virhe);
-		} else if (vastaus.get("success") != null) {
-			String success = vastaus.get("success");
-			request.setAttribute("success", success);
-		} else {
-			request.setAttribute("virhe", "Tietokantaa päivittäessä tapahtui tuntematon virhe.");
+			doGet(request, response);
 		}
-
-		System.out.println("Aukioloajoiksi on yritetty päivittää:" + "\n -Arkisin: klo " + arkiAukiolo.getAloitusaika()
-				+ "-" + arkiAukiolo.getSulkemisaika() + "\n -Lauantaisin: klo " + laAukiolo.getAloitusaika() + "-"
-				+ laAukiolo.getSulkemisaika() + "\n -Sunnuntaisin: klo " + suAukiolo.getAloitusaika() + "-"
-				+ suAukiolo.getSulkemisaika());
-
-		doGet(request, response);
 
 	}
 
