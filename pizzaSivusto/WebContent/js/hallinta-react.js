@@ -524,6 +524,7 @@ var Pizzalista = React.createClass({
 			{this.props.juomat.map((o, i) => <Juoma key={o.id} id={o.id} nimi={o.nimi} hinta={o.hinta } poistomerkinta={o.poistomerkinta} kasittelePizza={this.props.kasittelePizza } koko={o.koko} saatavilla={o.saatavilla} kuvaus={o.kuvaus} muokkaaJuomaa={this.muokkaaJuomaa}/>)}
 			</tbody>
 			</table>
+			{juomanMuokkaus}
 			<br />
 			<div className="hide col s12 m6 l6 push-m6 push-l6 small-centteri right-align">
 			<button className="waves-effect waves-light btn modal-trigger red lighten-2 tooltipped" {...nappistatus} type="button" onClick={this.avaaModal } data-position="bottom" data-delay="500" data-tooltip="Poista merkityt tuotteet pysyvästi"><i className="material-icons left">delete</i> Poista merkityt</button>
@@ -534,7 +535,6 @@ var Pizzalista = React.createClass({
 			<a href="#!" className="modal-action modal-close waves-effect waves-light btn red lighten-2">Peruuta</a> <button onClick={this.poistaValitut } type="button" className="modal-action waves-effect waves-light btn"><i className="material-icons left">delete</i> Poista</button>
 			</div>
 			</div>
-			{juomanMuokkaus}
 			</div>
 			</div>
 			</div>
