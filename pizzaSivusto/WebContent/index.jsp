@@ -91,15 +91,15 @@ src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 	<br>
 	<div class="row" id="main-content">
 		<div class="col s12 l4 center-align">
-			<h2><i class="material-icons">access_time</i> Aukioloajat</h2>
+			<h2><i class="material-icons">access_time</i><br>Aukioloajat</h2>
 			<p class="flow-text">Arkisin <c:out value="${aukiolot[0].aloitusaika}"/> - <c:out value="${aukiolot[0].sulkemisaika}"/> <br>Lauantaisin <c:out value="${aukiolot[1].aloitusaika}"/> - <c:out value="${aukiolot[1].sulkemisaika}"/><br>Sunnuntaisin <c:out value="${aukiolot[2].aloitusaika}"/> - <c:out value="${aukiolot[2].sulkemisaika}"/></p>
 		</div>
 		<div class="col s12 l4 center-align">
-			<h2><i class="material-icons">phone</i> Yhteystiedot</h2>
+			<h2><i class="material-icons">phone</i><br>Yhteystiedot</h2>
 			<p class="flow-text">Raatihuoneenkatu 6<br> 13100 Hämeenlinna<br><br>Puhelin 023 231 2342</p>
 		</div>
 		<div class="col s12 l4 center-align karttacol">
-			<h2><i class="material-icons">location_on</i> Sijainti</h2><!--<p class="flow-text">Tähän karttakuva</p>-->
+			<h2><i class="material-icons">location_on</i><br>Sijainti</h2><!--<p class="flow-text">Tähän karttakuva</p>-->
 			
 			<!-- kartan kooksi määritetty 300x200, vaihdettavissa style.css map id:n alta -->
 			<div id="map"></div>
